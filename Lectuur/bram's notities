@@ -1,0 +1,15 @@
+[Kwapisz 2010] Activity Recognition using Cell Phone Accelerometers
+geen specifiek te gebruiken dingen, wel verwijzingen naar methodes om data te bewerken (zie de verschillende tabelletjes)
+gaat meer over het verschil tussen andere activiteiten (trappen, staan, zitten, lopen, wandelen)
+
+A Data-driven approach to kinematic analysis in runnng using wearable technology
+Legt methode duidelijk uit, gaat veel over uitputting, en splitst duidelijk op tussen trainings-niveaus
+
+Activity Recognition from accelerometer data (gebruikt machine learning)
+gaat meer over het verschil tussen andere activiteiten (trappen, staan, zitten, lopen, wandelen)
+bevat ook meer abstracte manieren om data te onderscheiden, gaat dieper in op statistiek
+beschrijft manier op data te bewerken erg goed (zie 'data lifecycle')
+
+Activity Recognition from user-annotated acceleration data
+veel verschillende activiteiten, beschrijft andere, voorgaande methodes wel goed maar beschrijft eigen methode amper
+
