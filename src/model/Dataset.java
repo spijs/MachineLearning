@@ -26,8 +26,10 @@ public class Dataset {
 		return walks.get(i);
 	}
 
-	public void extractFeatures(FeatureExtractor extractor) {
-
+	public void extractFeatures() {
+		for (Walk walk : walks) {
+			FeatureExtractor extractor = new FeatureExtractor(walk);
+		}
 	}
 
 	public List<Feature> getFeature(int i) {
