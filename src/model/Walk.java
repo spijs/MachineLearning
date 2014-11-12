@@ -1,5 +1,6 @@
 package model;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class Walk {
@@ -29,8 +30,8 @@ public class Walk {
 		points.add(p);
 	}
 
-	public ArrayList<Integer> getTValues() {
-		ArrayList<Integer> returnList = new ArrayList<>();
+	public ArrayList<BigInteger> getTValues() {
+		ArrayList<BigInteger> returnList = new ArrayList<>();
 		for (Point point : points) {
 			returnList.add(point.t);
 		}
