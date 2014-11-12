@@ -51,4 +51,10 @@ public class FeatureExtractorTest {
 		assertEquals(expected,mean,0.00000001);
 	}
 
+	@Test
+	public void getDeviationX(){
+		double dev = (double) features.get("standDevX").value;
+		double expected = 3.071810958;
+		assertEquals(expected,dev,0.00000001);
+	}
 }
