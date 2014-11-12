@@ -8,7 +8,6 @@ package model;
 public class Feature {
 	
 	public Feature(String name, Object value) {
-		this.name=name;
 		this.value=value;
 	}
 
@@ -20,8 +19,6 @@ public class Feature {
 		STRING
 	};
 
-	public String name;
 	public Object value;
-
 	public Feature.Type type;
 }
