@@ -7,7 +7,7 @@ package model;
  */
 public class Feature {
 	
-	public Feature(String name, Object value) {
+	public Feature(Object value) {
 		this.value=value;
 	}
 
