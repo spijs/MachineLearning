@@ -18,7 +18,7 @@ public class Dataset {
 		this.features = new HashMap<>();
 	}
 
-	public int getNumWalks() {
+	public int numWalks() {
 		return walks.size();
 	}
 
@@ -29,10 +29,11 @@ public class Dataset {
 	public void extractFeatures() {
 		for (Walk walk : walks) {
 			FeatureExtractor extractor = new FeatureExtractor(walk);
+			features.put(walk, extractor.extractFeatures());
 		}
 	}
 
-	public List<Feature> getFeature(int i) {
+	public List<Feature> getFeatures(int i) {
 		return features.get(walks.get(i));
 	}
 
