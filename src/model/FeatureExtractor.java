@@ -29,7 +29,7 @@ public class FeatureExtractor {
 
 		features.put("standDevX", new Feature(getStandardDeviationX())); 
 		features.put("standDevY", new Feature(getStandardDeviationY()));
-		features.put("standDevZ",new Feature(getStandardDeviationZ()));
+		features.put("standDevZ",new Feature( getStandardDeviationZ()));
 		
 		return features;
 		
@@ -37,7 +37,7 @@ public class FeatureExtractor {
 
 	private double getStandardDeviation(List<Double> values){
 
-		int sum = 0;
+		double sum = 0.0;
 		double mean = mean(values);
 
 		for (double i : values)
@@ -48,7 +48,7 @@ public class FeatureExtractor {
 
 	public double sum (List<Double> a){
 		if (a.size() > 0) {
-			int sum = 0;
+			double sum = 0;
 
 			for (double i : a) {
 				sum += i;

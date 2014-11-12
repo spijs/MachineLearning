@@ -15,10 +15,6 @@ import com.opencsv.CSVReader;
 
 public class DataParser {
 
-	public static void main(String[] args) throws Exception {
-		System.out.println(parseFiles("train").size());
-	}
-
 	public static ArrayList<Walk> parseFiles(String path) throws IOException{
 
 		ArrayList<Walk> walks = new ArrayList<Walk>();
