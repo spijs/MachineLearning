@@ -35,7 +35,7 @@ public class DataParser {
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
 				double time= Double.parseDouble(nextLine[0]);
-				double x = Double.parseDouble(nextLine[1]]);
+				double x = Double.parseDouble(nextLine[1]);
 				double y = Double.parseDouble(nextLine[2]);
 				double z = Double.parseDouble(nextLine[3]);
 				Point point = new Point(time, x,y,z);
