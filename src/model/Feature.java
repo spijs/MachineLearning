@@ -7,8 +7,9 @@ package model;
  */
 public class Feature {
 	
-	public Feature(Object value) {
-		this.value=value;
+	public Feature(Object value, Feature.Type type) {
+		this.value = value;
+		this.type = type;
 	}
 
 	public enum Type {
@@ -18,6 +19,6 @@ public class Feature {
 		NOMINAL
 	};
 
-	public Object value;
-	public Feature.Type type;
+	public final Object value;
+	public final Feature.Type type;
 }
