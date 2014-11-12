@@ -15,21 +15,26 @@ public class FeatureExtractor {
 
 	public static Map<String, Feature.Type> getFeatures() {
 		Map<String, Feature.Type> returnMap = new HashMap<>();
-
-		// TODO implement
+		//Mean and SD
+		returnMap.put("meanOfX",Feature.Type.DOUBLE);
+		returnMap.put("meanOfY",Feature.Type.DOUBLE);
+		returnMap.put("meanOfZ",Feature.Type.DOUBLE);
+		returnMap.put("standDevX",Feature.Type.DOUBLE);
+		returnMap.put("standDevY",Feature.Type.DOUBLE);
+		returnMap.put("standDevZ",Feature.Type.DOUBLE);		
 		return returnMap;
 	}
 
 	public Map<String,Feature> extractFeatures(){
 		// Mean and SD
 		Map<String,Feature> features = new HashMap<String,Feature>();
-		features.put("meanOfX",new Feature(getMeanX()));
-		features.put("meanOfY",new Feature(getMeanY()));
-		features.put("meanOfZ",new Feature(getMeanZ()));
+		features.put("meanOfX",new Feature(getMeanX(),Feature.Type.DOUBLE));
+		features.put("meanOfY",new Feature(getMeanY(),Feature.Type.DOUBLE)));
+		features.put("meanOfZ",new Feature(getMeanZ(),Feature.Type.DOUBLE)));
 
-		features.put("standDevX", new Feature(getStandardDeviationX())); 
-		features.put("standDevY", new Feature(getStandardDeviationY()));
-		features.put("standDevZ",new Feature( getStandardDeviationZ()));
+		features.put("standDevX", new Feature(getStandardDeviationX(),Feature.Type.DOUBLE))); 
+		features.put("standDevY", new Feature(getStandardDeviationY(),Feature.Type.DOUBLE)));
+		features.put("standDevZ",new Feature( getStandardDeviationZ(),Feature.Type.DOUBLE)));
 		
 		return features;
 		
