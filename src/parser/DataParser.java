@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import model.Point;
+import model.Walk;
+
 import com.opencsv.CSVReader;
 
 
@@ -23,18 +26,24 @@ public class DataParser {
 
 		for(String name:names){
 			CSVReader reader = new CSVReader(new FileReader(path+"/"+name));
+		
+			String[] parts = name.split("_");
+			int length = parts.length;
+			String walker = parts[length-1];
 			String [] nextLine;
+			Walk walk = new Walk(walker);
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
 				double time= Integer.parseInt(nextLine[0]);
-				double x = Integer.parseInt(nextLine[x]);
-				double y = Integer.parseInt(nextLine[y]);
-				double z = Integer.parseInt(nextLine[z]);
-				Point point = new Point(x,y,z);
-				System.out.println(nextLine[0] + nextLine[1] + "etc...");
+				double x = Integer.parseInt(nextLine[1]]);
+				double y = Integer.parseInt(nextLine[2]);
+				double z = Integer.parseInt(nextLine[3]);
+				Point point = new Point(time, x,y,z);
+				walk.addPoint(point);
+				
 			}
-
+			walks.add(walk);
 		}
-		return null;
+		return walks;
 	}
 }
