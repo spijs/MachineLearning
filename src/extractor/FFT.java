@@ -1,3 +1,5 @@
+package extractor;
+
 /*
  *  Copyright 2006-2007 Columbia University.
  *
@@ -20,7 +22,6 @@
  *  See the file "COPYING" for the text of the license.
  */
 
-package com.meapsoft;
 
 
 public class FFT {
@@ -97,7 +98,7 @@ public class FFT {
   *   Permission to copy and use this program is granted 
   *   as long as this header is included. 
   ****************************************************************/
-  public void fft(double[] x, double[] y)
+  public double[] fft(double[] x, double[] y)
   {
     int i,j,k,n1,n2,a;
     double c,s,e,t1,t2;
@@ -148,6 +149,7 @@ public class FFT {
         }
       }
     }
+    return x;
   }                          
 
 

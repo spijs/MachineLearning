@@ -53,9 +53,16 @@ public class FeatureExtractorTest {
 	}
 
 	@Test
-	public void getDeviationX(){
+	public void testGetDeviationX(){
 		double dev = (double) features.get("standDevX").value;
 		double expected = 3.071810958;
 		assertEquals(expected,dev,0.00000001);
+	}
+	
+	@Test
+	public void testFFT(){
+		double[] result = fe.fftX();
+		System.out.println(result[0]);
+		assertEquals(result.length,128);
 	}
 }

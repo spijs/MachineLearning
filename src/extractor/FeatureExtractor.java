@@ -171,4 +171,20 @@ public class FeatureExtractor {
 		return getPercentile(walk.getZValues(),0.75);
 	}
 	
+	public double[] fftX() //TODO slechts de 5 grootste waarden teruggeven. + terug private zetten
+	{
+		  int size = 128; //TODO fixen
+		  FFT fft = new FFT(size); 
+
+		  double[] window = fft.getWindow();
+		  double re[] = new double[size];
+		  double im[] = new double[size];
+		  for(int i=0; i<size; i++){
+			  re[i] = walk.getXValues().get(i);
+			  im[i] = 0;
+		  }
+		    
+		 double [] result =  fft.fft(re, im);
+		 return result;
+	}
 }
