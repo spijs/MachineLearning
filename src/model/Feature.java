@@ -15,8 +15,7 @@ public class Feature {
 
 		BOOLEAN,
 		DOUBLE,
-		DOUBLE_LIST,
-		STRING
+		NOMINAL
 	};
 
 	public Object value;
