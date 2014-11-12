@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class Dataset {
 	private final List<Walk> walks;
-	private final Map<Walk, List<Feature>> features;
+	private final Map<Walk, Map<String, Feature>> features;
 
 	public Dataset(List<Walk> walks) {
 		this.walks = walks;
@@ -33,11 +33,11 @@ public class Dataset {
 		}
 	}
 
-	public List<Feature> getFeatures(int i) {
+	public Map<String, Feature> getFeatures(int i) {
 		return features.get(walks.get(i));
 	}
 
-	public List<Feature> getFeatures(Walk walk) {
+	public Map<String, Feature> getFeatures(Walk walk) {
 		return features.get(walk);
 	}
 }
