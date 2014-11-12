@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Walk {
 
-	final String name;
+	final private String name;
 	final private ArrayList<Point> points;
 
 	public Walk(String name) {
@@ -16,6 +16,10 @@ public class Walk {
 	public Walk(String name, ArrayList<Point> points) {
 		this.name = name;
 		this.points = points;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public Point getPoint(int i) {
