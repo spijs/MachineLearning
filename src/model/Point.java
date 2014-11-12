@@ -6,12 +6,12 @@ package model;
  */
 public class Point {
 
-	public double t;
+	public int t;
 	public double x;
 	public double y;
 	public double z;
 
-	public Point(double t, double x, double y, double z) {
+	public Point(int t, double x, double y, double z) {
 		this.t = t;
 		this.x = x;
 		this.y = y;
