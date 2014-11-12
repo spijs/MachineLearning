@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -35,7 +36,7 @@ public class DataParser {
 			reader.readNext(); //Do not read first line
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
-				int time= Integer.parseInt(nextLine[0]);
+				BigInteger time= new BigInteger(nextLine[0]);
 				double x = Double.parseDouble(nextLine[1]);
 				double y = Double.parseDouble(nextLine[2]);
 				double z = Double.parseDouble(nextLine[3]);
