@@ -16,7 +16,7 @@ import com.opencsv.CSVReader;
 public class DataParser {
 
 	public static void main(String[] args) throws Exception {
-		parseFiles("train").size();
+		System.out.println(parseFiles("train").size());
 	}
 
 	public static ArrayList<Walk> parseFiles(String path) throws IOException{
@@ -26,8 +26,10 @@ public class DataParser {
 		ArrayList<String> names = new ArrayList<String>(Arrays.asList(f.list()));
 
 		for(String name:names){
+			if (name.endsWith(".json"))
+				continue;
 			CSVReader reader = new CSVReader(new FileReader(path+"/"+name));
-		
+
 			String[] parts = name.split("_");
 			int length = parts.length;
 			String walker = parts[length-1];
@@ -36,13 +38,13 @@ public class DataParser {
 			reader.readNext(); //Do not read first line
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
-				BigInteger time= new BigInteger(nextLine[0]);
-				double x = Double.parseDouble(nextLine[1]);
-				double y = Double.parseDouble(nextLine[2]);
-				double z = Double.parseDouble(nextLine[3]);
+				BigInteger time= new BigInteger(nextLine[0].trim());
+				double x = Double.parseDouble(nextLine[1].trim());
+				double y = Double.parseDouble(nextLine[2].trim());
+				double z = Double.parseDouble(nextLine[3].trim());
 				Point point = new Point(time, x,y,z);
 				walk.addPoint(point);
-				
+
 			}
 			walks.add(walk);
 		}
