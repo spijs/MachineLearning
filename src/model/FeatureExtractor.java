@@ -29,12 +29,12 @@ public class FeatureExtractor {
 		// Mean and SD
 		Map<String,Feature> features = new HashMap<String,Feature>();
 		features.put("meanOfX",new Feature(getMeanX(),Feature.Type.DOUBLE));
-		features.put("meanOfY",new Feature(getMeanY(),Feature.Type.DOUBLE)));
-		features.put("meanOfZ",new Feature(getMeanZ(),Feature.Type.DOUBLE)));
+		features.put("meanOfY",new Feature(getMeanY(),Feature.Type.DOUBLE));
+		features.put("meanOfZ",new Feature(getMeanZ(),Feature.Type.DOUBLE));
 
-		features.put("standDevX", new Feature(getStandardDeviationX(),Feature.Type.DOUBLE))); 
-		features.put("standDevY", new Feature(getStandardDeviationY(),Feature.Type.DOUBLE)));
-		features.put("standDevZ",new Feature( getStandardDeviationZ(),Feature.Type.DOUBLE)));
+		features.put("standDevX", new Feature(getStandardDeviationX(),Feature.Type.DOUBLE)); 
+		features.put("standDevY", new Feature(getStandardDeviationY(),Feature.Type.DOUBLE));
+		features.put("standDevZ",new Feature( getStandardDeviationZ(),Feature.Type.DOUBLE));
 		
 		return features;
 		
