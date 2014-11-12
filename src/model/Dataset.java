@@ -31,10 +31,10 @@ public class Dataset {
 	}
 
 	public List<Feature> getFeature(int i) {
-		return features(walks.get(i));
+		return features.get(walks.get(i));
 	}
 
 	public List<Feature> getFeatures(Walk walk) {
-		return features(walk);
+		return features.get(walk);
 	}
 }
