@@ -7,11 +7,12 @@ import java.util.Map;
 import java.util.List;
 
 import model.Feature;
-import model.FeatureExtractor;
 import model.Walk;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import extractor.FeatureExtractor;
 
 import parser.DataParser;
 
