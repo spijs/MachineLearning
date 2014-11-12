@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FeatureExtractor {
@@ -16,13 +17,17 @@ public class FeatureExtractor {
 
 	public List<Feature> extractFeatures(){
 		// Mean and SD
-		Feature meanX = new Feature("meanOfX", getMeanX());
-		Feature meanY = new Feature("meanOfY", getMeanY());
-		Feature meanZ = new Feature("meanOfZ", getMeanZ());
+		ArrayList<Feature> features = new ArrayList<Feature>();
+		features.add(new Feature("meanOfX", getMeanX()));
+		features.add(new Feature("meanOfY", getMeanY()));
+		features.add(new Feature("meanOfZ", getMeanZ()));
 
-		Feature standDevX = new Feature("standDevX", getStandardDeviationX()); 
-		Feature standDevY = new Feature("standDevY", getStandardDeviationY());
-		Feature standDevZ = new Feature("standDevZ", getStandardDeviationZ());
+		features.add(new Feature("standDevX", getStandardDeviationX())); 
+		features.add(new Feature("standDevY", getStandardDeviationY()));
+		features.add(new Feature("standDevZ", getStandardDeviationZ()));
+		
+		return features;
+		
 	}
 
 	private double getStandardDeviation(List<Double> values){

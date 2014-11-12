@@ -6,6 +6,12 @@ package model;
  * @author bram
  */
 public class Feature {
+	
+	public Feature(String name, Object value) {
+		this.name=name;
+		this.value=value;
+	}
+
 	public enum Type {
 
 		BOOLEAN,
