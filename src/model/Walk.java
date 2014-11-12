@@ -29,8 +29,8 @@ public class Walk {
 		points.add(p);
 	}
 
-	public ArrayList<Double> getTValues() {
-		ArrayList<Double> returnList = new ArrayList<>();
+	public ArrayList<Integer> getTValues() {
+		ArrayList<Integer> returnList = new ArrayList<>();
 		for (Point point : points) {
 			returnList.add(point.t);
 		}
