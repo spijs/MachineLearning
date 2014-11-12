@@ -1,7 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FeatureExtractor {
 
@@ -15,16 +17,16 @@ public class FeatureExtractor {
 		return null;
 	}
 
-	public List<Feature> extractFeatures(){
+	public Map<String,Feature> extractFeatures(){
 		// Mean and SD
-		ArrayList<Feature> features = new ArrayList<Feature>();
-		features.add(new Feature("meanOfX", getMeanX()));
-		features.add(new Feature("meanOfY", getMeanY()));
-		features.add(new Feature("meanOfZ", getMeanZ()));
+		Map<String,Feature> features = new HashMap<String,Feature>();
+		features.put("meanOfX",new Feature(getMeanX()));
+		features.put("meanOfY",new Feature(getMeanY()));
+		features.put("meanOfZ",new Feature(getMeanZ()));
 
-		features.add(new Feature("standDevX", getStandardDeviationX())); 
-		features.add(new Feature("standDevY", getStandardDeviationY()));
-		features.add(new Feature("standDevZ", getStandardDeviationZ()));
+		features.put("standDevX", new Feature(getStandardDeviationX())); 
+		features.put("standDevY", new Feature(getStandardDeviationY()));
+		features.put("standDevZ",new Feature(getStandardDeviationZ()));
 		
 		return features;
 		
