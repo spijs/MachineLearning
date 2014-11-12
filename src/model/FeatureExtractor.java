@@ -13,8 +13,11 @@ public class FeatureExtractor {
 		this.walk = walk;
 	}
 
-	public List<String> getFeatures(){
-		return null;
+	public Map<String, Feature.Type> getFeatures() {
+		Map<String, Feature.Type> returnMap = new HashMap<>();
+
+		// TODO implement
+		return returnMap;
 	}
 
 	public Map<String,Feature> extractFeatures(){
