@@ -15,7 +15,7 @@ import com.opencsv.CSVReader;
 public class DataParser {
 
 	public static void main(String[] args) throws Exception {
-		parseFiles("train");
+		parseFiles("train").size();
 	}
 
 	public static ArrayList<Walk> parseFiles(String path) throws IOException{
@@ -32,9 +32,10 @@ public class DataParser {
 			String walker = parts[length-1];
 			String [] nextLine;
 			Walk walk = new Walk(walker);
+			reader.readNext(); //Do not read first line
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
-				double time= Double.parseDouble(nextLine[0]);
+				int time= Integer.parseInt(nextLine[0]);
 				double x = Double.parseDouble(nextLine[1]);
 				double y = Double.parseDouble(nextLine[2]);
 				double z = Double.parseDouble(nextLine[3]);
