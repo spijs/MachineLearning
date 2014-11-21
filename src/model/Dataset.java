@@ -30,16 +30,20 @@ public class Dataset {
 
 	public void extractFeatures() {
 		for (Walk walk : walks) {
-			FeatureExtractor extractor = new FeatureExtractor(walk);
-			features.put(walk, extractor.extractFeatures());
+			if (!features.containsKey(walk)) {
+				FeatureExtractor extractor = new FeatureExtractor(walk);
+				features.put(walk, extractor.extractFeatures());
+			}
 		}
 	}
 
 	public Map<String, Feature> getFeatures(int i) {
+		extractFeatures();
 		return features.get(walks.get(i));
 	}
 
 	public Map<String, Feature> getFeatures(Walk walk) {
+		extractFeatures();
 		return features.get(walk);
 	}
 }
