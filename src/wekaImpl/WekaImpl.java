@@ -77,7 +77,15 @@ public class WekaImpl {
 			attributes.put(name, attribute);
 		}
 
-		wekaAttributes.addElement(new Attribute("name"));
+		// add the name attribute
+		Set<String> names = new HashSet<>();
+		for (int i = 0; i < dataset.numWalks(); i++)
+			names.add(dataset.getWalk(i).getName());
+
+		FastVector wekaNames = new FastVector(names.size());
+		for (String name : names)
+			wekaNames.addElement(name);
+		wekaAttributes.addElement(new Attribute("walker", wekaNames));
 	}
 
 	public void makeInstances() {
@@ -88,7 +96,7 @@ public class WekaImpl {
 			Walk walk = dataset.getWalk(i);
 			Map<String, Feature> features = dataset.getFeatures(walk);
 
-			Instance instance = new Instance(extractedFeatures.size());
+			Instance instance = new Instance(extractedFeatures.size() + 1);
 
 			for (int j = 0; j < wekaAttributes.size() - 1; j++) {
 				Attribute attribute = (Attribute) wekaAttributes.elementAt(j);
@@ -100,7 +108,7 @@ public class WekaImpl {
 				}
 			}
 
-			instance.setValue(wekaAttributes.size() - 1, walk.getName());
+			instance.setValue((Attribute) wekaAttributes.elementAt(wekaAttributes.size() - 1), (String) walk.getName());
 
 			wekaTrainingSet.add(instance);
 		}
@@ -108,6 +116,7 @@ public class WekaImpl {
 
 	public void prepareClassifier(Classifier classifier) {
 		try {
+			wekaTrainingSet.setClassIndex(wekaTrainingSet.numAttributes() - 1);
 			classifier.buildClassifier(wekaTrainingSet);
 
 			// everything following this should be moved to "useClassifier"
@@ -119,9 +128,7 @@ public class WekaImpl {
 			System.out.println(strSummary);
 
 			// Get the confusion matrix
-			double[][] cmMatrix = evaluation.confusionMatrix();
-
-
+			System.out.println(evaluation.toMatrixString());
 		} catch (Exception ex) {
 			Logger.getLogger(WekaImpl.class.getName()).log(Level.SEVERE, null, ex);
 		}
