@@ -15,6 +15,10 @@ public class FeatureExtractor {
 	private Walk walk;
 	private Map<String, Feature> features;
 	private static Map<String, Type> availableFeatures;
+	private double[] fftX;
+	private double[] fftY;
+	private double[] fftZ;
+	private double window;
 
 	public FeatureExtractor(Walk walk){
 		this.walk = walk;
@@ -38,7 +42,13 @@ public class FeatureExtractor {
 		extractMedians();
 		extractFirstPercentiles();
 		extractThirdPercentiles();
-		extractFFT();
+		extractCorrelation();
+		
+		computeFFT();// Must happen for the following to work!!
+		
+		extractFFT(); 
+		extractEnergy();
+		
 		return features;
 	}
 
@@ -89,23 +99,74 @@ public class FeatureExtractor {
 		features.put(name+"Z",new Feature(getPercentile(walk.getZValues(),0.75),type));
 	}
 	
+
 	private void extractFFT(){
-		extractFFT("X",walk.getXValues());
-		extractFFT("Y",walk.getYValues());
-		extractFFT("Z",walk.getZValues());
+		extractFFT("X",fftX);
+		extractFFT("Y",fftY);
+		extractFFT("Z",fftZ);
 	}
 	
-	private void extractFFT(String direction, List<Double> values){
+	private void extractFFT(String direction, double[] values){
 		Feature.Type type = Feature.Type.DOUBLE;
 		int n=5;
-		double[] fftValues = getFirstNComponents(fft(values), n);
+		double[] fftValues = getFirstNComponents(values, n);
 		for (int i=0;i<n;i++){
 			String name = "FFT"+i;
 			addFeature(name, type);
 			features.put(name+direction, new Feature(fftValues[i],type));
 		}
 	}
+	private void extractEnergy(){
+		Feature.Type type = Feature.Type.DOUBLE;
+		String name = "energy";
+		addFeature(name, type);
+		features.put(name+"X",new Feature(getEnergy(fftX),type));
+		features.put(name+"Y",new Feature(getEnergy(fftY),type));
+		features.put(name+"Z",new Feature(getEnergy(fftZ),type));
+	}
 	
+	private void extractCorrelation(){
+		Feature.Type type = Feature.Type.DOUBLE;
+		String name = "correlation";
+		availableFeatures.put(name+"XY", type);
+		availableFeatures.put(name+"XZ", type);
+		availableFeatures.put(name+"YZ", type);
+		features.put(name+"XY",new Feature(getCorrelation(walk.getXValues(), walk.getYValues()),type));
+		features.put(name+"XZ",new Feature(getCorrelation(walk.getXValues(), walk.getZValues()),type));
+		features.put(name+"YZ",new Feature(getCorrelation(walk.getYValues(), walk.getZValues()),type));
+		
+	}
+	
+
+	
+	private double getCorrelation(ArrayList<Double> xValues,ArrayList<Double> yValues) {
+			double correlation = getCovariance(xValues, yValues)/(getStandardDeviation(xValues)*getStandardDeviation(yValues));
+			return correlation;
+		}
+	
+	private double getCovariance(ArrayList<Double> xValues, ArrayList<Double> yValues){
+		List<Double> products = new ArrayList<Double>();
+		for(int i=0; i<xValues.size();i++){
+			double product = (xValues.get(i) - mean(xValues))*(yValues.get(i) - mean(yValues));
+			products.add(product);
+		}
+		return mean(products);
+	}
+
+	private void computeFFT(){
+		this.fftX = fft(walk.getXValues());
+		this.fftY = fft(walk.getYValues());
+		this.fftZ = fft(walk.getZValues());
+	}
+	
+	
+	private double getEnergy(double[] values){
+		double result=0;
+		for(double value:values){
+			result += value*value;
+		}
+		return result/window;
+	}
 	
 	public double[] fft(List<Double> values)
 	{
@@ -114,7 +175,7 @@ public class FeatureExtractor {
 			size *= 2;
 		  FFT fft = new FFT(size); 
 
-		  double[] window = fft.getWindow();
+		  this.window = size;
 		  double re[] = new double[size];
 		  double im[] = new double[size];
 		  for(int i=0; i<size; i++){
@@ -123,7 +184,6 @@ public class FeatureExtractor {
 		  }
 		    
 		 double [] result =  fft.fft(re, im);
-		 Arrays.sort(result);
 		 return result;
 	}
 	
@@ -176,4 +236,5 @@ public class FeatureExtractor {
 		mean = sum / (a.size() * 1.0);
 		return mean;
 	}
+	
 }
