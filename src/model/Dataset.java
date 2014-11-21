@@ -38,12 +38,10 @@ public class Dataset {
 	}
 
 	public Map<String, Feature> getFeatures(int i) {
-		extractFeatures();
 		return features.get(walks.get(i));
 	}
 
 	public Map<String, Feature> getFeatures(Walk walk) {
-		extractFeatures();
 		return features.get(walk);
 	}
 }
