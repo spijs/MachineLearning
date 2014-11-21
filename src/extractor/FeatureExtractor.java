@@ -107,7 +107,9 @@ public class FeatureExtractor {
 	
 	public double[] fft(List<Double> values)
 	{
-		  int size = 128; //TODO fixen
+		int size = 2; //TODO fixen
+		while (size * 2 < values.size())
+			size *= 2;
 		  FFT fft = new FFT(size); 
 
 		  double[] window = fft.getWindow();
