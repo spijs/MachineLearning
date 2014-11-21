@@ -42,7 +42,8 @@ public class DataParser {
 				walk.addPoint(point);
 
 			}
-			walks.add(walk);
+			if (walk.getSize() > 0)
+				walks.add(walk);
 		}
 		return walks;
 	}
