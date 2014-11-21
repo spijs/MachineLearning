@@ -22,7 +22,7 @@ public class DataParser {
 		ArrayList<String> names = new ArrayList<String>(Arrays.asList(f.list()));
 
 		for(String name:names){
-			if (name.endsWith(".json"))
+			if (!name.endsWith(".csv"))
 				continue;
 			CSVReader reader = new CSVReader(new FileReader(path+"/"+name));
 
