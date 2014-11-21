@@ -27,7 +27,7 @@ public class FeatureExtractor {
 	}
 	
 	public void addFeature(String featureName,Feature.Type type){
-		availableFeatures.put(featureName+"X",type);
+		availableFeatures.put(featureName,type);
 	}
 
 	public Map<String,Feature> extractFeatures(){
@@ -100,12 +100,12 @@ public class FeatureExtractor {
 		for (int i=0;i<n;i++){
 			String name = "FFT"+i+direction;
 			addFeature(name, type);
-			features.put(name, new Feature(fftValues[i],Feature.Type.DOUBLE));
+			features.put(name, new Feature(fftValues[i],type));
 		}
 	}
 	
 	
-	public double[] fft(List<Double> values) //TODO slechts de 5 grootste waarden teruggeven. + terug private zetten
+	public double[] fft(List<Double> values)
 	{
 		  int size = 128; //TODO fixen
 		  FFT fft = new FFT(size); 
