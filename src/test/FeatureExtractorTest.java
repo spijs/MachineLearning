@@ -61,8 +61,7 @@ public class FeatureExtractorTest {
 	
 	@Test
 	public void testFFT(){
-		double[] result = fe.fftX();
-		System.out.println(result[0]);
-		assertEquals(result.length,128);
+		double result = (double) features.get("FFT1X").value;
+		assertEquals(result,25);
 	}
 }
