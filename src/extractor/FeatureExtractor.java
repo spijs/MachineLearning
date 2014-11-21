@@ -27,7 +27,9 @@ public class FeatureExtractor {
 	}
 	
 	public void addFeature(String featureName,Feature.Type type){
-		availableFeatures.put(featureName,type);
+		availableFeatures.put(featureName+"X",type);
+		availableFeatures.put(featureName+"Y",type);
+		availableFeatures.put(featureName+"Z",type);
 	}
 
 	public Map<String,Feature> extractFeatures(){
@@ -98,9 +100,9 @@ public class FeatureExtractor {
 		int n=5;
 		double[] fftValues = getFirstNComponents(fft(values), n);
 		for (int i=0;i<n;i++){
-			String name = "FFT"+i+direction;
+			String name = "FFT"+i;
 			addFeature(name, type);
-			features.put(name, new Feature(fftValues[i],type));
+			features.put(name+direction, new Feature(fftValues[i],type));
 		}
 	}
 	
