@@ -12,6 +12,7 @@ import model.Feature;
 import model.Walk;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
+import weka.classifiers.trees.J48;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -35,9 +36,13 @@ public class WekaImpl {
 	}
 
 	public void run() {
+		this.run(new J48());
+	}
+
+	public void run(Classifier classifier) {
 		makeHeader();
 		makeInstances();
-		prepareClassifier();
+		prepareClassifier(classifier);
 	}
 
 	public void makeHeader() {
@@ -45,7 +50,7 @@ public class WekaImpl {
 
 		Map<String, Feature.Type> extractedFeatures = FeatureExtractor.getFeatures();
 
-		this.wekaAttributes = new FastVector(extractedFeatures.size());
+		this.wekaAttributes = new FastVector(extractedFeatures.size() + 1);
 
 		for (String name : extractedFeatures.keySet()) {
 			Attribute attribute = null;
@@ -71,6 +76,8 @@ public class WekaImpl {
 			wekaAttributes.addElement(attribute);
 			attributes.put(name, attribute);
 		}
+
+		wekaAttributes.addElement(new Attribute("name"));
 	}
 
 	public void makeInstances() {
@@ -83,7 +90,7 @@ public class WekaImpl {
 
 			Instance instance = new Instance(extractedFeatures.size());
 
-			for (int j = 0; j < wekaAttributes.size(); j++) {
+			for (int j = 0; j < wekaAttributes.size() - 1; j++) {
 				Attribute attribute = (Attribute) wekaAttributes.elementAt(j);
 				String name = attribute.name();
 				if (features.get(name).type == Feature.Type.DOUBLE) {
@@ -92,6 +99,8 @@ public class WekaImpl {
 					instance.setValue(attribute, (String) features.get(attribute.name()).value);
 				}
 			}
+
+			instance.setValue(wekaAttributes.size() - 1, walk.getName());
 
 			wekaTrainingSet.add(instance);
 		}

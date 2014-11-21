@@ -1,8 +1,8 @@
 package model;
 
 import java.util.ArrayList;
-
 import parser.DataParser;
+import wekaImpl.WekaImpl;
 
 public class Main {
 
@@ -12,7 +12,6 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		ArrayList<Walk> trainWalks = DataParser.parseFiles("train");
 		Dataset ds = new Dataset(trainWalks);
-		
+		new WekaImpl(ds).run();
 	}
-
 }
