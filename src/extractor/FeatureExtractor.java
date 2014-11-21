@@ -58,11 +58,11 @@ public class FeatureExtractor {
 		
 		features.put("FirstPercentileX", new Feature(getFirstPercentileX(),Feature.Type.DOUBLE)); 
 		features.put("FirstPercentileY", new Feature(getFirstPercentileY(),Feature.Type.DOUBLE));
-		features.put("FirstPercentileY",new Feature(getFirstPercentileZ(),Feature.Type.DOUBLE));
+		features.put("FirstPercentileZ", new Feature(getFirstPercentileZ(), Feature.Type.DOUBLE));
 		
 		features.put("ThirdPercentileX", new Feature(getThirdPercentileX(),Feature.Type.DOUBLE)); 
 		features.put("ThirdPercentileY", new Feature(getThirdPercentileY(),Feature.Type.DOUBLE));
-		features.put("ThirdPercentileY",new Feature(getThirdPercentileZ(),Feature.Type.DOUBLE));
+		features.put("ThirdPercentileZ", new Feature(getThirdPercentileZ(), Feature.Type.DOUBLE));
 		
 		return features;
 		
