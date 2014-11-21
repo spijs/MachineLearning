@@ -28,11 +28,8 @@ public class DataParser {
 
 			String[] parts = name.split("_");
 			int length = parts.length;
-			String walker = parts[length-1].split(".")[0];
+			String walker = parts[length - 1].split("\\.")[0];
 			String [] nextLine;
-			if(walker.equals("other")){
-				walker="?";
-			}
 			Walk walk = new Walk(walker);
 			reader.readNext(); //Do not read first line
 			while ((nextLine = reader.readNext()) != null) {
