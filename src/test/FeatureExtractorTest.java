@@ -33,21 +33,21 @@ public class FeatureExtractorTest {
 
 	@Test
 	public void testGetMeanX() {
-		double mean = (double) features.get("meanOfX").value;
+		double mean = (double) features.get("meanX").value;
 		double expected = 0.057507084;
 		assertEquals(expected,mean,0.00000001);
 	}
 	
 	@Test
 	public void testGetMeanY() {
-		double mean = (double) features.get("meanOfY").value;
+		double mean = (double) features.get("meanY").value;
 		double expected = 0.560643316;
 		assertEquals(expected,mean,0.00000001);
 	}
 	
 	@Test
 	public void testGetMeanZ() {
-		double mean = (double) features.get("meanOfZ").value;
+		double mean = (double) features.get("meanZ").value;
 		double expected = -0.759161934;
 		assertEquals(expected,mean,0.00000001);
 	}
@@ -61,7 +61,6 @@ public class FeatureExtractorTest {
 	
 	@Test
 	public void testFFT(){
-		double result = (double) features.get("FFT1X").value;
-		assertEquals(result,25);
+		//TODO
 	}
 }
