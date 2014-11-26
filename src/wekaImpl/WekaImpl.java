@@ -167,8 +167,8 @@ public class WekaImpl {
 	}
 
 	// map walk -> name
-	public Map<Walk, String> classify(Dataset dataset) {
-		Map<Walk, String> returnMap = new HashMap<>();
+	public Map<Walk, ClassificationResult> classify(Dataset dataset) {
+		Map<Walk, ClassificationResult> returnMap = new HashMap<>();
 		Map<String, Feature.Type> extractedFeatures = FeatureExtractor.getFeatures();
 
 		for (int i = 0; i < dataset.numWalks(); i++) {
@@ -191,18 +191,9 @@ public class WekaImpl {
 
 			try { // classify the instance
 				double[] distribution = classifier.distributionForInstance(instance);
-
-				// get the best match
-				int maxj = 0;
-				for (int j = maxj + 1; j < distribution.length; j++) {
-					if (distribution[j] > distribution[maxj]) {
-						maxj = j;
-					}
-				}
-
-				// add the best match to the returnmap
-				String bestName = (String) wekaNames.elementAt(maxj);
-				returnMap.put(walk, bestName);
+				ClassificationResult classificationResult = new ClassificationResult(walk, wekaNames, distribution);
+				returnMap.put(walk, classificationResult);
+				classificationResult.print();
 				// System.out.println(bestName + " " + distribution[maxj]);
 
 			} catch (Exception ex) {
