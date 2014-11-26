@@ -14,31 +14,41 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		ArrayList<Walk> trainWalks = DataParser.parseFiles("train");
-		Dataset ds = new Dataset(trainWalks);
-		ds.extractFeatures();
-
-		ArrayList<Walk> testWalksList = DataParser.parseFiles("test");
-		Dataset testWalksDS = new Dataset(testWalksList);
-		testWalksDS.extractFeatures();
 
 		Classifier classifier = null;
 
 		// Argument loop
 		for (int i = 0; i < args.length; i++) {
-			System.out.println("" + i + " " + args[i]);
-
 			if ("-c".equals(args[i])) {
 				i++;
 				if (i < args.length) {
 					String className = args[i];
-
-					classifier = (Classifier) Class.forName(className).getConstructor().newInstance();
+					className = getClassNameFor(className);
+					try {
+						classifier = (Classifier) Class.forName(className).getConstructor().newInstance();
+					} catch (ClassNotFoundException cnfe) {
+						classifier = null;
+					}
 				}
 				if (i >= args.length || classifier == null) {
+					getClassNameFor(""); // avoids nullpointerexception on the classNames map
 					System.out.println("-c usage:");
-					System.out.println("java Main -c <ClassName>");
-					System.out.println("");
+					System.out.println("java -jar MLCode -c <Class Name>");
+					System.out.println("java -jar MLCode -c <Classifier description>");
+					System.out.println("With <Classifier description> one of: ");
+
+					int col = 0;
+					String line = "";
+					for (String name : classNames.keySet()) {
+						if (line.length() + name.length() > 80) {
+							System.out.println(line);
+							line = "";
+						}
+						line = line + name;
+					}
+					if (!"".equals(line))
+						System.out.println(line);
+					return;
 				}
 			} else if ("-h".equals(args[i])) {
 
@@ -48,6 +58,14 @@ public class Main {
 		if (classifier == null) {
 			classifier = new J48();
 		}
+
+		ArrayList<Walk> trainWalks = DataParser.parseFiles("train");
+		Dataset ds = new Dataset(trainWalks);
+		ds.extractFeatures();
+
+		ArrayList<Walk> testWalksList = DataParser.parseFiles("test");
+		Dataset testWalksDS = new Dataset(testWalksList);
+		testWalksDS.extractFeatures();
 
 		WekaImpl wekaImpl = new WekaImpl(ds);
 		wekaImpl.run(classifier);
