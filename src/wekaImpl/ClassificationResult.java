@@ -49,7 +49,7 @@ class ClassificationResult {
 	}
 
 	public void print() {
-		System.out.println("Classification for Walk " + walk.getName() + ": ");
+		System.out.println("Classification for Walk " + walk.getFileName() + ": ");
 		for (Map.Entry<String, Double> entry : map.entrySet()) {
 			String name = entry.getKey();
 			Double d = entry.getValue();

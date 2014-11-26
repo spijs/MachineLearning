@@ -8,19 +8,26 @@ public class Walk {
 
 	final private String name;
 	final private ArrayList<Point> points;
+	final private String fileName;
 
-	public Walk(String name) {
+	public Walk(String name,String fileName) {
 		this.name = name;
+		this.fileName=fileName;
 		this.points = new ArrayList<>();
 	}
 
-	public Walk(String name, ArrayList<Point> points) {
+	public Walk(String name, String fileName, ArrayList<Point> points) {
 		this.name = name;
 		this.points = points;
+		this.fileName= fileName;
 	}
 
 	public String getName() {
 		return name;
+	}
+	
+	public String getFileName(){
+		return fileName;
 	}
 
 	public Point getPoint(int i) {

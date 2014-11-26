@@ -21,16 +21,16 @@ public class DataParser {
 		File f = new File(path);
 		ArrayList<String> names = new ArrayList<String>(Arrays.asList(f.list()));
 
-		for(String name:names){
-			if (!name.endsWith(".csv"))
+		for(String fileName:names){
+			if (!fileName.endsWith(".csv"))
 				continue;
-			CSVReader reader = new CSVReader(new FileReader(path+"/"+name));
+			CSVReader reader = new CSVReader(new FileReader(path+"/"+fileName));
 
-			String[] parts = name.split("_");
+			String[] parts = fileName.split("_");
 			int length = parts.length;
 			String walker = parts[length - 1].split("\\.")[0];
 			String [] nextLine;
-			Walk walk = new Walk(walker);
+			Walk walk = new Walk(walker,fileName);
 			reader.readNext(); //Do not read first line
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
