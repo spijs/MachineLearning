@@ -10,13 +10,14 @@ Options:
 -lo --list options          Lists the available options given the classifier.
 -d -- details               Prints the details of the classification.
 -cm -- confusion            Prints the confusion matrix of the training set.
+-v -- version               Prints the version of this build.
 
 Classifier:
 -c --classifier             The classifier to be used for the classification.
 
 Classifier Options:
 Additional options to be passed to the classifier can be specified here.
-e.g. java -jar MLCode.jar -c kNN -k 15 
+e.g. java -jar MLCode.jar -c knn -k 15 
 For a list of available options use -lo -c <classifier>.
 
 Example Usage:
