@@ -29,7 +29,6 @@ public class WindowExtractor {
 		int totalTime = walk.getZValues().size()*averageTime;
 		int averageNbWindows = totalTime/windowSize;
 		if(averageNbWindows == 0){
-			System.out.println("0");
 			return result;
 			} // No dividing by zero
 		int averageNbElementsInWindow = xValues.size()/averageNbWindows;
@@ -41,14 +40,12 @@ public class WindowExtractor {
 		int i = 0;
 		for(ArrayList<Double> windowXValues: splittedXValues){
 			List<Double> windowYValues = splittedYValues.get(i);
-			System.out.println(windowYValues.size());
 			List<Double> windowZValues = splittedZValues.get(i);
 			List<BigInteger> windowTValues = splittedTValues.get(i);
 			Walk window = new Walk(walk.getName(),walk.getFileName(),windowTValues,windowXValues,windowYValues,windowZValues);
 			result.add(window);
 			i++;
 		}
-	
 		return result;
 	}
 

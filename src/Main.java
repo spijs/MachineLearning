@@ -141,7 +141,7 @@ public class Main {
 	private static void startClassification(String trainPath, String testPath, Classifier classifier, boolean printDetails, boolean printConfusionMatrix) throws IOException {
 		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
 		ArrayList<Walk>windows = new ArrayList<Walk>();
-		WindowExtractor we = new WindowExtractor(2000,20);
+		WindowExtractor we = new WindowExtractor(2550,20);
 		
 		for(Walk walk: trainWalks){
 			windows.addAll(we.createWindows(walk));
