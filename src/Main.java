@@ -31,7 +31,30 @@ public class Main {
 		for (int i = 0; i < args.length; i++) {
 			if ("-h".equals(args[i].toLowerCase())
 					|| "--help".equals(args[i].toLowerCase())) {
-
+				System.out.println("This java program allows a user to classify unseen walking data using training data.\n"
+						+ "Multiple classifiers can be used with their available options in Weka.\n"
+						+ "\n"
+						+ "usage: java -jar MLCode.jar [options] [classifier] [classifier options]\n"
+						+ "\n"
+						+ "Options:\n"
+						+ "-h --help                   Prints this message.\n"
+						+ "-test                       Path to the folder containing the test csv-files.\n"
+						+ "-train                      Path to the folder containing the test csv-files.\n"
+						+ "-lo --list options          Lists the available options given the classifier.\n"
+						+ "-d -- details               Prints the details of the classification.\n"
+						+ "-cm -- confusion            Prints the confusion matrix of the training set.\n"
+						+ "-v -- version               Prints the version of this build.\n"
+						+ "\n"
+						+ "Classifier:\n"
+						+ "-c --classifier             The classifier to be used for the classification.\n"
+						+ "\n"
+						+ "Classifier Options:\n"
+						+ "Additional options to be passed to the classifier can be specified here.\n"
+						+ "e.g. java -jar MLCode.jar -c knn -k 15 \n"
+						+ "For a list of available options use -lo -c <classifier>.\n"
+						+ "\n"
+						+ "Example Usage:\n"
+						+ "java -jar MLCode.jar -test testFolder -train trainFolder -d -cm -c tree");
 			} else if ("-c".equals(args[i].toLowerCase())
 					|| "--classifier".equals(args[i].toLowerCase())) {
 				i++;
