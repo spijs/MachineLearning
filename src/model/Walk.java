@@ -2,6 +2,8 @@ package model;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 // TODO : misschien filename aan Walk toevoegen?
 public class Walk {
@@ -20,6 +22,19 @@ public class Walk {
 		this.name = name;
 		this.points = points;
 		this.fileName= fileName;
+	}
+	
+	public Walk(String name, String fileName, List<BigInteger> t, List<Double> x, List<Double> y, List<Double> z){
+		int i = 0;
+		ArrayList<Point> newPoints = new ArrayList<Point>();
+		for(Double xValue:x){
+			Point p = new Point(t.get(i), xValue, y.get(i),z.get(i));
+			i++;
+			newPoints.add(p);
+		}
+		this.name=name;
+		this.points=newPoints;
+		this.fileName=fileName;
 	}
 
 	public String getName() {
@@ -73,4 +88,5 @@ public class Walk {
 		}
 		return returnList;
 	}
+
 }

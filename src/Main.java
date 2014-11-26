@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+
+import extractor.WindowExtractor;
 import model.Dataset;
 import model.Walk;
 import parser.DataParser;
@@ -138,7 +140,14 @@ public class Main {
 
 	private static void startClassification(String trainPath, String testPath, Classifier classifier, boolean printDetails, boolean printConfusionMatrix) throws IOException {
 		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
-		Dataset ds = new Dataset(trainWalks);
+		ArrayList<Walk>windows = new ArrayList<Walk>();
+		WindowExtractor we = new WindowExtractor(2000,20);
+		
+		for(Walk walk: trainWalks){
+			windows.addAll(we.createWindows(walk));
+		}
+		
+		Dataset ds = new Dataset(windows);
 		ds.extractFeatures();
 
 		ArrayList<Walk> testWalksList = DataParser.parseFiles(testPath);
