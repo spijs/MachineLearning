@@ -1,7 +1,11 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import parser.DataParser;
+import weka.classifiers.Classifier;
+import weka.classifiers.trees.J48;
 import wekaImpl.WekaImpl;
 
 public class Main {
@@ -18,9 +22,49 @@ public class Main {
 		Dataset testWalksDS = new Dataset(testWalksList);
 		testWalksDS.extractFeatures();
 
-		//ADTree, AODE, AODEsr, BayesianLogisticRegression, BayesNet, CitationKNN, ClassificationViaClustering, ComplementNaiveBayes, ConjunctiveRule, DecisionStump, DecisionTable, DMNBtext, FT, GaussianProcesses, HNB, HyperPipes, IB1, IBk, Id3, IsotonicRegression, J48, J48graft, JRip, KStar, LADTree, LBR, LeastMedSq, LibLINEAR, LinearRegression, LMT, Logistic, LogisticBase, M5Base, MDD, MIDD, MILR, MINND, MIOptimalBall, MISMO, MISVM, MultilayerPerceptron, MultipleClassifiersCombiner, NaiveBayes, NaiveBayesMultinomial, NaiveBayesSimple, NBTree, NNge, OneR, PaceRegression, PART, PLSClassifier, PMMLClassifier, PreConstructedLinearModel, Prism, RandomForest, RandomizableClassifier, RandomTree, RBFNetwork, REPTree, Ridor, RuleNode, SerializedClassifier, SimpleLinearRegression, SimpleLogistic, SingleClassifierEnhancer, SMO, SMOreg, SPegasos, UserClassifier, VFI, VotedPerceptron, WAODE, Winnow, ZeroR
+		Classifier classifier = null;
+
+		// Argument loop
+		for (int i = 0; i < args.length; i++) {
+			System.out.println("" + i + " " + args[i]);
+
+			if ("-c".equals(args[i])) {
+				i++;
+				if (i < args.length) {
+					String className = args[i];
+
+					classifier = (Classifier) Class.forName(className).getConstructor().newInstance();
+				}
+				if (i >= args.length || classifier == null) {
+					System.out.println("-c usage:");
+					System.out.println("java Main -c <ClassName>");
+					System.out.println("");
+				}
+			} else if ("-h".equals(args[i])) {
+
+			}
+		}
+
+		if (classifier == null) {
+			classifier = new J48();
+		}
+
 		WekaImpl wekaImpl = new WekaImpl(ds);
-		wekaImpl.run();
+		wekaImpl.run(classifier);
 		wekaImpl.classify(testWalksDS);
+	}
+
+	static Map<String, String> classNames = null;
+
+	static String getClassNameFor(String name) {
+		if (classNames == null) {
+			classNames = new HashMap<>();
+			classNames.put("tree", "weka.classifiers.trees.J48");
+
+		}
+
+		if (classNames.containsKey(name))
+			return classNames.get(name);
+		return name;
 	}
 }
