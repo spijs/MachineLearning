@@ -153,53 +153,6 @@ public class FFT {
   }                          
 
 
-
-
-  // Test the FFT to make sure it's working
-  public static void main(String[] args) {
-    int N = 8;
-
-    FFT fft = new FFT(N);
-
-    double[] window = fft.getWindow();
-    double[] re = new double[N];
-    double[] im = new double[N];
-
-    // Impulse
-    re[0] = 1; im[0] = 0;
-    for(int i=1; i<N; i++)
-      re[i] = im[i] = 0;
-    beforeAfter(fft, re, im);
-
-    // Nyquist
-    for(int i=0; i<N; i++) {
-      re[i] = Math.pow(-1, i);
-      im[i] = 0;
-    }
-    beforeAfter(fft, re, im);
-
-    // Single sin
-    for(int i=0; i<N; i++) {
-      re[i] = Math.cos(2*Math.PI*i / N);
-      im[i] = 0;
-    }
-    beforeAfter(fft, re, im);
-
-    // Ramp
-    for(int i=0; i<N; i++) {
-      re[i] = i;
-      im[i] = 0;
-    }
-    beforeAfter(fft, re, im);
-
-    long time = System.currentTimeMillis();
-    double iter = 30000;
-    for(int i=0; i<iter; i++)
-      fft.fft(re,im);
-    time = System.currentTimeMillis() - time;
-    System.out.println("Averaged " + (time/iter) + "ms per iteration");
-  }
-
   protected static void beforeAfter(FFT fft, double[] re, double[] im) {
     System.out.println("Before: ");
     printReIm(re, im);
