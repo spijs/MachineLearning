@@ -1,11 +1,11 @@
-package model;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import model.Dataset;
+import model.Walk;
 import parser.DataParser;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
@@ -138,12 +138,12 @@ public class Main {
 		if (classNames == null) {
 			classNames = new HashMap<>();
 			classNames.put("tree", "weka.classifiers.trees.J48"); // Decision Tree
-			classNames.put("SVM","weka.classifiers.functions.SMO"); //Support Vector Machines
-			classNames.put("kNN","weka.classifiers.lazy.IBk"); // K nearest Neighbours (takes as arguments -k )
-			classNames.put("nBayes","weka.classifiers.bayes.NaiveBayes"); // NaiveBayes
+			classNames.put("svm", "weka.classifiers.functions.SMO"); //Support Vector Machines
+			classNames.put("knn", "weka.classifiers.lazy.IBk"); // K nearest Neighbours (takes as arguments -k )
+			classNames.put("nbayes", "weka.classifiers.bayes.NaiveBayes"); // NaiveBayes
 		}
 
-		if (classNames.containsKey(name))
+		if (classNames.containsKey(name.toLowerCase()))
 			return classNames.get(name);
 		return name;
 	}
