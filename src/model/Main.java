@@ -59,8 +59,10 @@ public class Main {
 	static String getClassNameFor(String name) {
 		if (classNames == null) {
 			classNames = new HashMap<>();
-			classNames.put("tree", "weka.classifiers.trees.J48");
-
+			classNames.put("tree", "weka.classifiers.trees.J48"); // Decision Tree
+			classNames.put("SVM","weka.classifiers.functions.SMO"); //Support Vector Machines
+			classNames.put("kNN","weka.classifiers.lazy.IBk"); // K nearest Neighbours (takes as arguments -k )
+			classNames.put("nBayes","weka.classifiers.bayes.NaiveBayes"); // NaiveBayes
 		}
 
 		if (classNames.containsKey(name))
