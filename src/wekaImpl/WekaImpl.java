@@ -3,7 +3,6 @@ package wekaImpl;
 import extractor.FeatureExtractor;
 import java.awt.BorderLayout;
 import java.awt.HeadlessException;
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -42,18 +41,10 @@ public class WekaImpl {
 		this.dataset = dataset;
 	}
 
-	public void run() {
-		this.run(new J48());
-	}
-
-	public void run(Classifier classifier) {
-		System.out.println("Training dataset with Classifier \"" + classifier.getClass() + "\"");
-		System.out.println("Making WEKA header...");
+	public void run(Classifier classifier, boolean printDetails, boolean printConfusionMatrix) {
 		makeHeader();
-		System.out.println("Adding training instances...");
 		makeInstances();
-		System.out.println("Preparing Classifier...");
-		prepareClassifier(classifier);
+		prepareClassifier(classifier, printDetails, printConfusionMatrix);
 	}
 
 	public void makeHeader() {
@@ -125,7 +116,7 @@ public class WekaImpl {
 		}
 	}
 
-	public void prepareClassifier(Classifier classifier) {
+	public void prepareClassifier(Classifier classifier, boolean printSummary, boolean printConfusionMatrix) {
 		this.classifier = classifier;
 		try {
 			wekaTrainingSet.setClassIndex(wekaTrainingSet.numAttributes() - 1);
@@ -135,15 +126,14 @@ public class WekaImpl {
 			Evaluation evaluation = new Evaluation(wekaTrainingSet);
 			evaluation.evaluateModel(classifier, wekaTrainingSet);
 
-			// Print the result à la Weka explorer:
-			String strSummary = evaluation.toSummaryString();
-			System.out.println(strSummary);
+			if (printSummary)
+				System.out.println(evaluation.toSummaryString());
 
-			// Get the confusion matrix
-			System.out.println(evaluation.toMatrixString());
+			if (printConfusionMatrix)
+				System.out.println(evaluation.toMatrixString());
 
 			if (classifier instanceof J48) {
-				visualizeTree(classifier);
+//				visualizeTree(classifier);
 			}
 		} catch (Exception ex) {
 			Logger.getLogger(WekaImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -193,8 +183,6 @@ public class WekaImpl {
 				double[] distribution = classifier.distributionForInstance(instance);
 				ClassificationResult classificationResult = new ClassificationResult(walk, wekaNames, distribution);
 				returnMap.put(walk, classificationResult);
-				classificationResult.print();
-				// System.out.println(bestName + " " + distribution[maxj]);
 
 			} catch (Exception ex) {
 				Logger.getLogger(WekaImpl.class.getName()).log(Level.SEVERE, null, ex);
