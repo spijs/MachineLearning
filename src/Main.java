@@ -101,9 +101,9 @@ public class Main {
 
 		if (listOptions) {
 			System.out.println("Options of classifier " + classifier.getClass().toString());
-			Enumeration lo = classifier.listOptions();
+			Enumeration<Option> lo = classifier.listOptions();
 			while (lo.hasMoreElements()) {
-				Option o = (Option) lo.nextElement();
+				Option o = lo.nextElement();
 				System.out.println(o.synopsis());
 				System.out.println(o.description());
 			}
