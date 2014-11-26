@@ -29,7 +29,8 @@ public class Main {
 
 		// Argument loop
 		for (int i = 0; i < args.length; i++) {
-			if ("-h".equals(args[i].toLowerCase())) {
+			if ("-h".equals(args[i].toLowerCase())
+					|| "--help".equals(args[i].toLowerCase())) {
 
 			} else if ("-c".equals(args[i].toLowerCase())
 					|| "--classifier".equals(args[i].toLowerCase())) {
