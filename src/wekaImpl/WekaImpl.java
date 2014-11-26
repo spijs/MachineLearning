@@ -1,6 +1,8 @@
 package wekaImpl;
 
 import extractor.FeatureExtractor;
+import java.awt.BorderLayout;
+import java.awt.HeadlessException;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +20,8 @@ import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.gui.treevisualizer.PlaceNode2;
+import weka.gui.treevisualizer.TreeVisualizer;
 
 /**
  * http://weka.wikispaces.com/Programmatic+Use
@@ -43,8 +47,12 @@ public class WekaImpl {
 	}
 
 	public void run(Classifier classifier) {
+		System.out.println("Training dataset with Classifier \"" + classifier.getClass() + "\"");
+		System.out.println("Making WEKA header...");
 		makeHeader();
+		System.out.println("Adding training instances...");
 		makeInstances();
+		System.out.println("Preparing Classifier...");
 		prepareClassifier(classifier);
 	}
 
@@ -133,9 +141,29 @@ public class WekaImpl {
 
 			// Get the confusion matrix
 			System.out.println(evaluation.toMatrixString());
+
+			if (classifier instanceof J48) {
+				visualizeTree(classifier);
+			}
 		} catch (Exception ex) {
 			Logger.getLogger(WekaImpl.class.getName()).log(Level.SEVERE, null, ex);
 		}
+	}
+
+	private void visualizeTree(Classifier classifier1) throws Exception, HeadlessException {
+		final javax.swing.JFrame jf
+				= new javax.swing.JFrame("Weka Classifier Tree Visualizer: J48");
+		jf.setSize(500, 400);
+		jf.getContentPane().setLayout(new BorderLayout());
+		TreeVisualizer tv = new TreeVisualizer(null, ((J48) classifier1).graph(), new PlaceNode2());
+		jf.getContentPane().add(tv, BorderLayout.CENTER);
+		jf.addWindowListener(new java.awt.event.WindowAdapter() {
+			public void windowClosing(java.awt.event.WindowEvent e) {
+				jf.dispose();
+			}
+		});
+		jf.setVisible(true);
+		tv.fitToScreen();
 	}
 
 	// map walk -> name
