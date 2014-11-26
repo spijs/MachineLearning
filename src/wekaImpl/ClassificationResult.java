@@ -10,7 +10,7 @@ import weka.core.FastVector;
  *
  * @author bram
  */
-class ClassificationResult {
+public class ClassificationResult {
 
 	private final Walk walk;
 	private final Map<String, Double> map;
