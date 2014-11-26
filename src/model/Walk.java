@@ -3,6 +3,7 @@ package model;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
+// TODO : misschien filename aan Walk toevoegen?
 public class Walk {
 
 	final private String name;
