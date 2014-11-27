@@ -44,4 +44,8 @@ public class Dataset {
 	public Map<String, Feature> getFeatures(Walk walk) {
 		return features.get(walk);
 	}
+
+	public Dataset clone() {
+		return new Dataset(walks);
+	}
 }

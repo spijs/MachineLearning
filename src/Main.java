@@ -1,3 +1,5 @@
+
+import filterGui.FilterGui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +29,7 @@ public class Main {
 		boolean listOptions = false;
 		boolean printDetails = false;
 		boolean printConfusionMatrix = false;
-
+		boolean filterManually = false;
 
 		// Argument loop
 		for (int i = 0; i < args.length; i++) {
@@ -68,6 +70,9 @@ public class Main {
 						classifier.setOptions(Arrays.copyOfRange(args, i + 1, args.length));
 					} catch (ClassNotFoundException cnfe) {
 						classifier = null;
+					} catch (Exception illegalOptionException) {
+						System.out.println(illegalOptionException.getMessage());
+						System.out.println("For a list of available options, use -lo -c " + className);
 					}
 				}
 				if (i >= args.length || classifier == null) {
@@ -117,6 +122,9 @@ public class Main {
 			} else if ("--listoptions".equals(args[i].toLowerCase())
 					|| "-lo".equals(args[i].toLowerCase())) {
 				listOptions = true;
+			} else if ("--manualfilter".equals(args[i].toLowerCase())
+					|| "-mf".equals(args[i].toLowerCase())) {
+				filterManually = true;
 			}
 		}
 
@@ -135,10 +143,17 @@ public class Main {
 			return;
 		}
 
-		startClassification(trainPath, testPath, classifier, printDetails, printConfusionMatrix);
+		startClassification(trainPath, testPath, classifier, printDetails, printConfusionMatrix, filterManually);
 	}
 
-	private static void startClassification(String trainPath, String testPath, Classifier classifier, boolean printDetails, boolean printConfusionMatrix) throws IOException {
+	private static void startClassification(
+			String trainPath,
+			String testPath,
+			Classifier classifier,
+			boolean printDetails,
+			boolean printConfusionMatrix,
+			boolean filterManually) throws IOException {
+
 		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
 		ArrayList<Walk>windows = new ArrayList<Walk>();
 		WindowExtractor we = new WindowExtractor(2550,20);
@@ -151,12 +166,19 @@ public class Main {
 		ds.extractFeatures();
 
 		ArrayList<Walk> testWalksList = DataParser.parseFiles(testPath);
-		Dataset testWalksDS = new Dataset(testWalksList);
-		testWalksDS.extractFeatures();
+		Dataset testDataSet = new Dataset(testWalksList);
+
+		if (filterManually) {
+			// problem: ds contains a LOT of walks (>2000)
+			ds = FilterGui.filterDataset(ds);
+			ds.extractFeatures();
+		}
+
+		testDataSet.extractFeatures();
 
 		WekaImpl wekaImpl = new WekaImpl(ds);
 		wekaImpl.run(classifier, printDetails, printConfusionMatrix);
-		Map<Walk, ClassificationResult> result = wekaImpl.classify(testWalksDS);
+		Map<Walk, ClassificationResult> result = wekaImpl.classify(testDataSet);
 
 		for (Walk walk : result.keySet()) {
 			ClassificationResult cr = result.get(walk);
