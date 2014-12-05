@@ -2,8 +2,6 @@ package filterGui;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JFrame;
 import model.Dataset;
 import model.Feature;
@@ -20,8 +18,8 @@ public class FilterGui {
 		return filterGui.run();
 	}
 
-	private Dataset dataset;
-	private JFrame frame;
+	private final Dataset dataset;
+	private final JFrame frame;
 	private boolean exit = false;
 
 	public FilterGui(Dataset dataset) {

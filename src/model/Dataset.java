@@ -28,6 +28,11 @@ public class Dataset {
 		return walks.get(i);
 	}
 
+	public void removeWalk(Walk walk) {
+		walks.remove(walk);
+		features.remove(walk);
+	}
+
 	public void extractFeatures() {
 		for (Walk walk : walks) {
 			if (!features.containsKey(walk)) {

@@ -1,4 +1,5 @@
 
+import boxplotGui.BoxplotGui;
 import filterGui.FilterGui;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -170,7 +171,7 @@ public class Main {
 
 		if (filterManually) {
 			// problem: ds contains a LOT of walks (>2000)
-			ds = FilterGui.filterDataset(ds);
+			ds = BoxplotGui.filterDataset(ds);
 			ds.extractFeatures();
 		}
 
