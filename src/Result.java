@@ -15,10 +15,11 @@ public class Result {
 	}
 	
 	public void addVote(String vote, double confidence){
+		//System.out.println("Adding vote for "+name+": "+vote+" with confidence:"+confidence);
 		this.numberOfWindows++;
 		if(votes.containsKey(vote)){
 			double currentValue = votes.get(vote);
-			currentValue += confidence;
+			currentValue = currentValue + confidence;
 			votes.put(vote, currentValue);
 		}
 		else{
@@ -26,7 +27,7 @@ public class Result {
 		}
 	}
 	
-	private String getBest(){
+	public String getBest(){
 		double best=0.0;
 		String bestS = "";
 		for (Entry<String,Double> entry : votes.entrySet()){
@@ -41,14 +42,19 @@ public class Result {
 	public String toString(){
 		String result = "";
 		result = result + ("File : "+name+"\n");
-		result = result + ("---------------\n");
+		result = result + ("-----------------------------\n");
 		for(Entry<String,Double> entry : votes.entrySet()){
 			if(entry.getKey().equals(getBest())){
 				result = result+"*";
 			}
+			
 			result = result + entry.getKey()+ " : " + entry.getValue()/numberOfWindows+"\n";
 		}
 		return result;
+	}
+
+	public double getNumberOfVotes() {
+		return numberOfWindows;
 	}
 
 }

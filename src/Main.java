@@ -151,19 +151,15 @@ public class Main {
 		startClassification(trainPath, testPath, classifier, printDetails, printConfusionMatrix, filterManually);
 	}
 
-	private static void startClassification(String trainPath, String testPath, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
-			boolean filterManually) throws IOException {
-
+	private static Map<Walk,ClassificationResult> classify (List<Walk> trainWalks, List<Walk> testWalks, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
+			boolean filterManually) throws IOException{
 		WindowExtractor we = new WindowExtractor(2550,20);
-
-		// Create windows for train walks
-		List<Walk> windows = createWindows(trainPath, we);
+		List<Walk> windows = createWindows(trainWalks, we);
 
 		Dataset ds = new Dataset(windows);
 		ds.extractFeatures();
 
-		//Create windows for testWalks
-		List<Walk>testWindows = createWindows(testPath, we);
+		List<Walk>testWindows = createWindows(testWalks, we);
 
 		Dataset testDataSet = new Dataset(testWindows);
 
@@ -178,6 +174,23 @@ public class Main {
 		wekaImpl.run(classifier, printDetails, printConfusionMatrix);
 		Map<Walk, ClassificationResult> result = wekaImpl.classify(testDataSet);
 
+		return result;
+
+	}
+
+
+	private static void startClassification(String trainPath, String testPath, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
+			boolean filterManually) throws IOException {
+		
+		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
+		
+		if(printConfusionMatrix){
+			crossValidate(trainWalks, classifier);
+		}
+		
+		ArrayList<Walk> testWalks = DataParser.parseFiles(testPath);
+		Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, printDetails, printConfusionMatrix, filterManually);
+
 		List<Result> joinedResult = join(result.values());
 
 		for(Result r : joinedResult){
@@ -185,10 +198,9 @@ public class Main {
 		}
 	}
 
-	private static List<Walk> createWindows(String trainPath,
+	private static List<Walk> createWindows(List<Walk> trainWalks,
 			WindowExtractor we) throws IOException {
 		ArrayList<Walk> windows = new ArrayList<Walk>();
-		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
 		for(Walk walk: trainWalks){
 			windows.addAll(we.createWindows(walk));
 		}
@@ -205,8 +217,10 @@ public class Main {
 		for(Entry<String,List<ClassificationResult>> file : map.entrySet()){
 			Result r = new Result(file.getKey());
 			for (ClassificationResult cr : file.getValue()){
-				r.addVote(cr.getBest(),cr.getBestConfidence());			
+				r.addVote(cr.getBest(),cr.getBestConfidence());
 			}
+		//	System.out.println(file.getKey()+ "met stemmen:" + r.getNumberOfVotes());
+		//	System.out.println(r.toString());
 			results.add(r);			
 		}
 		return results;				
@@ -258,4 +272,61 @@ public class Main {
 			return classNames.get(name);
 		return name;
 	}
+
+	public static void crossValidate(List<Walk> allWalks, Classifier classifier) throws IOException{
+		Map<String,Map<String,Integer>> results = new HashMap<String,Map<String,Integer>>();
+		// Leave one out
+		for(Walk walk: allWalks){
+			String correctName = walk.getName();
+			//Create list of walks without the chosen walk
+			List<Walk> trainWalks = new ArrayList<Walk>();
+			trainWalks.addAll(allWalks);
+			trainWalks.remove(walk);
+			List<Walk> testWalks = new ArrayList<Walk>();
+			testWalks.add(walk);
+
+			Map<Walk,ClassificationResult> result = classify(trainWalks, testWalks, classifier, false, false, false);
+			List<Result> joinedResult = join(result.values());
+			if(!joinedResult.isEmpty()){
+				Result res = joinedResult.get(0);
+				String classifiedAs = res.getBest();
+
+				results = addValue(results,correctName,classifiedAs);
+			}
+		}
+		// printen resultaten
+		for(Entry<String,Map<String,Integer>> entry: results.entrySet()){
+			String name = entry.getKey();
+			String result = name + " classified as : ";
+
+			for (Entry<String, Integer> classif : entry.getValue().entrySet()){
+				result = result + classif.getKey()+ "("+ classif.getValue()+") ";
+			}
+			System.out.println(result);
+		}
+	}
+
+	public static Map<String,Map<String,Integer>> addValue(Map<String,Map<String,Integer>> data, String walk, String classifiedAs){
+
+
+		if(!data.containsKey(walk)){
+			Map<String, Integer> newMap = new HashMap<String,Integer>();
+			newMap.put(classifiedAs, 1);
+			data.put(walk, newMap);
+		}
+		else{
+			Map<String,Integer> map = data.get(walk);
+
+			if (!map.containsKey(classifiedAs)){
+				map.put(classifiedAs, 1);
+			}
+			else{
+				int value = map.get(classifiedAs)+1;
+				map.put(classifiedAs, value);
+			}
+			data.put(walk, map);				
+		}
+		return data;			
+	}
 }
+
