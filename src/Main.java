@@ -3,14 +3,19 @@ import filterGui.FilterGui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import extractor.WindowExtractor;
 import model.Dataset;
 import model.Walk;
 import parser.DataParser;
+import sun.reflect.generics.scope.ClassScope;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
 import weka.core.Option;
@@ -146,30 +151,23 @@ public class Main {
 		startClassification(trainPath, testPath, classifier, printDetails, printConfusionMatrix, filterManually);
 	}
 
-	private static void startClassification(
-			String trainPath,
-			String testPath,
-			Classifier classifier,
-			boolean printDetails,
-			boolean printConfusionMatrix,
+	private static void startClassification(String trainPath, String testPath, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
 			boolean filterManually) throws IOException {
 
-		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
-		ArrayList<Walk>windows = new ArrayList<Walk>();
 		WindowExtractor we = new WindowExtractor(2550,20);
-		
-		for(Walk walk: trainWalks){
-			windows.addAll(we.createWindows(walk));
-		}
-		
+
+		// Create windows for train walks
+		List<Walk> windows = createWindows(trainPath, we);
+
 		Dataset ds = new Dataset(windows);
 		ds.extractFeatures();
 
-		ArrayList<Walk> testWalksList = DataParser.parseFiles(testPath);
-		Dataset testDataSet = new Dataset(testWalksList);
+		//Create windows for testWalks
+		List<Walk>testWindows = createWindows(testPath, we);
+
+		Dataset testDataSet = new Dataset(testWindows);
 
 		if (filterManually) {
-			// problem: ds contains a LOT of walks (>2000)
 			ds = FilterGui.filterDataset(ds);
 			ds.extractFeatures();
 		}
@@ -180,11 +178,70 @@ public class Main {
 		wekaImpl.run(classifier, printDetails, printConfusionMatrix);
 		Map<Walk, ClassificationResult> result = wekaImpl.classify(testDataSet);
 
-		for (Walk walk : result.keySet()) {
-			ClassificationResult cr = result.get(walk);
-			cr.print();
+		List<Result> joinedResult = join(result.values());
+
+		for(Result r : joinedResult){
+			System.out.println(r.toString());
 		}
 	}
+
+	private static List<Walk> createWindows(String trainPath,
+			WindowExtractor we) throws IOException {
+		ArrayList<Walk> windows = new ArrayList<Walk>();
+		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
+		for(Walk walk: trainWalks){
+			windows.addAll(we.createWindows(walk));
+		}
+		return windows;
+	}
+
+	/**
+	 * Joins all the classifciations from the windows to one result for each file
+	 *
+	 */
+	private static List<Result> join(Collection<ClassificationResult> values) {
+		List<Result> results = new ArrayList<Result>();
+		Map<String, List<ClassificationResult>> map = sortResults(values);
+		for(Entry<String,List<ClassificationResult>> file : map.entrySet()){
+			Result r = new Result(file.getKey());
+			for (ClassificationResult cr : file.getValue()){
+				r.addVote(cr.getBest(),cr.getBestConfidence());			
+			}
+			results.add(r);			
+		}
+		return results;				
+
+	}
+
+	/**
+	 * Maakt map van filenaam naar lijst met bijbehorende classificationResults
+	 * @param toSort
+	 * @return
+	 */
+	private static Map<String,List<ClassificationResult>> sortResults(Collection<ClassificationResult> toSort){
+
+		Map<String,List<ClassificationResult>> result = new HashMap<String,List<ClassificationResult>>();
+
+		for(ClassificationResult cr : toSort){
+
+			String name = cr.getWalk().getFileName();
+			if(result.containsKey(name)){
+				List<ClassificationResult> currentResult = result.get(name);
+				currentResult.add(cr);
+				result.put(name, currentResult);
+			}
+			else{
+				List<ClassificationResult> list = new ArrayList<ClassificationResult>();
+				list.add(cr);
+				result.put(name, list);
+			}				
+		}
+
+		return result;		
+
+	}
+
+
 
 	static Map<String, String> classNames = null;
 
