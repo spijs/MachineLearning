@@ -36,7 +36,7 @@ public class ClassificationResult {
 		}
 	}
 
-	public Set getNames() {
+	public Set<String> getNames() {
 		return map.keySet();
 	}
 

@@ -222,8 +222,6 @@ public class Main {
 			for (ClassificationResult cr : file.getValue()){
 				r.addVote(cr.getBest(),cr.getBestConfidence());
 			}
-		//	System.out.println(file.getKey()+ "met stemmen:" + r.getNumberOfVotes());
-		//	System.out.println(r.toString());
 			results.add(r);			
 		}
 		return results;				
@@ -284,9 +282,9 @@ public class Main {
 			//Create list of walks without the chosen walk
 			List<Walk> trainWalks = new ArrayList<Walk>();
 			trainWalks.addAll(allWalks);
-			trainWalks.remove(walk);
+			trainWalks.remove(walk); // All walks except for one
 			List<Walk> testWalks = new ArrayList<Walk>();
-			testWalks.add(walk);
+			testWalks.add(walk); // Walk that will be used as test
 
 			Map<Walk,ClassificationResult> result = classify(trainWalks, testWalks, classifier, false, false, false);
 			List<Result> joinedResult = join(result.values());
