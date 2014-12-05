@@ -37,6 +37,13 @@ public class Dataset {
 		}
 	}
 
+	public void setFeature(Walk walk, String name, Feature feature) {
+		if (!features.containsKey(walk)) {
+			features.put(walk, new HashMap());
+		}
+		features.get(walk).put(name, feature);
+	}
+
 	public Map<String, Feature> getFeatures(int i) {
 		return features.get(walks.get(i));
 	}

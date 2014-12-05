@@ -14,7 +14,6 @@ public class Feature {
 
 	public enum Type {
 
-		BOOLEAN,
 		DOUBLE,
 		NOMINAL
 	};
