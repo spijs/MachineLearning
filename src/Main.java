@@ -1,4 +1,5 @@
 
+import boxplotGui.BoxplotGui;
 import filterGui.FilterGui;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -164,7 +165,9 @@ public class Main {
 		Dataset testDataSet = new Dataset(testWindows);
 
 		if (filterManually) {
-			ds = FilterGui.filterDataset(ds);
+
+			ds = BoxplotGui.filterDataset(ds);
+
 			ds.extractFeatures();
 		}
 

@@ -68,7 +68,7 @@ public class EvaluationPanel extends JPanel {
 
 		JButton rejectButton = new JButton("Reject");
 		rejectButton.setMnemonic(KeyEvent.VK_R);
-		acceptButton.addActionListener(new ActionListener() {
+		rejectButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				synchronized (toNotify) {

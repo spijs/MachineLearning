@@ -199,7 +199,7 @@ public class FeatureExtractor {
 	 * @param percentile : bvb 0.25 of 0.75
 	 * @return
 	 */
-	public double getPercentile(List<Double> a, double percentile){
+	public static double getPercentile(List<Double> a, double percentile) {
 		int middle = (int) (a.size()*percentile);
 		if (a.size() % 2 == 1) {
 			return a.get(middle);

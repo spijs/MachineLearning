@@ -28,6 +28,11 @@ public class Dataset {
 		return walks.get(i);
 	}
 
+	public void removeWalk(Walk walk) {
+		walks.remove(walk);
+		features.remove(walk);
+	}
+
 	public void extractFeatures() {
 		for (Walk walk : walks) {
 			if (!features.containsKey(walk)) {
@@ -35,6 +40,13 @@ public class Dataset {
 				features.put(walk, extractor.extractFeatures());
 			}
 		}
+	}
+
+	public void setFeature(Walk walk, String name, Feature feature) {
+		if (!features.containsKey(walk)) {
+			features.put(walk, new HashMap());
+		}
+		features.get(walk).put(name, feature);
 	}
 
 	public Map<String, Feature> getFeatures(int i) {
