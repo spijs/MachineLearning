@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-// TODO : misschien filename aan Walk toevoegen?
 public class Walk {
 
 	final private String name;

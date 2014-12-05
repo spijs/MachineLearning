@@ -36,7 +36,7 @@ public class ClassificationResult {
 		}
 	}
 
-	public Set getNames() {
+	public Set<String> getNames() {
 		return map.keySet();
 	}
 
@@ -44,6 +44,9 @@ public class ClassificationResult {
 		return map.get(name);
 	}
 
+	public Walk getWalk(){
+		return walk;
+	}
 	public String getBest() {
 		return best;
 	}
@@ -62,5 +65,9 @@ public class ClassificationResult {
 		}
 
 		System.out.println();
+	}
+
+	public double getBestConfidence() {
+		return map.get(best);
 	}
 }
