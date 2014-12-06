@@ -267,6 +267,7 @@ public class Main {
 			classNames.put("svm", "weka.classifiers.functions.SMO"); //Support Vector Machines
 			classNames.put("knn", "weka.classifiers.lazy.IBk"); // K nearest Neighbours (takes as arguments -k )
 			classNames.put("nbayes", "weka.classifiers.bayes.NaiveBayes"); // NaiveBayes
+			classNames.put("rforest","weka.classifiers.trees.RandomForest"); //Random Forest
 		}
 
 		if (classNames.containsKey(name.toLowerCase()))
