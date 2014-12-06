@@ -15,7 +15,6 @@ public class Result {
 	}
 	
 	public void addVote(String vote, double confidence){
-		//System.out.println("Adding vote for "+name+": "+vote+" with confidence:"+confidence);
 		this.numberOfWindows++;
 		if(votes.containsKey(vote)){
 			double currentValue = votes.get(vote);
@@ -31,7 +30,7 @@ public class Result {
 		double best=0.0;
 		String bestS = "";
 		for (Entry<String,Double> entry : votes.entrySet()){
-			if(entry.getValue()>best){
+			if(entry.getValue()>=best){
 				best = entry.getValue();
 				bestS = entry.getKey();
 			}

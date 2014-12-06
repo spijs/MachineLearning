@@ -27,7 +27,6 @@ public class ClassificationResult {
 		for (int i = 0; i < names.size(); i++) {
 			String name = (String) names.elementAt(i);
 			double d = distribution[i];
-
 			map.put(name, d);
 
 			if (best == null || distribution[i] > map.get(best)) {

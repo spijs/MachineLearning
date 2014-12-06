@@ -154,7 +154,7 @@ public class Main {
 
 	private static Map<Walk,ClassificationResult> classify (List<Walk> trainWalks, List<Walk> testWalks, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
 			boolean filterManually) throws IOException{
-		WindowExtractor we = new WindowExtractor(2550,20);
+		WindowExtractor we = new WindowExtractor(2550,20); //seconden per window, 1/frequentie)
 		List<Walk> windows = createWindows(trainWalks, we);
 
 		Dataset ds = new Dataset(windows);
