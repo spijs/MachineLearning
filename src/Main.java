@@ -36,6 +36,7 @@ public class Main {
 		boolean printDetails = false;
 		boolean printConfusionMatrix = false;
 		boolean filterManually = false;
+		boolean boxplotFilter = false;
 
 		// Argument loop
 		for (int i = 0; i < args.length; i++) {
@@ -131,6 +132,9 @@ public class Main {
 			} else if ("--manualfilter".equals(args[i].toLowerCase())
 					|| "-mf".equals(args[i].toLowerCase())) {
 				filterManually = true;
+			} else if ("--boxplotfilter".equals(args[i].toLowerCase())
+					|| "-bf".equals(args[i].toLowerCase())) {
+				boxplotFilter = true;
 			}
 		}
 
@@ -149,11 +153,11 @@ public class Main {
 			return;
 		}
 
-		startClassification(trainPath, testPath, classifier, printDetails, printConfusionMatrix, filterManually);
+		startClassification(trainPath, testPath, classifier, printDetails, printConfusionMatrix, filterManually, boxplotFilter);
 	}
 
 	private static Map<Walk,ClassificationResult> classify (List<Walk> trainWalks, List<Walk> testWalks, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
-			boolean filterManually) throws IOException{
+			boolean filterManually, boolean boxplotFilter) throws IOException {
 		WindowExtractor we = new WindowExtractor(2550,20); //seconden per window, 1/frequentie)
 		List<Walk> windows = createWindows(trainWalks, we);
 
@@ -165,9 +169,12 @@ public class Main {
 		Dataset testDataSet = new Dataset(testWindows);
 
 		if (filterManually) {
+			ds = FilterGui.filterDataset(ds);
+			ds.extractFeatures();
+		}
 
+		if (boxplotFilter) {
 			ds = BoxplotGui.filterDataset(ds);
-
 			ds.extractFeatures();
 		}
 
@@ -183,7 +190,7 @@ public class Main {
 
 
 	private static void startClassification(String trainPath, String testPath, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
-			boolean filterManually) throws IOException {
+			boolean filterManually, boolean boxplotFilter) throws IOException {
 		
 		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
 		
@@ -192,7 +199,7 @@ public class Main {
 		}
 		
 		ArrayList<Walk> testWalks = DataParser.parseFiles(testPath);
-		Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, printDetails, printConfusionMatrix, filterManually);
+		Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, printDetails, printConfusionMatrix, filterManually, boxplotFilter);
 
 		List<Result> joinedResult = join(result.values());
 
@@ -287,7 +294,7 @@ public class Main {
 			List<Walk> testWalks = new ArrayList<Walk>();
 			testWalks.add(walk); // Walk that will be used as test
 
-			Map<Walk,ClassificationResult> result = classify(trainWalks, testWalks, classifier, false, false, false);
+			Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, false, false, false, false);
 			List<Result> joinedResult = join(result.values());
 			if(!joinedResult.isEmpty()){
 				Result res = joinedResult.get(0);
