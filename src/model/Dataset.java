@@ -33,6 +33,16 @@ public class Dataset {
 		features.remove(walk);
 	}
 
+	public void removeWalk(int i) {
+		removeWalk(getWalk(i));
+	}
+
+	public void removeFeature(String name) {
+		for (Walk walk : features.keySet()) {
+			features.get(walk).remove(name);
+		}
+	}
+
 	public void extractFeatures() {
 		for (Walk walk : walks) {
 			if (!features.containsKey(walk)) {
