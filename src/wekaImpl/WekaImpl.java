@@ -50,26 +50,15 @@ public class WekaImpl {
 	public void makeHeader() {
 		this.attributes = new HashMap<>();
 
-		Map<String, Feature.Type> extractedFeatures = FeatureExtractor.getFeatures();
+		Map<String, Feature> extractedFeatures = dataset.getFeatures(0);
 
 		this.wekaAttributes = new FastVector(extractedFeatures.size() + 1);
 
 		for (String name : extractedFeatures.keySet()) {
 			Attribute attribute = null;
 
-			if (extractedFeatures.get(name) == Feature.Type.NOMINAL) {
-				Set<String> values = new HashSet<>();
-				FastVector wekaValues = new FastVector();
-
-				for (int i = 0; i < dataset.numWalks(); i++) {
-					Walk w = dataset.getWalk(i);
-					Object value = dataset.getFeatures(w).get(name).value;
-					if (!values.contains(value.toString())) {
-						values.add(name.toString());
-						wekaValues.addElement(dataset.getFeatures(w).get(name).value);
-					}
-				}
-
+			if (extractedFeatures.get(name).type == Feature.Type.NOMINAL) {
+				FastVector wekaValues = getNominalValues(dataset, name);
 				attribute = new Attribute(name, wekaValues);
 			} else {
 				attribute = new Attribute(name);
@@ -90,15 +79,30 @@ public class WekaImpl {
 		wekaAttributes.addElement(new Attribute("walker", wekaNames));
 	}
 
+	public static FastVector getNominalValues(Dataset dataset, String name) {
+		Set<String> values = new HashSet<>();
+		FastVector wekaValues = new FastVector();
+		for (int i = 0; i < dataset.numWalks(); i++) {
+			Walk w = dataset.getWalk(i);
+			if (dataset.getFeatures(w).get(name) == null)
+				System.out.print("");
+			Object value = dataset.getFeatures(w).get(name).value;
+			if (!values.contains(value.toString())) {
+				values.add(value.toString());
+				wekaValues.addElement(value.toString());
+			}
+		}
+		return wekaValues;
+	}
+
 	public void makeInstances() {
 		wekaTrainingSet = new Instances("TrainingSet", wekaAttributes, dataset.numWalks());
-		Map<String, Feature.Type> extractedFeatures = FeatureExtractor.getFeatures();
 
 		for (int i = 0; i < dataset.numWalks(); i++) {
 			Walk walk = dataset.getWalk(i);
 			Map<String, Feature> features = dataset.getFeatures(walk);
 
-			Instance instance = new Instance(extractedFeatures.size() + 1);
+			Instance instance = new Instance(features.size() + 1);
 
 			for (int j = 0; j < wekaAttributes.size() - 1; j++) {
 				Attribute attribute = (Attribute) wekaAttributes.elementAt(j);
@@ -133,7 +137,7 @@ public class WekaImpl {
 				System.out.println(evaluation.toMatrixString());
 
 			if (classifier instanceof J48) {
-//				visualizeTree(classifier);
+				visualizeTree(classifier);
 			}
 		} catch (Exception ex) {
 			Logger.getLogger(WekaImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -143,7 +147,7 @@ public class WekaImpl {
 	private void visualizeTree(Classifier classifier1) throws Exception, HeadlessException {
 		final javax.swing.JFrame jf
 				= new javax.swing.JFrame("Weka Classifier Tree Visualizer: J48");
-		jf.setSize(500, 400);
+		jf.setSize(1000, 700);
 		jf.getContentPane().setLayout(new BorderLayout());
 		TreeVisualizer tv = new TreeVisualizer(null, ((J48) classifier1).graph(), new PlaceNode2());
 		jf.getContentPane().add(tv, BorderLayout.CENTER);
@@ -153,20 +157,19 @@ public class WekaImpl {
 			}
 		});
 		jf.setVisible(true);
-		tv.fitToScreen();
+//		tv.fitToScreen();
 	}
 
 	// map walk -> name
 	public Map<Walk, ClassificationResult> classify(Dataset dataset) {
 		Map<Walk, ClassificationResult> returnMap = new HashMap<>();
-		Map<String, Feature.Type> extractedFeatures = FeatureExtractor.getFeatures();
 
 		for (int i = 0; i < dataset.numWalks(); i++) {
 			Walk walk = dataset.getWalk(i);
 			Map<String, Feature> features = dataset.getFeatures(walk);
 
 			// make the instance
-			Instance instance = new Instance(extractedFeatures.size());
+			Instance instance = new Instance(features.size());
 
 			for (int j = 0; j < wekaAttributes.size() - 1; j++) {
 				Attribute attribute = (Attribute) wekaAttributes.elementAt(j);
