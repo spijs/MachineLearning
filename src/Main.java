@@ -13,6 +13,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import extractor.WindowExtractor;
+import java.util.Collections;
+import java.util.Comparator;
 import model.Dataset;
 import model.Walk;
 import parser.DataParser;
@@ -204,6 +206,13 @@ public class Main {
 		Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, printDetails, printConfusionMatrix, filterManually, boxplotFilter);
 
 		List<Result> joinedResult = join(result.values());
+
+		Collections.sort(joinedResult, new Comparator<Result>() {
+			@Override
+			public int compare(Result o1, Result o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
 
 		for(Result r : joinedResult){
 			System.out.println(r.toString());

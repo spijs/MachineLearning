@@ -56,4 +56,7 @@ public class Result {
 		return numberOfWindows;
 	}
 
+	public String getName() {
+		return name;
+	}
 }
