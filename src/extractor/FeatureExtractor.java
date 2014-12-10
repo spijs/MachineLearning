@@ -2,6 +2,7 @@ package extractor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +38,15 @@ public class FeatureExtractor {
 	}
 
 	public Map<String,Feature> extractFeatures(){
-		extractMeans();
-		extractStandardDeviations();
+		 extractMeans();
+			extractStandardDeviations();
 		extractMedians();
 		extractFirstPercentiles();
 		extractThirdPercentiles();
 		extractCorrelation();
-		
+		extractMin();
+		extractMax();
+
 		computeFFT();// Must happen for the following to work!!
 		
 		extractFFT(); 
@@ -98,7 +101,24 @@ public class FeatureExtractor {
 		features.put(name+"Y",new Feature(getPercentile(walk.getYValues(),0.75),type));
 		features.put(name+"Z",new Feature(getPercentile(walk.getZValues(),0.75),type));
 	}
-	
+
+	private void extractMin() {
+		Feature.Type type = Feature.Type.DOUBLE;
+		String name = "min";
+		addFeature(name, type);
+		features.put(name + "X", new Feature(Collections.min(walk.getXValues()), type));
+		features.put(name + "Y", new Feature(Collections.min(walk.getYValues()), type));
+		features.put(name + "Z", new Feature(Collections.min(walk.getZValues()), type));
+	}
+
+	private void extractMax() {
+		Feature.Type type = Feature.Type.DOUBLE;
+		String name = "min";
+		addFeature(name, type);
+		features.put(name + "X", new Feature(Collections.max(walk.getXValues()), type));
+		features.put(name + "Y", new Feature(Collections.max(walk.getYValues()), type));
+		features.put(name + "Z", new Feature(Collections.max(walk.getZValues()), type));
+	}
 
 	private void extractFFT(){
 		extractFFT("X",fftX);
