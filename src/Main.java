@@ -86,6 +86,7 @@ public class Main {
 						+ "\n"
 						+ "Example Usage:\n"
 						+ "java -jar MLCode.jar -test testFolder -train trainFolder -d -cm -c tree\n");
+				return;
 			} else if ("-c".equals(args[i].toLowerCase())
 					|| "--classifier".equals(args[i].toLowerCase())) {
 				i++;
