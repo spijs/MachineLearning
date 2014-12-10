@@ -1,10 +1,13 @@
 
 import boxplotGui.BoxplotGui;
+import extractor.WindowExtractor;
 import filterGui.FilterGui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -12,10 +15,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import extractor.WindowExtractor;
-import java.util.Collections;
-import java.util.Comparator;
 import model.Dataset;
+import model.Feature;
 import model.Walk;
 import parser.DataParser;
 import sun.reflect.generics.scope.ClassScope;
@@ -39,6 +40,13 @@ public class Main {
 		boolean printConfusionMatrix = false;
 		boolean filterManually = false;
 		boolean boxplotFilter = false;
+
+		System.out.println("Machine learing project: Who has my phone?");
+		System.out.print("Arguments : ");
+		for (String arg : args) {
+			System.out.print(arg + " ");
+		}
+		System.out.println("\n");
 
 		// Argument loop
 		for (int i = 0; i < args.length; i++) {
@@ -94,11 +102,7 @@ public class Main {
 					int col = 0;
 					String line = "";
 					for (String name : classNames.keySet()) {
-						if (line.length() + name.length() > 80) {
-							System.out.println(line);
-							line = "";
-						}
-						line = line + name;
+						System.out.println(" - " + name);
 					}
 					if (!"".equals(line))
 						System.out.println(line);
@@ -137,6 +141,8 @@ public class Main {
 			} else if ("--boxplotfilter".equals(args[i].toLowerCase())
 					|| "-bf".equals(args[i].toLowerCase())) {
 				boxplotFilter = true;
+			} else {
+				System.out.println("Unknown argument : \"" + args[i] + "\"");
 			}
 		}
 
@@ -182,7 +188,6 @@ public class Main {
 			ds = BoxplotGui.filterDataset(ds);
 			ds.extractFeatures();
 		}
-
 
 		WekaImpl wekaImpl = new WekaImpl(ds);
 		wekaImpl.run(classifier, printDetails, printConfusionMatrix);
