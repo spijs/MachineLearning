@@ -113,7 +113,7 @@ public class FeatureExtractor {
 
 	private void extractMax() {
 		Feature.Type type = Feature.Type.DOUBLE;
-		String name = "min";
+		String name = "max";
 		addFeature(name, type);
 		features.put(name + "X", new Feature(Collections.max(walk.getXValues()), type));
 		features.put(name + "Y", new Feature(Collections.max(walk.getYValues()), type));
