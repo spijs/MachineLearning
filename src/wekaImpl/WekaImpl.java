@@ -84,8 +84,6 @@ public class WekaImpl {
 		FastVector wekaValues = new FastVector();
 		for (int i = 0; i < dataset.numWalks(); i++) {
 			Walk w = dataset.getWalk(i);
-			if (dataset.getFeatures(w).get(name) == null)
-				System.out.print("");
 			Object value = dataset.getFeatures(w).get(name).value;
 			if (!values.contains(value.toString())) {
 				values.add(value.toString());
