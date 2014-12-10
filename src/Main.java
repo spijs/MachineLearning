@@ -91,6 +91,7 @@ public class Main {
 						System.out.println(illegalOptionException.getMessage());
 						System.out.println("For a list of available options, use -lo -c " + className);
 					}
+					break;
 				}
 				if (i >= args.length || classifier == null) {
 					getClassNameFor(""); // avoids nullpointerexception on the classNames map
