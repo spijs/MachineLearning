@@ -1,0 +1,70 @@
+Machine learing project: Who has my phone?
+Arguments : -d -cm -c rforest 
+
+other classified as : other(35) 
+leander classified as : other(8) 
+wannes classified as : other(12) 
+
+Correctly Classified Instances        2076               98.2025 %
+Incorrectly Classified Instances        38                1.7975 %
+Kappa statistic                          0.946 
+Mean absolute error                      0.0649
+Root mean squared error                  0.1274
+Relative absolute error                 28.1506 %
+Root relative squared error             37.5582 %
+Total Number of Instances             2114     
+
+=== Confusion Matrix ===
+
+    a    b    c   <-- classified as
+ 1682    0    0 |    a = other
+   22  238    0 |    b = leander
+   16    0  156 |    c = wannes
+
+File : walk_59_unknown.csv
+-----------------------------
+*other : 0.7317307692307687
+leander : 0.0038461538461538464
+
+File : walk_60_unknown.csv
+-----------------------------
+*other : 0.942857142857143
+
+File : walk_61_unknown.csv
+-----------------------------
+*other : 0.7512820512820512
+leander : 0.015384615384615384
+
+File : walk_62_unknown.csv
+-----------------------------
+*other : 0.7235294117647059
+leander : 0.023529411764705882
+
+File : walk_63_unknown.csv
+-----------------------------
+*other : 0.672
+wannes : 0.036000000000000004
+
+File : walk_64_unknown.csv
+-----------------------------
+*other : 0.7909090909090908
+
+File : walk_65_unknown.csv
+-----------------------------
+*other : 0.6058823529411764
+wannes : 0.06470588235294118
+
+File : walk_66_unknown.csv
+-----------------------------
+*other : 0.885507246376811
+
+File : walk_67_unknown.csv
+-----------------------------
+*other : 0.5333333333333333
+wannes : 0.1111111111111111
+
+File : walk_68_unknown.csv
+-----------------------------
+*other : 0.8757575757575756
+
+BUILD SUCCESSFUL (total time: 1 minute 3 seconds)

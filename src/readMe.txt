@@ -4,16 +4,23 @@ Multiple classifiers can be used with their available options in Weka.
 usage: java -jar MLCode.jar [options] [classifier] [classifier options]
 
 Options:
--h --help                   Prints this message.
--test                       Path to the folder containing the test csv-files.
--train                      Path to the folder containing the test csv-files.
--lo --listoptions           Lists the available options given the classifier.
--d --details                Prints the details of the classification.
--cm --confusion             Prints the confusion matrix of the training set.
--v --version                Prints the version of this build.
+-h --help                 Prints this message.
+-test                     Path to the folder containing the test csv-files.
+-train                    Path to the folder containing the test csv-files.
+-lo --listoptions         Lists the available options given the classifier.
+-d --details              Prints the details of the classification.
+-cm --confusionmatrix     Prints the confusion matrix of the training set.
+-cv --crossvalidation     Performs cross validation on the dataset.
+-mf --manualfilter        Presents a gui to extract valid windows manually.
+-lf --lastfilter          Use last created manual filter to get valid windows.
+-v --version              Prints the version of this build.
 
 Classifier:
--c --classifier             The classifier to be used for the classification.
+-c --classifier           The classifier to be used for the classification.
+                          Specify a classifier as one of the following:
+                           nbayes tree svm knn rforest
+                          or use the class name of a WEKA classifier.
+
 
 Classifier Options:
 Additional options to be passed to the classifier can be specified here.

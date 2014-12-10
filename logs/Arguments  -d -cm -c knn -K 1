@@ -1,0 +1,79 @@
+Machine learing project: Who has my phone?
+Arguments : -d -cm -c knn -K 1 
+
+other classified as : other(35) 
+leander classified as : other(5) leander(3) 
+wannes classified as : other(11) wannes(1) 
+
+Correctly Classified Instances        2114              100      %
+Incorrectly Classified Instances         0                0      %
+Kappa statistic                          1     
+Mean absolute error                      0.0006
+Root mean squared error                  0.0007
+Relative absolute error                  0.2733 %
+Root relative squared error              0.1969 %
+Total Number of Instances             2114     
+
+=== Confusion Matrix ===
+
+    a    b    c   <-- classified as
+ 1682    0    0 |    a = other
+    0  260    0 |    b = leander
+    0    0  172 |    c = wannes
+
+File : walk_59_unknown.csv
+-----------------------------
+*other : 0.9318111623850858
+leander : 0.01921260128629047
+wannes : 0.048031503215726176
+
+File : walk_60_unknown.csv
+-----------------------------
+*other : 0.8563330859032324
+wannes : 0.14272218098387207
+
+File : walk_61_unknown.csv
+-----------------------------
+*other : 0.5891864394462412
+leander : 0.2049344137204317
+wannes : 0.2049344137204317
+
+File : walk_62_unknown.csv
+-----------------------------
+*other : 0.8227513962599684
+wannes : 0.17630387062713607
+
+File : walk_63_unknown.csv
+-----------------------------
+*other : 0.7193197921587152
+leander : 0.2797354747283893
+
+File : walk_64_unknown.csv
+-----------------------------
+*other : 0.605488040537639
+leander : 0.09082320608064585
+wannes : 0.3027440202688195
+
+File : walk_65_unknown.csv
+-----------------------------
+other : 0.2350718275028481
+leander : 0.2938397843785601
+*wannes : 0.47014365500569627
+
+File : walk_66_unknown.csv
+-----------------------------
+*other : 0.9121808958534433
+leander : 0.07239530919471772
+wannes : 0.014479061838943543
+
+File : walk_67_unknown.csv
+-----------------------------
+*other : 0.9990552668871044
+
+File : walk_68_unknown.csv
+-----------------------------
+*other : 0.9385064628333406
+leander : 0.030274402026881954
+wannes : 0.030274402026881954
+
+BUILD SUCCESSFUL (total time: 1 minute 36 seconds)

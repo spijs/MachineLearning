@@ -1,10 +1,13 @@
 
 import boxplotGui.BoxplotGui;
+import extractor.WindowExtractor;
 import filterGui.FilterGui;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +15,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import extractor.WindowExtractor;
 import model.Dataset;
+import model.Feature;
 import model.Walk;
 import parser.DataParser;
 import sun.reflect.generics.scope.ClassScope;
@@ -36,27 +39,48 @@ public class Main {
 		boolean printDetails = false;
 		boolean printConfusionMatrix = false;
 		boolean filterManually = false;
+<<<<<<< HEAD
+=======
+		boolean crossValidation = false;
+		boolean useLastFilter = false;
+		boolean boxplotFilter = false;
+>>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
+
+		System.out.println("Machine learing project: Who has my phone?");
+		System.out.print("Arguments : ");
+		for (String arg : args) {
+			System.out.print(arg + " ");
+		}
+		System.out.println("\n");
 
 		// Argument loop
 		for (int i = 0; i < args.length; i++) {
 			if ("-h".equals(args[i].toLowerCase())
 					|| "--help".equals(args[i].toLowerCase())) {
-				System.out.println("This java program allows a user to classify unseen walking data using training data.\n"
+				System.out.println(
+						"This java program allows a user to classify unseen walking data using training data.\n"
 						+ "Multiple classifiers can be used with their available options in Weka.\n"
 						+ "\n"
 						+ "usage: java -jar MLCode.jar [options] [classifier] [classifier options]\n"
 						+ "\n"
 						+ "Options:\n"
-						+ "-h --help                   Prints this message.\n"
-						+ "-test                       Path to the folder containing the test csv-files.\n"
-						+ "-train                      Path to the folder containing the test csv-files.\n"
-						+ "-lo --listoptions           Lists the available options given the classifier.\n"
-						+ "-d --details                Prints the details of the classification.\n"
-						+ "-cm --confusion             Prints the confusion matrix of the training set.\n"
-						+ "-v --version                Prints the version of this build.\n"
+						+ "-h --help                 Prints this message.\n"
+						+ "-test                     Path to the folder containing the test csv-files.\n"
+						+ "-train                    Path to the folder containing the test csv-files.\n"
+						+ "-lo --listoptions         Lists the available options given the classifier.\n"
+						+ "-d --details              Prints the details of the classification.\n"
+						+ "-cm --confusionmatrix     Prints the confusion matrix of the training set.\n"
+						+ "-cv --crossvalidation     Performs cross validation on the dataset.\n"
+						+ "-mf --manualfilter        Presents a gui to extract valid windows manually.\n"
+						+ "-lf --lastfilter          Use last created manual filter to get valid windows.\n"
+						+ "-v --version              Prints the version of this build.\n"
 						+ "\n"
 						+ "Classifier:\n"
-						+ "-c --classifier             The classifier to be used for the classification.\n"
+						+ "-c --classifier           The classifier to be used for the classification.\n"
+						+ "                          Specify a classifier as one of the following:\n"
+						+ "                           nbayes tree svm knn rforest\n"
+						+ "                          or use the class name of a WEKA classifier.\n"
+						+ "\n"
 						+ "\n"
 						+ "Classifier Options:\n"
 						+ "Additional options to be passed to the classifier can be specified here.\n"
@@ -64,7 +88,8 @@ public class Main {
 						+ "For a list of available options use -lo -c <classifier>.\n"
 						+ "\n"
 						+ "Example Usage:\n"
-						+ "java -jar MLCode.jar -test testFolder -train trainFolder -d -cm -c tree");
+						+ "java -jar MLCode.jar -test testFolder -train trainFolder -d -cm -c tree\n");
+				return;
 			} else if ("-c".equals(args[i].toLowerCase())
 					|| "--classifier".equals(args[i].toLowerCase())) {
 				i++;
@@ -80,6 +105,7 @@ public class Main {
 						System.out.println(illegalOptionException.getMessage());
 						System.out.println("For a list of available options, use -lo -c " + className);
 					}
+					break;
 				}
 				if (i >= args.length || classifier == null) {
 					getClassNameFor(""); // avoids nullpointerexception on the classNames map
@@ -91,11 +117,7 @@ public class Main {
 					int col = 0;
 					String line = "";
 					for (String name : classNames.keySet()) {
-						if (line.length() + name.length() > 80) {
-							System.out.println(line);
-							line = "";
-						}
-						line = line + name;
+						System.out.println(" - " + name);
 					}
 					if (!"".equals(line))
 						System.out.println(line);
@@ -122,15 +144,29 @@ public class Main {
 			} else if ("--details".equals(args[i].toLowerCase())
 					|| "-d".equals(args[i].toLowerCase())) {
 				printDetails = true;
-			} else if ("--confusion".equals(args[i].toLowerCase())
+			} else if ("--confusionmatrix".equals(args[i].toLowerCase())
 					|| "-cm".equals(args[i].toLowerCase())) {
 				printConfusionMatrix = true;
+			} else if ("--crossvalidation".equals(args[i].toLowerCase())
+					|| "-cv".equals(args[i].toLowerCase())) {
+				crossValidation = true;
 			} else if ("--listoptions".equals(args[i].toLowerCase())
 					|| "-lo".equals(args[i].toLowerCase())) {
 				listOptions = true;
 			} else if ("--manualfilter".equals(args[i].toLowerCase())
 					|| "-mf".equals(args[i].toLowerCase())) {
 				filterManually = true;
+<<<<<<< HEAD
+=======
+			} else if ("--lastfilter".equals(args[i].toLowerCase())
+					|| "-lf".equals(args[i].toLowerCase())) {
+				useLastFilter = true;
+			} else if ("--boxplotfilter".equals(args[i].toLowerCase())
+					|| "-bf".equals(args[i].toLowerCase())) {
+				boxplotFilter = true;
+			} else {
+				System.out.println("Unknown argument : \"" + args[i] + "\"");
+>>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
 			}
 		}
 
@@ -149,29 +185,110 @@ public class Main {
 			return;
 		}
 
+<<<<<<< HEAD
 		startClassification(trainPath, testPath, classifier, printDetails, printConfusionMatrix, filterManually);
 	}
 
 	private static Map<Walk,ClassificationResult> classify (List<Walk> trainWalks, List<Walk> testWalks, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
 			boolean filterManually) throws IOException{
 		WindowExtractor we = new WindowExtractor(5100,20); //seconden per window, 1/frequentie)
+=======
+		System.out.println("Using classifier \"" + classifier.getClass().toString() + "\"...\n");
+
+		startClassification(
+				trainPath,
+				testPath,
+				classifier,
+				printDetails,
+				printConfusionMatrix,
+				filterManually,
+				useLastFilter,
+				boxplotFilter,
+				crossValidation);
+	}
+
+
+	private static void startClassification(
+			String trainPath,
+			String testPath,
+			Classifier classifier,
+			boolean printDetails,
+			boolean printConfusionMatrix,
+			boolean filterManually,
+			boolean useLastFilter,
+			boolean boxplotFilter,
+			boolean crossvalidation) throws IOException {
+		
+		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
+		
+		if (crossvalidation) {
+			crossValidate(trainWalks, classifier);
+		}
+		
+		ArrayList<Walk> testWalks = DataParser.parseFiles(testPath);
+		Map<Walk, ClassificationResult> result
+				= classify(
+						trainWalks,
+						testWalks,
+						classifier,
+						printDetails,
+						printConfusionMatrix,
+						filterManually,
+						useLastFilter,
+						boxplotFilter);
+
+		List<Result> joinedResult = join(result.values());
+
+		Collections.sort(joinedResult, new Comparator<Result>() {
+			@Override
+			public int compare(Result o1, Result o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+
+		for(Result r : joinedResult){
+			System.out.println(r.toString());
+		}
+	}
+
+	private static Map<Walk, ClassificationResult> classify(
+			List<Walk> trainWalks,
+			List<Walk> testWalks,
+			Classifier classifier,
+			boolean printDetails,
+			boolean printConfusionMatrix,
+			boolean filterManually,
+			boolean useLastFilter,
+			boolean boxplotFilter) throws IOException {
+		WindowExtractor we = new WindowExtractor(2550, 20); //seconden per window, 1/frequentie)
+>>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
 		List<Walk> windows = createWindows(trainWalks, we);
 
 		Dataset ds = new Dataset(windows);
 		ds.extractFeatures();
 
-		List<Walk>testWindows = createWindows(testWalks, we);
+		List<Walk> testWindows = createWindows(testWalks, we);
 
 		Dataset testDataSet = new Dataset(testWindows);
+		testDataSet.extractFeatures();
 
+<<<<<<< HEAD
 		if (filterManually) {
+=======
+		FilterGui filterGui = new FilterGui(ds);
+		if (filterManually && !useLastFilter) {
+			ds = filterGui.run();
+			ds.extractFeatures();
+		}
+		if (useLastFilter) {
+			filterGui.useLastClassifier(testDataSet);
+		}
+>>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
 
 			ds = BoxplotGui.filterDataset(ds);
 
 			ds.extractFeatures();
 		}
-
-		testDataSet.extractFeatures();
 
 		WekaImpl wekaImpl = new WekaImpl(ds);
 		wekaImpl.run(classifier, printDetails, printConfusionMatrix);
@@ -181,6 +298,7 @@ public class Main {
 
 	}
 
+<<<<<<< HEAD
 
 	private static void startClassification(String trainPath, String testPath, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
 			boolean filterManually) throws IOException {
@@ -201,6 +319,8 @@ public class Main {
 		}
 	}
 
+=======
+>>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
 	private static List<Walk> createWindows(List<Walk> trainWalks,
 			WindowExtractor we) throws IOException {
 		ArrayList<Walk> windows = new ArrayList<Walk>();
@@ -287,7 +407,11 @@ public class Main {
 			List<Walk> testWalks = new ArrayList<Walk>();
 			testWalks.add(walk); // Walk that will be used as test
 
+<<<<<<< HEAD
 			Map<Walk,ClassificationResult> result = classify(trainWalks, testWalks, classifier, false, false, false);
+=======
+			Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, false, false, false, true, false);
+>>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
 			List<Result> joinedResult = join(result.values());
 			if(!joinedResult.isEmpty()){
 				Result res = joinedResult.get(0);
