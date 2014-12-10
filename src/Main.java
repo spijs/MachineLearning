@@ -39,6 +39,7 @@ public class Main {
 		boolean printDetails = false;
 		boolean printConfusionMatrix = false;
 		boolean filterManually = false;
+		boolean crossValidation = false;
 		boolean useLastFilter = false;
 		boolean boxplotFilter = false;
 
@@ -134,6 +135,9 @@ public class Main {
 			} else if ("--confusion".equals(args[i].toLowerCase())
 					|| "-cm".equals(args[i].toLowerCase())) {
 				printConfusionMatrix = true;
+			} else if ("--crossvalidation".equals(args[i].toLowerCase())
+					|| "-cv".equals(args[i].toLowerCase())) {
+				crossValidation = true;
 			} else if ("--listoptions".equals(args[i].toLowerCase())
 					|| "-lo".equals(args[i].toLowerCase())) {
 				listOptions = true;
@@ -166,21 +170,47 @@ public class Main {
 			return;
 		}
 
-		startClassification(trainPath, testPath, classifier, printDetails, printConfusionMatrix, filterManually, useLastFilter, boxplotFilter);
+		startClassification(
+				trainPath,
+				testPath,
+				classifier,
+				printDetails,
+				printConfusionMatrix,
+				filterManually,
+				useLastFilter,
+				boxplotFilter,
+				crossValidation);
 	}
 
 
-	private static void startClassification(String trainPath, String testPath, Classifier classifier, boolean printDetails, boolean printConfusionMatrix,
-			boolean filterManually, boolean useLastFilter, boolean boxplotFilter) throws IOException {
+	private static void startClassification(
+			String trainPath,
+			String testPath,
+			Classifier classifier,
+			boolean printDetails,
+			boolean printConfusionMatrix,
+			boolean filterManually,
+			boolean useLastFilter,
+			boolean boxplotFilter,
+			boolean crossvalidation) throws IOException {
 		
 		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
 		
-		if(printConfusionMatrix){
+		if (crossvalidation) {
 			crossValidate(trainWalks, classifier);
 		}
 		
 		ArrayList<Walk> testWalks = DataParser.parseFiles(testPath);
-		Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, printDetails, printConfusionMatrix, filterManually, useLastFilter, boxplotFilter);
+		Map<Walk, ClassificationResult> result
+				= classify(
+						trainWalks,
+						testWalks,
+						classifier,
+						printDetails,
+						printConfusionMatrix,
+						filterManually,
+						useLastFilter,
+						boxplotFilter);
 
 		List<Result> joinedResult = join(result.values());
 
@@ -196,8 +226,15 @@ public class Main {
 		}
 	}
 
-	private static Map<Walk, ClassificationResult> classify(List<Walk> trainWalks, List<Walk> testWalks, Classifier classifier, boolean printDetails, boolean printConfusionMatrix,
-			boolean filterManually, boolean useLastFilter, boolean boxplotFilter) throws IOException {
+	private static Map<Walk, ClassificationResult> classify(
+			List<Walk> trainWalks,
+			List<Walk> testWalks,
+			Classifier classifier,
+			boolean printDetails,
+			boolean printConfusionMatrix,
+			boolean filterManually,
+			boolean useLastFilter,
+			boolean boxplotFilter) throws IOException {
 		WindowExtractor we = new WindowExtractor(2550, 20); //seconden per window, 1/frequentie)
 		List<Walk> windows = createWindows(trainWalks, we);
 
