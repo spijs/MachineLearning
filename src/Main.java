@@ -167,10 +167,13 @@ public class Main {
 		List<Walk>testWindows = createWindows(testWalks, we);
 
 		Dataset testDataSet = new Dataset(testWindows);
+		testDataSet.extractFeatures();
 
 		if (filterManually) {
-			ds = FilterGui.filterDataset(ds);
+			FilterGui filterGui = new FilterGui(ds);
+			ds = filterGui.run();
 			ds.extractFeatures();
+			filterGui.useLastClassifier(testDataSet);
 		}
 
 		if (boxplotFilter) {
@@ -178,7 +181,6 @@ public class Main {
 			ds.extractFeatures();
 		}
 
-		testDataSet.extractFeatures();
 
 		WekaImpl wekaImpl = new WekaImpl(ds);
 		wekaImpl.run(classifier, printDetails, printConfusionMatrix);

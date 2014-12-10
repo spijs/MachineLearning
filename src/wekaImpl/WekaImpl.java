@@ -137,7 +137,7 @@ public class WekaImpl {
 				System.out.println(evaluation.toMatrixString());
 
 			if (classifier instanceof J48) {
-				visualizeTree(classifier);
+//				visualizeTree(classifier);
 			}
 		} catch (Exception ex) {
 			Logger.getLogger(WekaImpl.class.getName()).log(Level.SEVERE, null, ex);
