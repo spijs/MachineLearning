@@ -39,6 +39,7 @@ public class Main {
 		boolean printDetails = false;
 		boolean printConfusionMatrix = false;
 		boolean filterManually = false;
+		boolean useLastFilter = false;
 		boolean boxplotFilter = false;
 
 		System.out.println("Machine learing project: Who has my phone?");
@@ -139,6 +140,9 @@ public class Main {
 			} else if ("--manualfilter".equals(args[i].toLowerCase())
 					|| "-mf".equals(args[i].toLowerCase())) {
 				filterManually = true;
+			} else if ("--lastfilter".equals(args[i].toLowerCase())
+					|| "-lf".equals(args[i].toLowerCase())) {
+				useLastFilter = true;
 			} else if ("--boxplotfilter".equals(args[i].toLowerCase())
 					|| "-bf".equals(args[i].toLowerCase())) {
 				boxplotFilter = true;
@@ -162,26 +166,55 @@ public class Main {
 			return;
 		}
 
-		startClassification(trainPath, testPath, classifier, printDetails, printConfusionMatrix, filterManually, boxplotFilter);
+		startClassification(trainPath, testPath, classifier, printDetails, printConfusionMatrix, filterManually, useLastFilter, boxplotFilter);
 	}
 
-	private static Map<Walk,ClassificationResult> classify (List<Walk> trainWalks, List<Walk> testWalks, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
-			boolean filterManually, boolean boxplotFilter) throws IOException {
-		WindowExtractor we = new WindowExtractor(2550,20); //seconden per window, 1/frequentie)
+
+	private static void startClassification(String trainPath, String testPath, Classifier classifier, boolean printDetails, boolean printConfusionMatrix,
+			boolean filterManually, boolean useLastFilter, boolean boxplotFilter) throws IOException {
+		
+		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
+		
+		if(printConfusionMatrix){
+			crossValidate(trainWalks, classifier);
+		}
+		
+		ArrayList<Walk> testWalks = DataParser.parseFiles(testPath);
+		Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, printDetails, printConfusionMatrix, filterManually, useLastFilter, boxplotFilter);
+
+		List<Result> joinedResult = join(result.values());
+
+		Collections.sort(joinedResult, new Comparator<Result>() {
+			@Override
+			public int compare(Result o1, Result o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+
+		for(Result r : joinedResult){
+			System.out.println(r.toString());
+		}
+	}
+
+	private static Map<Walk, ClassificationResult> classify(List<Walk> trainWalks, List<Walk> testWalks, Classifier classifier, boolean printDetails, boolean printConfusionMatrix,
+			boolean filterManually, boolean useLastFilter, boolean boxplotFilter) throws IOException {
+		WindowExtractor we = new WindowExtractor(2550, 20); //seconden per window, 1/frequentie)
 		List<Walk> windows = createWindows(trainWalks, we);
 
 		Dataset ds = new Dataset(windows);
 		ds.extractFeatures();
 
-		List<Walk>testWindows = createWindows(testWalks, we);
+		List<Walk> testWindows = createWindows(testWalks, we);
 
 		Dataset testDataSet = new Dataset(testWindows);
 		testDataSet.extractFeatures();
 
-		if (filterManually) {
-			FilterGui filterGui = new FilterGui(ds);
+		FilterGui filterGui = new FilterGui(ds);
+		if (filterManually && !useLastFilter) {
 			ds = filterGui.run();
 			ds.extractFeatures();
+		}
+		if (useLastFilter) {
 			filterGui.useLastClassifier(testDataSet);
 		}
 
@@ -196,33 +229,6 @@ public class Main {
 
 		return result;
 
-	}
-
-
-	private static void startClassification(String trainPath, String testPath, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
-			boolean filterManually, boolean boxplotFilter) throws IOException {
-		
-		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
-		
-		if(printConfusionMatrix){
-			crossValidate(trainWalks, classifier);
-		}
-		
-		ArrayList<Walk> testWalks = DataParser.parseFiles(testPath);
-		Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, printDetails, printConfusionMatrix, filterManually, boxplotFilter);
-
-		List<Result> joinedResult = join(result.values());
-
-		Collections.sort(joinedResult, new Comparator<Result>() {
-			@Override
-			public int compare(Result o1, Result o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
-
-		for(Result r : joinedResult){
-			System.out.println(r.toString());
-		}
 	}
 
 	private static List<Walk> createWindows(List<Walk> trainWalks,
@@ -311,7 +317,7 @@ public class Main {
 			List<Walk> testWalks = new ArrayList<Walk>();
 			testWalks.add(walk); // Walk that will be used as test
 
-			Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, false, false, false, false);
+			Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, false, false, false, true, false);
 			List<Result> joinedResult = join(result.values());
 			if(!joinedResult.isEmpty()){
 				Result res = joinedResult.get(0);

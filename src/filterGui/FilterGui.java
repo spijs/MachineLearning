@@ -171,8 +171,9 @@ public class FilterGui {
 
 	public void useLastClassifier(Dataset dataset) {
 		if (classifier == null) {
-			classifier = readClassifier();
-			if (classifier == null) {
+			try {
+				classifier = readClassifier();
+			} catch (Exception ex) {
 				return;
 			}
 		}
@@ -209,12 +210,7 @@ public class FilterGui {
 		}
 	}
 
-	private Classifier readClassifier() {
-		try {
-			return (Classifier) weka.core.SerializationHelper.read("manualfilter.model");
-		} catch (Exception ex) {
-			Logger.getLogger(FilterGui.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		return null;
+	private Classifier readClassifier() throws Exception {
+		return (Classifier) weka.core.SerializationHelper.read("manualfilter.model");
 	}
 }
