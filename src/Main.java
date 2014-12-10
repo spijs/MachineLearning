@@ -39,12 +39,9 @@ public class Main {
 		boolean printDetails = false;
 		boolean printConfusionMatrix = false;
 		boolean filterManually = false;
-<<<<<<< HEAD
-=======
 		boolean crossValidation = false;
 		boolean useLastFilter = false;
 		boolean boxplotFilter = false;
->>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
 
 		System.out.println("Machine learing project: Who has my phone?");
 		System.out.print("Arguments : ");
@@ -156,8 +153,6 @@ public class Main {
 			} else if ("--manualfilter".equals(args[i].toLowerCase())
 					|| "-mf".equals(args[i].toLowerCase())) {
 				filterManually = true;
-<<<<<<< HEAD
-=======
 			} else if ("--lastfilter".equals(args[i].toLowerCase())
 					|| "-lf".equals(args[i].toLowerCase())) {
 				useLastFilter = true;
@@ -166,7 +161,6 @@ public class Main {
 				boxplotFilter = true;
 			} else {
 				System.out.println("Unknown argument : \"" + args[i] + "\"");
->>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
 			}
 		}
 
@@ -185,14 +179,6 @@ public class Main {
 			return;
 		}
 
-<<<<<<< HEAD
-		startClassification(trainPath, testPath, classifier, printDetails, printConfusionMatrix, filterManually);
-	}
-
-	private static Map<Walk,ClassificationResult> classify (List<Walk> trainWalks, List<Walk> testWalks, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
-			boolean filterManually) throws IOException{
-		WindowExtractor we = new WindowExtractor(5100,20); //seconden per window, 1/frequentie)
-=======
 		System.out.println("Using classifier \"" + classifier.getClass().toString() + "\"...\n");
 
 		startClassification(
@@ -260,8 +246,7 @@ public class Main {
 			boolean filterManually,
 			boolean useLastFilter,
 			boolean boxplotFilter) throws IOException {
-		WindowExtractor we = new WindowExtractor(2550, 20); //seconden per window, 1/frequentie)
->>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
+		WindowExtractor we = new WindowExtractor(5100, 20); //seconden per window, 1/frequentie)
 		List<Walk> windows = createWindows(trainWalks, we);
 
 		Dataset ds = new Dataset(windows);
@@ -272,9 +257,6 @@ public class Main {
 		Dataset testDataSet = new Dataset(testWindows);
 		testDataSet.extractFeatures();
 
-<<<<<<< HEAD
-		if (filterManually) {
-=======
 		FilterGui filterGui = new FilterGui(ds);
 		if (filterManually && !useLastFilter) {
 			ds = filterGui.run();
@@ -283,10 +265,9 @@ public class Main {
 		if (useLastFilter) {
 			filterGui.useLastClassifier(testDataSet);
 		}
->>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
 
+		if (boxplotFilter) {
 			ds = BoxplotGui.filterDataset(ds);
-
 			ds.extractFeatures();
 		}
 
@@ -298,29 +279,6 @@ public class Main {
 
 	}
 
-<<<<<<< HEAD
-
-	private static void startClassification(String trainPath, String testPath, Classifier classifier,boolean printDetails,boolean printConfusionMatrix,
-			boolean filterManually) throws IOException {
-		
-		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
-		
-		if(printConfusionMatrix){
-			crossValidate(trainWalks, classifier);
-		}
-		
-		ArrayList<Walk> testWalks = DataParser.parseFiles(testPath);
-		Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, printDetails, printConfusionMatrix, filterManually);
-
-		List<Result> joinedResult = join(result.values());
-
-		for(Result r : joinedResult){
-			System.out.println(r.toString());
-		}
-	}
-
-=======
->>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
 	private static List<Walk> createWindows(List<Walk> trainWalks,
 			WindowExtractor we) throws IOException {
 		ArrayList<Walk> windows = new ArrayList<Walk>();
@@ -407,11 +365,7 @@ public class Main {
 			List<Walk> testWalks = new ArrayList<Walk>();
 			testWalks.add(walk); // Walk that will be used as test
 
-<<<<<<< HEAD
-			Map<Walk,ClassificationResult> result = classify(trainWalks, testWalks, classifier, false, false, false);
-=======
 			Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, false, false, false, true, false);
->>>>>>> 97f2571f7c225f59ad8b197985fa0dd69cb1ce4d
 			List<Result> joinedResult = join(result.values());
 			if(!joinedResult.isEmpty()){
 				Result res = joinedResult.get(0);
@@ -455,4 +409,3 @@ public class Main {
 		return data;			
 	}
 }
-
