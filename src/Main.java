@@ -179,7 +179,7 @@ public class Main {
 			return;
 		}
 
-		System.out.println("Using classifier \"" + classifier.getClass().toString() + "\"...\n");
+		System.out.println("Using classifier \"" + classifier.getClass().getName() + "\"");
 
 		startClassification(
 				trainPath,
@@ -207,9 +207,6 @@ public class Main {
 		
 		ArrayList<Walk> trainWalks = DataParser.parseFiles(trainPath);
 		
-		if (crossvalidation) {
-			crossValidate(trainWalks, classifier);
-		}
 		
 		ArrayList<Walk> testWalks = DataParser.parseFiles(testPath);
 		Map<Walk, ClassificationResult> result
@@ -222,6 +219,10 @@ public class Main {
 						filterManually,
 						useLastFilter,
 						boxplotFilter);
+
+		if (crossvalidation) {
+			crossValidate(trainWalks, classifier, filterManually || useLastFilter);
+		}
 
 		List<Result> joinedResult = join(result.values());
 
@@ -353,7 +354,7 @@ public class Main {
 		return name;
 	}
 
-	public static void crossValidate(List<Walk> allWalks, Classifier classifier) throws IOException{
+	public static void crossValidate(List<Walk> allWalks, Classifier classifier, boolean useLastFilter) throws IOException {
 		Map<String,Map<String,Integer>> results = new HashMap<String,Map<String,Integer>>();
 		// Leave one out
 		for(Walk walk: allWalks){
@@ -365,7 +366,8 @@ public class Main {
 			List<Walk> testWalks = new ArrayList<Walk>();
 			testWalks.add(walk); // Walk that will be used as test
 
-			Map<Walk, ClassificationResult> result = classify(trainWalks, testWalks, classifier, false, false, false, true, false);
+			Map<Walk, ClassificationResult> result = classify(
+					trainWalks, testWalks, classifier, false, false, false, useLastFilter, false);
 			List<Result> joinedResult = join(result.values());
 			if(!joinedResult.isEmpty()){
 				Result res = joinedResult.get(0);
@@ -375,6 +377,7 @@ public class Main {
 			}
 		}
 		// printen resultaten
+		System.out.println("=== Cross Validation ===");
 		for(Entry<String,Map<String,Integer>> entry: results.entrySet()){
 			String name = entry.getKey();
 			String result = name + " classified as : ";
@@ -384,6 +387,7 @@ public class Main {
 			}
 			System.out.println(result);
 		}
+		System.out.println();
 	}
 
 	public static Map<String,Map<String,Integer>> addValue(Map<String,Map<String,Integer>> data, String walk, String classifiedAs){
