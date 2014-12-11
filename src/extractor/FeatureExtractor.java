@@ -47,6 +47,8 @@ public class FeatureExtractor {
 		extractMin();
 		extractMax();
 
+		extractCrosses();
+
 		computeFFT();// Must happen for the following to work!!
 		
 		extractFFT(); 
@@ -118,6 +120,34 @@ public class FeatureExtractor {
 		features.put(name + "X", new Feature(Collections.max(walk.getXValues()), type));
 		features.put(name + "Y", new Feature(Collections.max(walk.getYValues()), type));
 		features.put(name + "Z", new Feature(Collections.max(walk.getZValues()), type));
+	}
+
+	private void extractCrosses() {
+		Feature.Type type = Feature.Type.DOUBLE;
+		for (double pct : new Double[]{25.0, 50.0, 75.0}) {
+			String name = "cross" + (int) pct;
+			double d = pct / 100;
+
+			double minX = (double) features.get("minX").value;
+			double maxX = (double) features.get("maxX").value;
+			features.put(name + "X", new Feature(crosses(walk.getXValues(), minX + d * (maxX - minX)), type));
+			double minY = (double) features.get("minY").value;
+			double maxY = (double) features.get("maxY").value;
+			features.put(name + "Y", new Feature(crosses(walk.getYValues(), minY + d * (maxY - minY)), type));
+			double minZ = (double) features.get("minZ").value;
+			double maxZ = (double) features.get("maxZ").value;
+			features.put(name + "Z", new Feature(crosses(walk.getZValues(), minZ + d * (maxZ - minZ)), type));
+		}
+	}
+
+	private Double crosses(ArrayList<Double> values, Double toCross) {
+		int crosses = 0;
+		for (int i = 1; i < values.size(); i++) {
+			if ((values.get(i - 1) < toCross) != (values.get(i) < toCross)) {
+				crosses++;
+			}
+		}
+		return (Double) (double) crosses;
 	}
 
 	private void extractFFT(){
@@ -256,5 +286,5 @@ public class FeatureExtractor {
 		mean = sum / (a.size() * 1.0);
 		return mean;
 	}
-	
+
 }
