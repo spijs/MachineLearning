@@ -47,7 +47,7 @@ public class FeatureExtractor {
 		extractMin();
 		extractMax();
 
-		extractCrosses();
+		//extractCrosses();
 
 		computeFFT();// Must happen for the following to work!!
 		

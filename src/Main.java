@@ -21,6 +21,7 @@ import model.Walk;
 import parser.DataParser;
 import sun.reflect.generics.scope.ClassScope;
 import weka.classifiers.Classifier;
+import weka.classifiers.lazy.IBk;
 import weka.classifiers.trees.J48;
 import weka.core.Option;
 import wekaImpl.ClassificationResult;
@@ -40,7 +41,7 @@ public class Main {
 		boolean printConfusionMatrix = false;
 		boolean filterManually = false;
 		boolean crossValidation = false;
-		boolean useLastFilter = false;
+		boolean useLastFilter = true;
 		boolean boxplotFilter = false;
 
 		System.out.println("Machine learing project: Who has my phone?");
@@ -165,7 +166,7 @@ public class Main {
 		}
 
 		if (classifier == null) {
-			classifier = new J48();
+			classifier = new IBk();
 		}
 
 		if (listOptions) {
