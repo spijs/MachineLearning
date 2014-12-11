@@ -1,81 +1,84 @@
+run:
 Machine learing project: Who has my phone?
-Arguments : -d -cm -mf -c knn -K 1 
+Arguments : -d -cm -cv -mf -c knn -K 1 
 
-other classified as : other(35) 
-leander classified as : other(5) leander(3) 
+Using classifier "class weka.classifiers.lazy.IBk"...
+
+Removed from testset   : 0 / 0
+Removed from testset   : 0 / 0
+Removed from testset   : 0 / 0
+other classified as : other(34) 
+leander classified as : other(6) leander(1) 
 wannes classified as : other(11) wannes(1) 
 Usage of FilterGUI:
-Removed manually       : 36 / 162
-Removed by classifying : 222 / 1694
-Total removed          : 258 / 1856
-Removed from testset   : 20 / 353
+Removed manually       : 5 / 50
+Removed by classifying : 113 / 829
+Total removed          : 118 / 879
 
-Correctly Classified Instances        1856              100      %
+Correctly Classified Instances         879              100      %
 Incorrectly Classified Instances         0                0      %
 Kappa statistic                          1     
-Mean absolute error                      0.0007
-Root mean squared error                  0.0008
-Relative absolute error                  0.3158 %
-Root relative squared error              0.2259 %
-Total Number of Instances             1856     
+Mean absolute error                      0.0015
+Root mean squared error                  0.0016
+Relative absolute error                  0.6844 %
+Root relative squared error              0.4833 %
+Total Number of Instances              879     
 
 === Confusion Matrix ===
 
-    a    b    c   <-- classified as
- 1484    0    0 |    a = other
-    0  215    0 |    b = leander
-    0    0  157 |    c = wannes
+   a   b   c   <-- classified as
+ 709   0   0 |   a = other
+   0  99   0 |   b = leander
+   0   0  71 |   c = wannes
 
 File : walk_59_unknown.csv
 -----------------------------
-*other : 0.9407343962982482
-leander : 0.019396585490685563
-wannes : 0.038793170981371125
+*other : 0.6847183317771556
+leander : 0.0978169045395936
+wannes : 0.21519718998710594
 
 File : walk_60_unknown.csv
 -----------------------------
-*other : 0.9989241527703066
+*other : 0.9977324263038548
 
 File : walk_61_unknown.csv
 -----------------------------
-*other : 0.6659494351802047
-leander : 0.16648735879505108
-wannes : 0.16648735879505108
+*other : 0.7876834944504117
+leander : 0.15753669889008234
+wannes : 0.05251223296336077
 
 File : walk_62_unknown.csv
 -----------------------------
-*other : 0.74919311457773
-leander : 0.06243275954814416
-wannes : 0.1872982786444325
+*other : 0.9977324263038546
 
 File : walk_63_unknown.csv
 -----------------------------
-*other : 0.6992469069392147
-leander : 0.29967724583109195
+other : 0.45351473922902485
+*leander : 0.45351473922902485
+wannes : 0.09070294784580497
 
 File : walk_64_unknown.csv
 -----------------------------
-*other : 0.6326519634211943
-leander : 0.06659494351802044
-wannes : 0.29967724583109195
+*other : 0.8647014361300075
+wannes : 0.13303099017384729
 
 File : walk_65_unknown.csv
 -----------------------------
-other : 0.23504097712242508
-leander : 0.23504097712242508
-*wannes : 0.5288421985254563
+*other : 0.8551992225461611
+wannes : 0.14253320375769354
 
 File : walk_66_unknown.csv
 -----------------------------
-*other : 0.9989241527703071
+*other : 0.7860922146636434
+leander : 0.1511715797430083
+wannes : 0.060468631897203313
 
 File : walk_67_unknown.csv
 -----------------------------
-*other : 0.9989241527703064
+*other : 0.9977324263038548
 
 File : walk_68_unknown.csv
 -----------------------------
-*other : 0.938383295026652
-leander : 0.03027042887182747
-wannes : 0.03027042887182747
+*other : 0.7981859410430838
+wannes : 0.19954648526077096
 

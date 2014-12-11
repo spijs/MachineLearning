@@ -1,74 +1,76 @@
+debug:
 Machine learing project: Who has my phone?
-Arguments : -d -cm -c knn -K 3 
+Arguments : -d -cm -cv -c knn -K 3 
 
-other classified as : other(35) 
-leander classified as : other(7) leander(1) 
+Using classifier "class weka.classifiers.lazy.IBk"...
+
+other classified as : other(34) 
+leander classified as : other(7) 
 wannes classified as : other(12) 
 
-Correctly Classified Instances        1890               89.404  %
-Incorrectly Classified Instances       224               10.596  %
-Kappa statistic                          0.6465
-Mean absolute error                      0.1004
-Root mean squared error                  0.2201
-Relative absolute error                 43.5899 %
-Root relative squared error             64.8971 %
-Total Number of Instances             2114     
+Correctly Classified Instances         891               89.3681 %
+Incorrectly Classified Instances       106               10.6319 %
+Kappa statistic                          0.6163
+Mean absolute error                      0.0998
+Root mean squared error                  0.2196
+Relative absolute error                 44.8692 %
+Root relative squared error             65.9622 %
+Total Number of Instances              997     
 
 === Confusion Matrix ===
 
-    a    b    c   <-- classified as
- 1640   31   11 |    a = other
-   91  168    1 |    b = leander
-   89    1   82 |    c = wannes
+   a   b   c   <-- classified as
+ 789  10   3 |   a = other
+  60  62   1 |   b = leander
+  32   0  40 |   c = wannes
 
 File : walk_59_unknown.csv
 -----------------------------
-*other : 0.9356110201854868
-wannes : 0.0064087409832090676
+*other : 0.7316201029510001
+wannes : 0.013065346379032576
 
 File : walk_60_unknown.csv
 -----------------------------
-*other : 0.7616796127434425
-wannes : 0.0952155803219633
+*other : 0.9993319973279894
 
 File : walk_61_unknown.csv
 -----------------------------
-*other : 0.5725040916530281
-leander : 0.05126992786567254
-wannes : 0.09399284718433655
+*other : 0.701350068558169
+leander : 0.03507014028056112
+wannes : 0.03507014028056112
 
 File : walk_62_unknown.csv
 -----------------------------
-*other : 0.8036990682797941
+*other : 0.8566179979005631
 
 File : walk_63_unknown.csv
 -----------------------------
-*other : 0.5998486997635932
-leander : 0.11996847911741529
+*other : 0.45430254448290525
+leander : 0.21199975708993746
+wannes : 0.06057569684824194
 
 File : walk_64_unknown.csv
 -----------------------------
-*other : 0.6563937244788309
-leander : 0.020197244310719488
-wannes : 0.060591732932158464
+*other : 0.7995101313738587
+wannes : 0.044422177688710755
 
 File : walk_65_unknown.csv
 -----------------------------
-*other : 0.25485560654521855
-leander : 0.11761924628007231
-wannes : 0.2548370648495805
+*other : 0.5710945700925661
+wannes : 0.19038076152304612
 
 File : walk_66_unknown.csv
 -----------------------------
-*other : 0.9031098320028331
-leander : 0.009659551626865841
+*other : 0.7369182810064571
+leander : 0.0908584846460598
+wannes : 0.02019189894941398
 
 File : walk_67_unknown.csv
 -----------------------------
-*other : 0.9626652657385518
+*other : 0.9993319973279894
 
 File : walk_68_unknown.csv
 -----------------------------
-*other : 0.9189149174964779
-
-BUILD SUCCESSFUL (total time: 1 minute 50 seconds)
+*other : 0.7328657314629259
+leander : 0.044422177688710755
+wannes : 0.08884435537742151

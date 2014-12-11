@@ -1,72 +1,71 @@
 Machine learing project: Who has my phone?
-Arguments : -d -cm -c nbayes 
+Arguments : -d -cm -cv -c nbayes 
 
-other classified as : other(1) leander(29) wannes(5) 
-leander classified as : leander(8) 
-wannes classified as : other(1) leander(9) wannes(2) 
+Using classifier "class weka.classifiers.bayes.NaiveBayes"...
 
-Correctly Classified Instances         369               17.4551 %
-Incorrectly Classified Instances      1745               82.5449 %
-Kappa statistic                          0.0445
-Mean absolute error                      0.5489
-Root mean squared error                  0.7181
-Relative absolute error                238.1909 %
-Root relative squared error            211.7067 %
-Total Number of Instances             2114     
+other classified as : other(1) leander(29) wannes(4) 
+other classified as : other(1) leander(29) wannes(4) leander classified as : leander(7) 
+wannes classified as : other(1) leander(6) wannes(5) 
+
+Correctly Classified Instances         176               17.653  %
+Incorrectly Classified Instances       821               82.347  %
+Kappa statistic                          0.0579
+Mean absolute error                      0.5475
+Root mean squared error                  0.7235
+Relative absolute error                246.265  %
+Root relative squared error            217.3388 %
+Total Number of Instances              997     
 
 === Confusion Matrix ===
 
-    a    b    c   <-- classified as
-   54 1377  251 |    a = other
-    2  245   13 |    b = leander
-    6   96   70 |    c = wannes
+   a   b   c   <-- classified as
+  16 659 127 |   a = other
+   0 117   6 |   b = leander
+   1  28  43 |   c = wannes
 
 File : walk_59_unknown.csv
 -----------------------------
-other : 0.0073850372895370945
-*leander : 0.9244128395933673
-wannes : 0.014875432246702285
+*leander : 0.9199071087156856
+wannes : 0.0524756677807266
 
 File : walk_60_unknown.csv
 -----------------------------
-*leander : 0.9970607770635598
+*leander : 0.999958774581266
 
 File : walk_61_unknown.csv
 -----------------------------
-*leander : 0.7488753557910028
-wannes : 0.1402824485344951
+*leander : 0.7519030390280793
+wannes : 0.17140577698924775
 
 File : walk_62_unknown.csv
 -----------------------------
-leander : 0.3963976109256894
-*wannes : 0.46358484229078784
+leander : 0.3812610726992558
+*wannes : 0.42045956197422046
 
 File : walk_63_unknown.csv
 -----------------------------
-*leander : 0.9807354462650941
+*leander : 0.9508793768433862
 
 File : walk_64_unknown.csv
 -----------------------------
-*leander : 0.8065579129980396
-wannes : 0.09633940682797022
+*leander : 0.7536944041821341
+wannes : 0.17237452599421876
 
 File : walk_65_unknown.csv
 -----------------------------
-*leander : 0.6168029731259688
-wannes : 0.25389667220518447
+*leander : 0.5570665307620309
+wannes : 0.39744329147373214
 
 File : walk_66_unknown.csv
 -----------------------------
-*leander : 0.8381788048879634
-wannes : 0.055474148758199164
+leander : 0.3610383209222629
+*wannes : 0.5614685010652208
 
 File : walk_67_unknown.csv
 -----------------------------
-*wannes : 0.9066317924071696
+*wannes : 0.8697032961751461
 
 File : walk_68_unknown.csv
 -----------------------------
-*leander : 0.8875822052595345
-wannes : 0.016269435066925457
-
-BUILD SUCCESSFUL (total time: 55 seconds)
+leander : 0.32499440618614617
+*wannes : 0.5155394561249685

@@ -1,29 +1,31 @@
 Machine learing project: Who has my phone?
-Arguments : -d -cm -c svm 
+Arguments : -d -cm -cv -c svm 
 
-other classified as : other(35) 
-leander classified as : other(8) 
+Using classifier "class weka.classifiers.functions.SMO"...
+
+other classified as : other(34) 
+leander classified as : other(7) 
 wannes classified as : other(12) 
 
-Correctly Classified Instances        1682               79.5648 %
-Incorrectly Classified Instances       432               20.4352 %
+Correctly Classified Instances         802               80.4413 %
+Incorrectly Classified Instances       195               19.5587 %
 Kappa statistic                          0     
-Mean absolute error                      0.2801
-Root mean squared error                  0.3633
-Relative absolute error                121.571  %
-Root relative squared error            107.1037 %
-Total Number of Instances             2114     
+Mean absolute error                      0.2739
+Root mean squared error                  0.3547
+Relative absolute error                123.2132 %
+Root relative squared error            106.5338 %
+Total Number of Instances              997     
 
 === Confusion Matrix ===
 
-    a    b    c   <-- classified as
- 1682    0    0 |    a = other
-  260    0    0 |    b = leander
-  172    0    0 |    c = wannes
+   a   b   c   <-- classified as
+ 802   0   0 |   a = other
+ 123   0   0 |   b = leander
+  72   0   0 |   c = wannes
 
 File : walk_59_unknown.csv
 -----------------------------
-*other : 0.6666666666666661
+*other : 0.666666666666667
 
 File : walk_60_unknown.csv
 -----------------------------
@@ -31,27 +33,27 @@ File : walk_60_unknown.csv
 
 File : walk_61_unknown.csv
 -----------------------------
-*other : 0.666666666666667
+*other : 0.6666666666666664
 
 File : walk_62_unknown.csv
 -----------------------------
-*other : 0.6666666666666665
+*other : 0.6666666666666666
 
 File : walk_63_unknown.csv
 -----------------------------
-*other : 0.6666666666666664
+*other : 0.6666666666666667
 
 File : walk_64_unknown.csv
 -----------------------------
-*other : 0.6666666666666667
+*other : 0.6666666666666665
 
 File : walk_65_unknown.csv
 -----------------------------
-*other : 0.6666666666666665
+*other : 0.6666666666666666
 
 File : walk_66_unknown.csv
 -----------------------------
-*other : 0.6666666666666663
+*other : 0.6666666666666667
 
 File : walk_67_unknown.csv
 -----------------------------
@@ -59,6 +61,4 @@ File : walk_67_unknown.csv
 
 File : walk_68_unknown.csv
 -----------------------------
-*other : 0.6666666666666667
-
-BUILD SUCCESSFUL (total time: 2 minutes 21 seconds)
+*other : 0.6666666666666665
