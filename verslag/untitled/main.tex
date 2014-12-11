@@ -1,0 +1,39 @@
+
+
+\documentclass[eind]{penoverslag}
+
+%%% PACKAGES %%%
+\usepackage{lipsum} 
+\usepackage{url} 
+\usepackage{float}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\begin{document}
+
+
+% == TITELPAGINA == %
+\team{}
+\members{Thijs Dieltjens\\ 
+		Bram Geelen} % teamleden
+\maketitlepage
+
+% == INLEIDING == %
+\input{tex/abstract.tex}
+\input{tex/intro.tex}
+\input{tex/results.tex}
+\input{tex/conclusion.tex}
+\input{tex/prediction.tex}
+\input{tex/time.tex}
+
+% == REFERENTIES == %
+\newpage
+\bibliographystyle{ieeetr}
+\bibliography{references.bib}
+
+\newpage
+\appendix
+\input{tex/readme.tex}
+
+\end{document}
