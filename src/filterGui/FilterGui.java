@@ -189,8 +189,9 @@ public class FilterGui {
 		try {
 			for (int j = dataset.numWalks() - 1; j >= 0; j--) {
 				Instance instance = makeInstanceForWalk(attributes, dataset, dataset.getWalk(j));
+				if (instance.dataset() == null)
+					instance.setDataset(trainingSet);
 				double[] distribution = classifier.distributionForInstance(instance);
-
 				if (distribution[classes.indexOf(REJECTED)] > 0.5) {
 					dataset.removeWalk(j);
 				}

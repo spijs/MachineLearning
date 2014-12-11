@@ -167,7 +167,7 @@ public class WekaImpl {
 			Map<String, Feature> features = dataset.getFeatures(walk);
 
 			// make the instance
-			Instance instance = new Instance(features.size());
+			Instance instance = new Instance(wekaAttributes.size());
 
 			for (int j = 0; j < wekaAttributes.size() - 1; j++) {
 				Attribute attribute = (Attribute) wekaAttributes.elementAt(j);
@@ -178,8 +178,12 @@ public class WekaImpl {
 					instance.setValue(attribute, (String) features.get(attribute.name()).value);
 				}
 			}
-			instance.setDataset(wekaTrainingSet);
+			instance.setValue(
+					(Attribute) wekaAttributes.elementAt(wekaAttributes.size() - 1),
+					(String) wekaNames.elementAt(0));
 
+			instance.setDataset(wekaTrainingSet);
+			
 			try { // classify the instance
 				double[] distribution = classifier.distributionForInstance(instance);
 				ClassificationResult classificationResult = new ClassificationResult(walk, wekaNames, distribution);

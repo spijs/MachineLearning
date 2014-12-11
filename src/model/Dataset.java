@@ -45,10 +45,7 @@ public class Dataset {
 
 	public void extractFeatures() {
 		for (Walk walk : walks) {
-			if (!features.containsKey(walk)) {
-				FeatureExtractor extractor = new FeatureExtractor(walk);
-				features.put(walk, extractor.extractFeatures());
-			}
+			features.put(walk, new FeatureExtractor(walk).extractFeatures());
 		}
 	}
 
