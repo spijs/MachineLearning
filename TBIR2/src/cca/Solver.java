@@ -51,10 +51,12 @@ public class Solver {
 	}
 
 	public void solve() throws MatlabInvocationException {
-		mlp.eval("[projectedQ, projectedI] = preprocess("+trainV+", "+trainImages+"+, "+testV+", "+testImages+")");
+		System.out.println("Reaching out to Matlab..");
+		mlp.eval("[projectedQ, projectedI] = preprocess('"+trainV+"', '"+trainImages+"', '"+testV+"', '"+testImages+"')");
 		double[][] projQs = (double[][])  mlp.getVariable("projectedQ");
 		double[][] projIs = (double[][])  mlp.getVariable("projectedI");
-
+		System.out.println("Matlab computations finished..");
+		System.out.println("Started Ranking");
 		List<Ranking> rankings = new ArrayList<Ranking>();
 		for(int i=0;i<projQs.length;i++){
 			double[] query = projQs[i];
@@ -68,6 +70,7 @@ public class Solver {
 				ranking.addElement(new RankElement(imageTrainName, similarity));
 			}
 			rankings.add(ranking);
+			System.out.println("Ranking progress: "+100.0*i/(projQs.length));
 		}
 		logResults(rankings);
 	}
@@ -99,5 +102,6 @@ public class Solver {
 						 "Recall@10:" +1.0*recall10/rankings.size();
 		logger.log(results);
 		System.out.println(results);
+		logger.close();
 	}
 }

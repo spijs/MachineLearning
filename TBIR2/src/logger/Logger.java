@@ -38,7 +38,11 @@ public class Logger {
 	}
 	
 	public Logger(String trainV, String testV) throws IOException {
-		String fileName = ("results/results_cca_tr"+trainV+"te"+testV+".txt");
+		String[] trainVParts = trainV.split("/");
+		String trainVN = trainVParts[trainVParts.length-1];
+		String[] testVParts = testV.split("/");
+		String testVN = testVParts[testVParts.length-1];
+		String fileName = ("files/results/results_cca_tr"+trainVN.substring(0, trainVN.lastIndexOf('.'))+"te"+testVN.substring(0, testVN.lastIndexOf('.'))+".txt");
 		File file = new File(fileName);
 		file.delete();
 		this.writer = new BufferedWriter(new FileWriter(fileName, true));

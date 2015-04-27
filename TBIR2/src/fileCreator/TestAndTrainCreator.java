@@ -34,6 +34,7 @@ public class TestAndTrainCreator {
 	}
 
 	private static void generateFile(File file, File output) throws IOException {
+		int i = 0;
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				new FileInputStream(file)));
 		output.delete();
@@ -58,6 +59,8 @@ public class TestAndTrainCreator {
 			}
 			orderReader.close();
 			vectorReader.close();
+			System.out.println("Progress "+(100.0*i/5000));
+			i++;
 		}
 		br.close();
 		writer.close();

@@ -11,8 +11,6 @@ import java.util.List;
 
 import embeddings.Vector;
 import embeddings.Worker;
-import flickr.model.Model;
-import flickr.model.SentenceEmbedModel;
 import flickr.model.TotalEmbedModel;
 
 
@@ -78,9 +76,10 @@ public class ImageVectorsCreator {
 					vector = Worker.getVector(element, file);
 				}
 			} catch (Exception e) {
-				// Do nothing
-			}
+			//Do nothing
+				}
 		}
+		if(vector==null){return null;}
 		return vector.toString();
 
 	}

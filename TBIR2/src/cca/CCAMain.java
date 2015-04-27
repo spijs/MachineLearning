@@ -19,10 +19,12 @@ public class CCAMain {
 		try {
 			solver = new Solver(proxy,options);
 			solver.solve();
-			proxy.disconnect();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		 finally{
+			 proxy.disconnect();			 
+		 }
 	}
 	
 	private static Map<String,String> getOptions(String[] args){
@@ -46,6 +48,15 @@ public class CCAMain {
 				i++;
 				result.put("trainImages", args[i]);			
 			}
+			else if ("-ntrain".equals(args[i].toLowerCase())) {
+				i++;
+				result.put("trainNames", args[i]);			
+			}
+			else if ("-ntest".equals(args[i].toLowerCase())) {
+				i++;
+				result.put("testNames", args[i]);			
+			}
+			
 				
 		}
 		return result;
