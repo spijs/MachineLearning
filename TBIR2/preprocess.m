@@ -13,9 +13,11 @@ for i = 1:x
     end
 end
 
-size(bigTrain)
-size(trainqueries)
 [U,V, r] = cca(bigTrain.',trainqueries.');
-[projectedQ, projectedI] = proj(testQ,testI, U, V);
+disp('Dimensie U');
+size(U)
+disp('Dimensie V');
+size(V)
+[projectedQ, projectedI] = proj(testI,testQ, U, V);
 projQ = projectedQ.'
 projI = projectedI.'
