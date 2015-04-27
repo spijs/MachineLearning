@@ -1,5 +1,6 @@
 package cca;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,9 +15,14 @@ public class CCAMain {
 		MatlabProxyFactory factory = new MatlabProxyFactory();
 		MatlabProxy proxy = factory.getProxy();
 		Map<String,String> options = getOptions(args);
-		Solver solver = new Solver(proxy,options);
-		solver.solve();
-		proxy.disconnect();
+		Solver solver;
+		try {
+			solver = new Solver(proxy,options);
+			solver.solve();
+			proxy.disconnect();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private static Map<String,String> getOptions(String[] args){

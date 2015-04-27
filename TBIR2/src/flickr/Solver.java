@@ -71,6 +71,7 @@ public class Solver {
 			String filename = line.split("#")[0];
 			result.put(filename, images.get(filename));
 		}
+		br.close();
 		return result;
 	}
 

@@ -44,9 +44,18 @@ public class ImageVectorsCreator {
 				String[] words = line.split("	");
 				String sentence = words[1];
 				String nextLine=processString(sentence);
-				writer.write(nextLine);
+				if(nextLine!=null){
+					writer.write(nextLine);
+				}
+				else{
+					writer.write("0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
+							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
+							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
+							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
+							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0");
+				}
 				writer.write("\n");
-				System.out.println("Progress: "+100*i/5000);
+				System.out.println("Progress: "+100*i/30000);
 				i++;
 			}
 			br.close();

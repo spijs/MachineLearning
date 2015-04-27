@@ -37,6 +37,15 @@ public class Logger {
 		+fileN.substring(0, fileN.lastIndexOf('.'))+"\n##################################\n");
 	}
 	
+	public Logger(String trainV, String testV) throws IOException {
+		String fileName = ("results/results_cca_tr"+trainV+"te"+testV+".txt");
+		File file = new File(fileName);
+		file.delete();
+		this.writer = new BufferedWriter(new FileWriter(fileName, true));
+		this.threadsOpen=1;
+		this.log("RESULTS FOR CCA:");
+	}
+
 	/**
 		/**
 	 * Returns an instance of the Logger based on the given parameters. 
