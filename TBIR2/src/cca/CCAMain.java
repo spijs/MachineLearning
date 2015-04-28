@@ -12,6 +12,7 @@ import matlabcontrol.MatlabProxyFactory;
 
 public class CCAMain {
 	public static void main(String[] args) throws MatlabConnectionException, MatlabInvocationException {
+		System.out.println("Starting matlab");
 		MatlabProxyFactory factory = new MatlabProxyFactory();
 		MatlabProxy proxy = factory.getProxy();
 		Map<String,String> options = getOptions(args);

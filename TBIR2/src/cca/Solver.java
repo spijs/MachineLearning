@@ -51,8 +51,8 @@ public class Solver {
 	}
 
 	public void solve() throws MatlabInvocationException {
-		System.out.println("Reaching out to Matlab..");
-		mlp.eval("[projectedQ, projectedI] = preprocess('"+trainV+"', '"+trainImages+"', '"+testV+"', '"+testImages+"')");
+		System.out.println("Starting Matlab computations..");
+		mlp.eval("[projectedQ, projectedI] = preprocess('"+trainV+"', '"+trainImages+"', '"+testV+"', '"+testImages+"');");
 		double[][] projQs = (double[][])  mlp.getVariable("projectedQ");
 		double[][] projIs = (double[][])  mlp.getVariable("projectedI");
 		System.out.println("Matlab computations finished..");
