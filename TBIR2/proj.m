@@ -6,10 +6,10 @@ disp('Size images');
 [rs,cs] = size(images)
 
 for i = 1:rq
-  q_proj(i,:) = queries(i,:)*U;
+  q_proj(i,:) = queries(i,:)*V;
 end
 
 for j = 1:rs
-  i_proj(j,:) = images(j,:)*V;
+  i_proj(j,:) = images(j,:)*U;
 end
 
