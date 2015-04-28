@@ -11,6 +11,7 @@ import java.util.Map;
 import logger.Logger;
 import matlabcontrol.MatlabInvocationException;
 import matlabcontrol.MatlabProxy;
+import matlabcontrol.extensions.MatlabTypeConverter;
 import embeddings.Vector;
 import flickr.RankElement;
 import flickr.Ranking;
@@ -22,7 +23,6 @@ public class Solver {
 	private String trainImages;
 	private String testImages;
 	private List<String> testNames;
-	private List<String> trainNames;
 	private Logger logger;
 
 	public Solver(MatlabProxy mlp, Map<String,String> options) throws IOException{
@@ -32,7 +32,6 @@ public class Solver {
 		this.trainImages = options.get("trainImages");
 		this.testImages = options.get("testImages");
 		this.testNames = parseFile(options.get("testNames"));
-		this.trainNames = parseFile(options.get("trainNames"));
 		this.logger = new Logger(trainV,testV);
 	}
 
@@ -53,20 +52,23 @@ public class Solver {
 	public void solve() throws MatlabInvocationException {
 		System.out.println("Starting Matlab computations..");
 		mlp.eval("[projectedQ, projectedI] = preprocess('"+trainV+"', '"+trainImages+"', '"+testV+"', '"+testImages+"');");
-		double[][] projQs = (double[][])  mlp.getVariable("projectedQ");
-		double[][] projIs = (double[][])  mlp.getVariable("projectedI");
+
+		MatlabTypeConverter processor = new MatlabTypeConverter(mlp);
+		double[][] projQs = processor.getNumericArray("projectedQ").getRealArray2D();
+		double[][] projIs = processor.getNumericArray("projectedI").getRealArray2D();
+		
 		System.out.println("Matlab computations finished..");
 		System.out.println("Started Ranking");
 		List<Ranking> rankings = new ArrayList<Ranking>();
 		for(int i=0;i<projQs.length;i++){
 			double[] query = projQs[i];
+			Vector qVector = new Vector(query);
 			Ranking ranking = new Ranking();
 			for(int j=0;j<projIs.length;j++){
 				double[] image = projIs[j];
-				Vector qVector = new Vector(query);
 				Vector iVector = new Vector(image);
 				double similarity = qVector.cosineDist(iVector);
-				String imageTrainName = trainNames.get(j);
+				String imageTrainName = testNames.get(j);
 				ranking.addElement(new RankElement(imageTrainName, similarity));
 			}
 			rankings.add(ranking);
@@ -81,9 +83,13 @@ public class Solver {
 		double recall1=0;
 		double recall5=0;
 		double recall10=0;
+		int n = 1;
 		for(int i=0;i<rankings.size();i++){
 			Ranking r=rankings.get(i);
-			String q=testNames.get(i);
+			String q=testNames.get(n-1);
+			if((i+1)%5==0){
+				n++;
+			}
 			mmr+=r.reciprocal(q);
 			if(r.recall(q,1)){
 				recall1++;
