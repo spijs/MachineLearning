@@ -18,8 +18,6 @@ disp('Dimensie U');
 size(imageCorr)
 disp('Dimensie V');
 size(queryCorr)
-[projectedQ, projectedI] = proj(testI,testQ, imageCorr, queryCorr);
-size(projectedQ)
-size(projectedI)
-projQ = projectedQ.';
-projI = projectedI.';
+[projQ, projI] = proj(testI,testQ, imageCorr, queryCorr);
+size(projQ)
+size(projI)
