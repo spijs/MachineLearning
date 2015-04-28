@@ -13,11 +13,13 @@ for i = 1:x
     end
 end
 
-[imageCorr,queryCorr, r] = cca(bigTrain.',trainqueries.');
+[imageCorr,queryCorr, r] = canoncorr(bigTrain,trainqueries);
 disp('Dimensie U');
 size(imageCorr)
 disp('Dimensie V');
 size(queryCorr)
 [projectedQ, projectedI] = proj(testI,testQ, imageCorr, queryCorr);
-projQ = projectedQ.'
-projI = projectedI.'
+size(projectedQ)
+size(projectedI)
+projQ = projectedQ.';
+projI = projectedI.';
