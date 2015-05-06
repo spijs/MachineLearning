@@ -1,0 +1,66 @@
+puzzle_verydifficult
+-----------------constraints
+% 238,388 inferences, 0.016 CPU in 0.026 seconds (60% CPU, 15281184 Lips)
+filling
+% 182,707 inferences, 0.016 CPU in 0.017 seconds (92% CPU, 11711912 Lips)
+finished
+puzzle_expert
+-----------------constraints
+% 146,759 inferences, 0.016 CPU in 0.017 seconds (92% CPU, 9407568 Lips)
+filling
+% 323,948 inferences, 0.031 CPU in 0.034 seconds (92% CPU, 10382882 Lips)
+finished
+puzzle_lambda
+-----------------constraints
+% 122,233 inferences, 0.016 CPU in 0.013 seconds (120% CPU, 7835398 Lips)
+filling
+% 81,564,309 inferences, 7.847 CPU in 7.842 seconds (100% CPU, 10394528 Lips)
+finished
+puzzle_hard17
+-----------------constraints
+% 122,779 inferences, 0.016 CPU in 0.014 seconds (111% CPU, 7870398 Lips)
+filling
+% 2,753,502 inferences, 0.281 CPU in 0.276 seconds (102% CPU, 9805856 Lips)
+finished
+puzzle_symme
+-----------------constraints
+% 146,942 inferences, 0.016 CPU in 0.017 seconds (92% CPU, 9419299 Lips)
+filling
+% 5,976,299 inferences, 0.577 CPU in 0.582 seconds (99% CPU, 10353882 Lips)
+finished
+puzzle_eastermonster
+-----------------constraints
+% 147,649 inferences, 0.016 CPU in 0.016 seconds (97% CPU, 9464619 Lips)
+filling
+% 5,682,031 inferences, 0.546 CPU in 0.553 seconds (99% CPU, 10406583 Lips)
+finished
+puzzle_tarek_052
+-----------------constraints
+% 146,345 inferences, 0.016 CPU in 0.016 seconds (97% CPU, 9381030 Lips)
+filling
+% 1,331,388 inferences, 0.125 CPU in 0.129 seconds (97% CPU, 10668105 Lips)
+finished
+puzzle_goldennugget
+-----------------constraints
+% 143,024 inferences, 0.016 CPU in 0.016 seconds (97% CPU, 9168146 Lips)
+filling
+% 7,938,558 inferences, 0.764 CPU in 0.768 seconds (100% CPU, 10385279 Lips)
+finished
+puzzle_coloin
+-----------------constraints
+% 142,321 inferences, 0.016 CPU in 0.016 seconds (97% CPU, 9123083 Lips)
+filling
+% 76,702,494 inferences, 7.394 CPU in 7.401 seconds (100% CPU, 10372985 Lips)
+finished
+puzzle_fin
+-----------------constraints
+% 143,175 inferences, 0.016 CPU in 0.016 seconds (97% CPU, 9177826 Lips)
+filling
+% 31,525,608 inferences, 3.089 CPU in 3.097 seconds (100% CPU, 10206360 Lips)
+finished
+puzzle_clue17
+-----------------constraints
+% 130,943 inferences, 0.016 CPU in 0.015 seconds (104% CPU, 8393728 Lips)
+filling
+% 26,370,686 inferences, 2.605 CPU in 2.603 seconds (100% CPU, 10122262 Lips)
+finished

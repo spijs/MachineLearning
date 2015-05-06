@@ -1,6 +1,30 @@
 :- use_module(library(chr)).
-:- chr_constraint field/4,field/3,fase/1,print/2,fillone/1.
+:- chr_constraint field/4,field/3,fase/1,print/2,fillone/1,number_row/3,number_row/4,add/3.
 
+
+% field to number
+field(R,C,V) ==> add(V,R,C).
+number_row(V,R,C) \ field(R,C,_,_) <=> field(R,C,V).
+
+% number in a row must have a column
+number_row(_,_,0,[]) <=> false.
+
+%add
+add(V,R,C), number_row(V,R,_,_)  <=> number_row(V,R,C).
+number_row(V,R,C) \ add(V,R,C) <=>true.
+ 
+% same number and column
+same_column @ number_row(V,_,D) \ number_row(V,R,N,L) <=>  select(D,L,LL) | 
+    N1 is N-1, N1>0, number_row(V,R,N1,LL).
+    
+%same row and column
+same_row @ number_row(_,R,D) \ number_row(V,R,N,L) <=> select(D,L,LL) | 
+    N1 is N-1, N1>0, number_row(V,R,N1,LL).
+    
+% same block    
+same_block @ number_row(A,R,C) \ number_row(A,R2,N,L) <=> findall(El,(member(El,L), same_block(R,C,R2,El)),Els), subtract(L,Els,LL), length(Els,N2),
+    N1 is N-N2, N2>0 | number_row(A,R2,N1,LL).
+    
 % same column
 same_column @ field(_,B,D) \ field(A,B,N,L) <=> select(D,L,LL) | 
     N1 is N-1, N1>0, field(A,B,N1,LL).
@@ -11,23 +35,37 @@ same_row @ field(A,_,V) \ field(A,B,N,L) <=> select(V,L,LL) |
 same_block @ field(A,B,V) \ field(C,D,N,L) <=> select(V,L,LL), same_block(A,B,C,D) |
     N1 is N-1, N1>0, field(C,D,N1,LL).
 
-% One value left
-field(A,B,1,[V]) <=> field(A,B,V).
-
-% Fill values by choosing - cfr. https://dtai.cs.kuleuven.be/CHR/old/examples/sudoku_thom.pl
+% Fill values by choosing
 fillone(N), field(A,B,N2,L) <=> N2=N | 
     member(V,L), field(A,B,V), fillone(1).
+fillone(N), number_row(A,B,N2,L) <=> N2=N | 
+    member(V,L), number_row(A,B,V), fillone(1).
 fillone(N) <=> N < 9 | N1 is N+1, fillone(N1).
 fillone(_) <=> true.
 
 solve(Puzzle):-
     puzzles(P,Puzzle),
+    write(totals), time(set_totals(1)),
     write(constraints), time(set_constraints(P)),
-    write(filling), time(fillone(2)),
-    write(printing),nl, time(print_solutions),
+    write(fill), time(fillone(1)),
+    write(print),nl, time(print_solutions),
     write(finished).
  
 % Prepare 
+
+set_totals(N):-N>9.
+set_totals(I):-
+    I =< 9,
+    set_rows(I,1),
+    I1 is I+1,
+    set_totals(I1).
+
+set_rows(_,N):-N>9.
+set_rows(N,R):- 
+    R =< 9,
+    number_row(N,R,9,[1,2,3,4,5,6,7,8,9]),
+    NewR is R+1,
+    set_rows(N,NewR).
    
 set_constraints(P):-set_constraints(P,1).
 set_constraints([],_).
@@ -61,10 +99,10 @@ print_solutions:-
     print_row(9).    
     
 print_row(X):-print(X,1),print(X,2),print(X,3),print(X,4),print(X,5),print(X,6),print(X,7),print(X,8),print(X,9).
-print(R,9),field(R,9,V) <=> M is R mod 3, M == 0 | write(V),nl,write(------------),nl.
-print(R,9),field(R,9,V) <=> write(V),nl.
-print(R,C),field(R,C,V) <=> M is C mod 3, M == 0 | write(V),write('|').
-print(R,C),field(R,C,V) <=> write(V).
+print(R,9),field(R,9,V),number_row(V,R,9) <=> M is R mod 3, M == 0 | write(V),nl,write(------------),nl.
+print(R,9),field(R,9,V),number_row(V,R,9) <=> write(V),nl.
+print(R,C),field(R,C,V), number_row(V,R,C) <=> M is C mod 3, M == 0 | write(V),write('|').
+print(R,C),field(R,C,V), number_row(V,R,C) <=> write(V).
 
     
     
