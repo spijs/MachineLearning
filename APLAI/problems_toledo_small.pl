@@ -130,3 +130,11 @@ problem( 284, [ (2,1,water) ],
  			[0, 1, 0, 0, 4, 4, 3, 4, 2, 2] , 
  			[5, 0, 1, 2, 1, 3, 1, 1, 4, 2] ).
 
+problem(full,[(2,2,top),(2,4,top),(2,6,top),(2,8,top),(2,10,top),
+              (3,2,middle),(3,4,middle), (3,6,middle),(3,8,bottom),(3,10,bottom),
+              (4,2,middle),(4,4,bottom), (4,6,bottom),
+              (5,2,bot),
+              (6,8,top),
+              (7,2,circle),(7,4,circle),(7,6,circle),(7,8,bottom),(7,10,circle)],
+            [0, 5, 5, 3, 1, 1, 5, 0, 0, 0],
+            [0, 5, 0, 4, 0, 4, 0, 4, 0, 3]). 

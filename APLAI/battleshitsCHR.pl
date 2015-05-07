@@ -6,6 +6,7 @@ nbCruise(I) ==> I>2 | false.
 nbDest(I) ==> I>3 | false.
 nbSub(I) ==> I>4 | false.
 
+field(_,_,0,[]) ==> false.
 row(_,T,C) ==> C>T | false.
 column(_,T,C) ==> C>T | false.
 column(_,_,C) ==> C>10|false.
@@ -35,24 +36,27 @@ add(R,C,V), row(R,Tr,Rc), column(C,Tc,Cc),field(R,C,_,L) <=> member(V,L),
     
 taken(R,C) \ field(R,C,_,_) <=> true.
 
+%--------------------------------------------------------
     
 % Verminder mogelijke stukken boot
 
- nbSub(S), nbBattle(B), nbCruise(C), nbDest(D) , field(R,C,_,_) ==> S=:=4,D=:=3,C=:=2,B=:=1 | add(R,C,water).
- nbSub(I) \ field(R,C,N,L) <=> I =:= 4 | subtract(L,[circle],LL), N1 is N-1, N1>0 | field(R,C,N1,LL).
+ nbSub(S), nbBattle(B), nbCruise(C), nbDest(D) , field(R,Co,_,_) ==> S=:=4,D=:=3,C=:=2,B=:=1 | add(R,Co,water).
+ nbSub(I) \ field(R,C,N,L) <=> I =:= 4, select(L,circle,LL), N1 is N-1, N1>0 | field(R,C,N1,LL).
  
  % rij of kolom zijn gevuld
  column(C,N,N) , field(R,C,_,_) ==> add(R,C,water).
  row(R,N,N) , field(R,C,_,_) ==> add(R,C,water).
-
+ column(_,N,N) <=> true.
+ row(_,N,N) <=> true.
+ 
  % bovenste rij
- field(R,C,N,L) <=> R=:=1, subtract(L,[middle,bottom],LL), length(LL,Le),N1 is Le, Le>0, N>N1 | field(R,C,N1,LL).
+ field(R,C,N,L) <=> R=:=1, subtract(L,[bottom],LL), length(LL,Le),N1 is Le, Le>0, N>N1 | field(R,C,N1,LL).
  % onderste rij
- field(R,C,N,L) <=> R=:=10, subtract(L,[middle,top],LL), length(LL,Le),N1 is Le, Le>0, N>N1 | field(R,C,N1,LL).
+ field(R,C,N,L) <=> R=:=10, subtract(L,[top],LL), length(LL,Le),N1 is Le, Le>0, N>N1 | field(R,C,N1,LL).
  % linke kolom
- field(R,C,N,L) <=> C=:=1, subtract(L,[middle,right],LL), length(LL,Le),N1 is Le, Le>0, N>N1 | field(R,C,N1,LL).
+ field(R,C,N,L) <=> C=:=1, subtract(L,[right],LL), length(LL,Le),N1 is Le, Le>0, N>N1 | field(R,C,N1,LL).
  % rechtse kolom
- field(R,C,N,L) <=> C=:=10, subtract(L,[middle,left],LL), length(LL,Le),N1 is Le, Le>0, N>N1 | field(R,C,N1,LL).
+ field(R,C,N,L) <=> C=:=10, subtract(L,[left],LL), length(LL,Le),N1 is Le, Le>0, N>N1 | field(R,C,N1,LL).
 
  % diagonaal niet mogelijk
  taken(R,C) ==> Ru is R+1, Rd is R-1, Cu is C+1, Cd is C-1, add(Rd,Cd,water), add(Rd,Cu,water), add(Rd,Cd,water), add(Ru,Cd,water). 
@@ -81,10 +85,10 @@ taken(R,C) \ field(R,C,_,_) <=> true.
  
  
  % Als midden, ernaast of erboven geen sub
- field(R,C1,m) \ field(R,C2,_,L) <=> C2 is C1+1, subtract(L,[circle],LL), length(LL,Le) , N1 is Le, Le> 0 | field(R,C2,N1,LL).
- field(R,C1,m) \ field(R,C2,_,L) <=> C2 is C1-1, subtract(L,[circle],LL), length(LL,Le) , N1 is Le, Le> 0 |  field(R,C2,N1,LL).
- field(R,C1,m) \ field(R,C2,_,L) <=> C2 is C1+1, subtract(L,[circle],LL), length(LL,Le) , N1 is Le, Le> 0 | field(R,C2,N1,LL).
- field(R,C1,m) \ field(R,C2,_,L) <=> C2 is C1-1, subtract(L,[circle],LL), length(LL,Le) , N1 is Le, Le> 0 |  field(R,C2,N1,LL).
+ field(R,C1,m) \ field(R,C2,N,L) <=> C2 is C1+1, subtract(L,[circle],LL), length(LL,Le) , N1 is Le, Le> 0 ,N>N1| field(R,C2,N1,LL).
+ field(R,C1,m) \ field(R,C2,N,L) <=> C2 is C1-1, subtract(L,[circle],LL), length(LL,Le) , N1 is Le, Le> 0,N>N1 |  field(R,C2,N1,LL).
+ field(R1,C,m) \ field(R2,C,N,L) <=> R2 is R1+1, subtract(L,[circle],LL), length(LL,Le) , N1 is Le, Le> 0,N>N1 | field(R2,C,N1,LL).
+ field(R1,C,m) \ field(R2,C,N,L) <=> R2 is R1-1, subtract(L,[circle],LL), length(LL,Le) , N1 is Le, Le> 0,N>N1 |  field(R2,C,N1,LL).
   
 %-------------------------------------------       
 % Boten zijn klaar
@@ -98,11 +102,11 @@ field(R2,C,b),field(R1,C,t) ,nbDest(I) <=> R is R1+1, R2 =:= R | NewI is I+1, nb
 % Horizontal cruiser
 field(R,C1,l),field(R,C2,m),field(R,C3,r) ,nbDest(I) <=> C is C1+1, C2 =:= C, C4 is C2+1, C3=:=C4 | NewI is I+1, nbDest(NewI).
 % Vertical cruiser
-field(R1,C,b),field(R2,C,m),field(R3,C,t) ,nbDest(I) <=> R is R1+1, R2 =:= R, R4 is R2+1, R3=:=R4 | NewI is I+1, nbDest(NewI).
+field(R3,C,b),field(R2,C,m),field(R1,C,t) ,nbDest(I) <=> R is R1+1, R2 =:= R, R4 is R2+1, R3=:=R4 | NewI is I+1, nbDest(NewI).
 % Horizontal cruiser
 field(R,C1,l),field(R,C2,m),field(R,C3,r) ,nbDest(I) <=> C is C1+1, C2 =:= C, C4 is C2+1, C3=:=C4 | NewI is I+1, nbDest(NewI).
 % Vertical battleship
-field(R1,C,b),field(R2,C,m),field(R3,C,m),field(R4,C,t) ,nbDest(I) <=> 
+field(R4,C,b),field(R3,C,m),field(R2,C,m),field(R1,C,t) ,nbDest(I) <=> 
     R is R1+1, R2 =:= R, R6 is R2+1, R3=:=R6, R5 is R3+1, R4=:=R5 | NewI is I+1, nbDest(NewI).    
 % Horizontal battleship
 field(R,C1,l),field(R,C2,m), field(R,C3,m), field(R,C4,r) ,nbDest(I) <=> 
@@ -162,9 +166,9 @@ fillone(N), column(R,T,Co),field(R,C,_,L) <=> D is T-Co, D=:=N | member(V,L), fi
   %---------------------------------------------------------------
   % stopvoorwaarden
   
-fillone(_) \ nbBattle(I) <=> I\==1 | false.
-fillone(_) \ nbCruise(I) <=> I\==2 | false.
-fillone(_) \ nbDest(I) <=> I\==3 | false.
+fillone(_) , nbBattle(I) ==> I\==1 | false.
+fillone(_) , nbCruise(I) ==> I\==2 | false.
+fillone(_) , nbDest(I) ==> I\==3 | false.
 nbSub(I),fillone(_) ==> I\==4 | false.
 fillone(_) <=> true.
   
@@ -176,8 +180,8 @@ solve(Id):-
     set_other_fields,
     set_column_tallies(ColumnTallies),
     set_row_tallies(RowTallies),
-    set_hints(Hints),
-    fillone(1).
+    set_hints(Hints).
+   % fillone(1).
 
 
 set_other_fields:- set_other_fields(1).
