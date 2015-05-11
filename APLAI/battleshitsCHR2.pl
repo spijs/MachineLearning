@@ -28,7 +28,11 @@ new(c) <=> true.
 taken(R,C) \ taken(R,C) <=> true.
 taken(R,C) ==> boat(R,C),boat2(R,C).
 
-
+% There need to be enough spaces left not taken by a ship to fulfill the tally
+add1(_,C,water),column(C,T,Co,F,_) ==> 10-F-1 < T-Co | false.
+add1(R,_,water),row(R,T,Co,F,_) ==> 10-F-1 < T-Co | false.
+add(_,C,water),column(C,T,Co,F,_) ==> 10-F-1< T-Co | false.
+add(R,_,water),row(R,T,Co,F,_) ==> 10-F-1 < T-Co | false.
 
 field(R,C,V) \ add(R,C,V) <=> true.
 field(R,C,1,[water]) <=> chosen(R,C,'.'),water(R,C),water2(R,C).
@@ -70,11 +74,7 @@ count(b,I),count(t,J),count(l,K),count(r,L), field(R,C,N,Li),nbBattle(B),nbCruis
  
 
  
-% There need to be enough spaces left not taken by a ship to fulfill the tally
-add1(_,C,water),column(C,T,Co,F,_) ==> 10-F-1 < T-Co | false.
-add1(R,_,water),row(R,T,Co,F,_) ==> 10-F-1 < T-Co | false.
-add(_,C,water),column(C,T,Co,F,_) ==> 10-F-1< T-Co | false.
-add(R,_,water),row(R,T,Co,F,_) ==> 10-F-1 < T-Co | false.
+
 
  water(R,C) \ field(R,C1,N,L) <=> C1 =:=C+1, select(right,L,LL), N1 is N-1 | field(R,C1,N1,LL).
  water(R,C) \ field(R,C1,N,L) <=> C1 =:=C-1, select(left,L,LL), N1 is N-1 | field(R,C1,N1,LL).
@@ -223,9 +223,24 @@ field(R,C1,l),field(R,C2,m), field(R,C3,m), field(R,C4,r) ,nbBattle(I) <=>
 
   
  %make battleship horizontal
+ 
   field(R,C1,_,L1), field(R,C2,_,L2), field(R,C3,_,L3), field(R,C4,_,L4),row(R,T,F,Nbtaken,_) \ fill_battle 
     <=> T-F>=4,10-Nbtaken >= 4, C2=:=C1+1, C3=:=C2+1, C4=:=C3+1, member(left,L1), member(middle,L2), member(middle,L3), member(right,L4) ,
         add(R,C1,left), add(R,C2,middle), add(R,C3,middle), add(R,C4,right), fill_cruiser(2) | true.
+        
+     field(R,C1,_,L1), field(R,C2,_,L2), field(R,C3,_,L3), field(R,C4,_,L4),row(R,T,F,Nbtaken,_) \ fill_battle 
+    <=> T-F>=4,10-Nbtaken >= 4, C2=:=C1+1, C3=:=C2+1, C4=:=C3+1, member(left,L1), member(middle,L2), member(middle,L3), member(right,L4) ,
+        add(R,C1,left), add(R,C2,middle), add(R,C3,middle), add(R,C4,right), fill_cruiser(2) | true.
+        
+  field(R,C1,_,L1), field(R,C2,_,L2), field(R,C3,_,L3), field(R,C4,_,L4),row(R,T,F,Nbtaken,_) \ fill_battle 
+    <=> T-F>=4,10-Nbtaken >= 4, C2=:=C1+1, C3=:=C2+1, C4=:=C3+1, member(left,L1), member(middle,L2), member(middle,L3), member(right,L4) ,
+        add(R,C1,left), add(R,C2,middle), add(R,C3,middle), add(R,C4,right), fill_cruiser(2) | true.
+        
+  field(R,C1,_,L1), field(R,C2,_,L2), field(R,C3,_,L3), field(R,C4,_,L4),row(R,T,F,Nbtaken,_) \ fill_battle 
+    <=> T-F>=4,10-Nbtaken >= 4, C2=:=C1+1, C3=:=C2+1, C4=:=C3+1, member(left,L1), member(middle,L2), member(middle,L3), member(right,L4) ,
+        add(R,C1,left), add(R,C2,middle), add(R,C3,middle), add(R,C4,right), fill_cruiser(2) | true.        
+        
+        
  %make battleship vertical
   field(R1,C,_,L1), field(R2,C,_,L2), field(R3,C,_,L3), field(R4,C,_,L4),column(C,T,F,Nbtaken,_) \ fill_battle 
     <=> T-F>=4,10-Nbtaken >= 4, R2=:=R1+1, R3=:=R2+1, R4=:=R3+1, member(top,L1), member(middle,L2), member(middle,L3), member(bottom,L4) ,
@@ -281,18 +296,23 @@ chosen(R,C,right) <=> chosen(R,C,r).
   
   
   %---------------------------------------------------------------
+ solve_all:-
+    findall(_,solve(_),_).
   
 solve(Id):-
     problem(Id, Hints, RowTallies,ColumnTallies ),
+    write(puzzle),write(Id),nl,
     set_numbers,
     set_other_fields,
     set_column_tallies(ColumnTallies),
     set_row_tallies(RowTallies),
-    set_hints(Hints),
-    fill_battle,
-    print_solutions,
+    time(solve_together(Hints)),nl,
+    print_solutions,nl,nl,
     remove_constraints.
 
+ solve_together(Hints):-
+    set_hints(Hints),
+    fill_battle.
 
 set_other_fields:- set_other_fields(1).
 set_other_fields(I):-I>10.
