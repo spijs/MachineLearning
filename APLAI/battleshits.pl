@@ -8,14 +8,15 @@ battleshits(Hints, Rows, Columns,Solution):-
 	Water is (100-Boats),
 	List is Solution[1..10,1..10],
 	createOneList(List,OneList),
-	%% check_water(OneList,Water),
+	check_water(OneList,Water),
     check_rows(Rows,Solution),
     check_columns(Columns,Solution),
 	check_boats(Solution),
     write('searching'),nl,
-    %% middle_out(OneList,MOList),
+    middle_out(OneList,MOList),
+    search(MOList,0,first_fail,indomain_middle,complete, [backtrack(B)]),
     %% search(MOList,0,input_order,indomain,complete, [backtrack(B)]),
-	search(OneList,0,input_order,indomain,complete,[backtrack(B)]),
+	%% search(OneList,0,input_order,indomain,complete,[backtrack(B)]),
     pretty_print(Solution, Rows, Columns,B).
 	
 pretty_print(Solution, Rows, Columns,B):-
@@ -31,7 +32,8 @@ pretty_print(Solution, Rows, Columns,B):-
     do
 		get_element(Columns,N,Tally),
         write(Tally)
-    ).
+    ),
+    write(B).
 	
 writeRow(List):-
 (for(N,1,10),
@@ -50,12 +52,20 @@ check_boats(Solution):-
 	createOneList(List,OneList),
 	transpose(List,Trans),
 	createOneList(Trans,OneList2),
-	%% check_length4(OneList,OneList2,1),
-    check_submarines(OneList),
-	%% check_length2(OneList,OneList2, 3),
-	%% check_length3(OneList,OneList2,2),
+	count3(2,2,2,OneList,0),
+	count2(1,1,OneList,0),
+	count2(3,3,OneList,0),
+	check_length4(OneList,OneList2,1),
+	count3(2,2,2,OneList2,0),
+	count2(4,4,OneList2,0),
+	count2(5,5,OneList2,0),
     no_touching(Solution),
-    no_verticalTouching(Solution).
+    no_verticalTouching(Solution),
+    no_diagonalRightTouching(Solution),
+    no_diagonalLeftTouching(Solution),
+    check_submarines(OneList),
+	check_length2(OneList,OneList2, 3),
+	check_length3(OneList,OneList2,2).
 
 
 no_verticalTouching(Solution):-
@@ -77,6 +87,46 @@ no_touching(Solution):-
     	check_row_touching(Row)
     ).
 
+
+no_diagonalRightTouching(Solution):-
+	(for(N,2,10),
+	param(Solution)
+	do 
+		(for(I,1,9),
+		param(Solution),param(N)
+		do
+			Row is Solution[N,1..10],
+			Above is N-1,
+			RowAbove is Solution[Above,1..10],
+			get_element(Row,I,Elem),
+			%% Left is I-1,
+			Right is I+1,
+			%% get_element(RowAbove,Left,LeftElem),
+			get_element(RowAbove,Right,RightElem),
+			%% check_diagonal(LeftElem,Elem),
+			check_diagonal(Elem,RightElem)
+		)
+	).
+
+no_diagonalLeftTouching(Solution):-
+	(for(N,2,10),
+	param(Solution)
+	do 
+		(for(I,2,10),
+		param(Solution),param(N)
+		do
+			Row is Solution[N,1..10],
+			Above is N-1,
+			RowAbove is Solution[Above,1..10],
+			get_element(Row,I,Elem),
+			Left is I-1,
+			%% Right is I+1,
+			get_element(RowAbove,Left,LeftElem),
+			%% get_element(RowAbove,Right,RightElem),
+			check_diagonal(LeftElem,Elem)
+			%% check_diagonal(Elem,RightElem)
+		)
+	).
 
 
 check_above(Row,N,Solution):-
@@ -149,12 +199,22 @@ check_straight_above(Above,Elem):-
 	sumOfList([ElementIsWater,AboveIsZero,ElementBotOrMid,AboveIsMid],1).
 
 
-check_diagonal(E,Other) :-
-	#\=(E,0,ENotZero),
-	#\=(Other,0,ONotZero),
-	#=(E,0,EZero),
-	#=(Other,0,OZero),
-	and(ENotZero,ONotZero,0).
+check_diagonal(L,R) :-
+	#=(L,0,LWater),
+	#=(R,0,RWater),
+	#\=(R,0,RnotWater),
+	#\=(L,0,LnotWater),
+	and(LnotWater,RWater,B1),
+	and(RnotWater,LWater,B2),
+	and(Lwater,RWater,B3),
+	sumOfList([B1,B2,B3],1).
+
+
+	%% #\=(E,0,ENotZero),
+	%% #\=(Other,0,ONotZero),
+	%% %% #=(E,0,EZero),
+	%% %% #=(Other,0,OZero),
+	%% and(ENotZero,ONotZero,0).
 	%% and(ENotZero,OZero,B1),
 	%% and(EZero,ONotZero,B2),
 	%% and(EZero,OZero,BothZero),
@@ -165,54 +225,114 @@ check_diagonal(E,Other) :-
 
 %% Checks whether or not the elements are compatible. The given LeftElement is located on
 %% the left of Element
-checkLeft(Left,Right):- % Left element is water, right element is not a right piece
-	#=(Left,0,1),
-	#\=(Right,3,1).
+%% checkLeft(Left,Right):- % Left element is water, right element is not a right piece
+%% 	#=(Left,0,1),
+%% 	#\=(Right,3,1).
 
-checkLeft(Left,Right):- % Left element is a L piece, right element is middle or right
-	#=(Left,1,1),
-	#=(Right,2,B1),
-	#=(Right,3,B2),
-	or(B1,B2,1).
+%% checkLeft(Left,Right):- % Left element is a L piece, right element is middle or right
+%% 	#=(Left,1,1),
+%% 	#=(Right,2,B1),
+%% 	#=(Right,3,B2),
+%% 	or(B1,B2,1).
 
-checkLeft(Left,Right):- % Left element is a M piece, right element is middle or right
-	#=(Left,2,1),
-	#=(Right,2,B1),
-	#=(Right,3,B2),
-	#=(Right,0,B3)
-	or(B1,B2,B12),
-	or(B12,B3,1).
+%% checkLeft(Left,Right):- % Left element is a M piece, right element is middle or right
+%% 	#=(Left,2,1),
+%% 	#=(Right,2,B1),
+%% 	#=(Right,3,B2),
+%% 	#=(Right,0,B3)
+%% 	or(B1,B2,B12),
+%% 	or(B12,B3,1).
+
+%% checkLeft(Left,Right):-
+%% 	#\=(Left,0,1),
+%% 	#\=(Left,1,1),
+%% 	#\=(Left,2,1),
+%% 	#=(Right,0,1).
+
 
 checkLeft(Left,Right):-
-	#\=(Left,0,1),
-	#\=(Left,1,1),
-	#\=(Left,2,1),
-	#=(Right,0,1).
+	#=(Left,0,B1),
+	#\=(Right,3,B2),
+	and(B1,B2,First),
+
+	#=(Left,1,B),
+	#=(Right,2,B21),
+	#=(Right,3,B22),
+	or(B21,B22,B23),
+	and(B,B23,Second),
+
+	#=(Left,2,B3),
+	#=(Right,2,B31),
+	#=(Right,3,B32),
+	#=(Right,0,B33),
+	or(B31,B32,B312),
+	or(B312,B33,B3T),
+	and(B3,B3T,Third),
+
+	#\=(Left,0,B41),
+	#\=(Left,1,B42),
+	#\=(Left,2,B43),
+	#=(Right,0,B4W),
+	and(B41,B42,B412),
+	and(B412,B43,B4T),
+	and(B4W,B4T,Fourth),
+
+	sumOfList([First,Second,Third,Fourth],1).
 
 
-check_aboveEl(Top,Bottom):- % Left element is water, right element is not a right piece
-	#=(Top,0,1),
-	#\=(Bottom,5,1).
+check_aboveEl(Top,Bottom):- % Top element is water, bottom element is not a bottom piece
+	#=(Top,0,B1),
+	#\=(Bottom,5,B2),
+	and(B1,B2,First),
 
-check_aboveEl(Top,Bottom):- % Top element is a L piece, Bott element is middle or Botto
-	#=(Top,4,1),
-	#=(Bottom,2,B1),
-	#=(Bottom,5,B2),
-	or(B1,B2,1).
+	#=(Top,4,B),
+	#=(Bottom,2,B21),
+	#=(Bottom,5,B22),
+	or(B21,B22,B23),
+	and(B,B23,Second),
 
-check_aboveEl(Top,Bottom):- % Top element is a M piece, Bott element is middle or Botto
-	#=(Top,2,1),
-	#=(Bottom,2,B1),
-	#=(Bottom,5,B2),
-	#=(Bottom,0,B3)
-	or(B1,B2,B12),
-	or(B12,B3,1).
+	#=(Top,2,B3),
+	#=(Bottom,2,B31),
+	#=(Bottom,5,B32),
+	#=(Bottom,0,B33),
+	or(B31,B32,B312),
+	or(B312,B33,B3T),
+	and(B3,B3T,Third),
 
-check_aboveEl(Top,Bottom):-
-	#\=(Top,0,1),
-	#\=(Top,4,1),
-	#\=(Top,2,1),
-	#=(Bottom,0,1).
+	#\=(Top,0,B41),
+	#\=(Top,4,B42),
+	#\=(Top,2,B43),
+	#=(Bottom,0,B4W),
+	and(B41,B42,B412),
+	and(B412,B43,B4T),
+	and(B4W,B4T,Fourth),
+
+	sumOfList([First,Second,Third,Fourth],1).
+
+
+%% check_aboveEl(Top,Bottom):- % Top element is a T piece, Bott element is middle or Botto
+%% 	#=(Top,4,B),
+%% 	#=(Bottom,2,B1),
+%% 	#=(Bottom,5,B2),
+%% 	or(B1,B2,B3),
+%% 	and(B,B3,Second).
+
+%% check_aboveEl(Top,Bottom):- % Top element is a M piece, Bott element is middle or Botto
+%% 	#=(Top,2,1),
+%% 	#=(Bottom,2,B1),
+%% 	#=(Bottom,5,B2),
+%% 	#=(Bottom,0,B3)
+%% 	or(B1,B2,B12),
+%% 	or(B12,B3,Third).
+
+%% check_aboveEl(Top,Bottom):-
+%% 	#\=(Top,0,B1),
+%% 	#\=(Top,4,B2),
+%% 	#\=(Top,2,B3),
+%% 	#=(Bottom,0,BW),
+%% 	and(B1,B2,B12),
+%% 	and(B12,B3,BT),
+%% 	and(B12,BT,Fourth).
 
 
 
@@ -309,8 +429,7 @@ count_Vertical2(Solution,N):-
 	count2(4,5,Solution,N).
 
  check_submarines(Solution):-
-    %% occurrences(6,Solution,4).
-    count2(6,_,Solution,4).
+    occurrences(6,Solution,4).
 	
 
     
