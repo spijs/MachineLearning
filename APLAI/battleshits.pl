@@ -1,3 +1,4 @@
+
 :- lib(ic).
 :- lib(lists).
 :- lib(ic_global).
@@ -31,7 +32,7 @@ pretty_print(Solution, Rows, Columns,B):-
 		get_element(Columns,N,Tally),
         write(Tally)
     ),
-    write(B).
+    nl,write(backtracks ),write(B).
 	
 writeRow(List):-
 (for(N,1,10),
@@ -50,11 +51,13 @@ check_boats(Solution):-
 	createOneList(List,OneList),
 	transpose(List,Trans),
 	createOneList(Trans,OneList2),
-	check_length4(List,Trans,1),
+    set_sides(Solution),
+    set_corners(Solution),	
     no_touching(Solution),
     no_verticalTouching(Solution),
     no_diagonalRightTouching(Solution),
     no_diagonalLeftTouching(Solution),
+    check_length4(List,Trans,1),
     check_submarines(OneList),
 	check_length2(List,Trans, 3),
 	check_length3(List,Trans,2).
@@ -121,6 +124,49 @@ no_touching(Solution):-
     	Row is Solution[N,1..10],
     	check_row_touching(Row)
     ).
+
+set_sides(Solution):-
+    set_vertical_sides(Solution),
+    set_horizontal_sides(Solution).
+    
+set_vertical_sides(Solution):-
+	(for(N,1,10),
+	param(Solution)
+    do 
+        Row is Solution[N,1..10],
+        get_element(Row,1,Left),
+        get_element(Row,10,Right),
+        Left #\= 3,
+        Right #\= 1
+    ).
+    
+set_corners(Solution):-
+    Lu is Solution[1,1],
+    Ru is Solution[1,10],
+    Lb is Solution[10,1],
+    Rb is Solution[10,10],
+    Lu #\= 2,
+    Ru #\= 2,
+    Lb #\= 2,
+    Rb #\= 2.
+
+set_horizontal_sides(Solution):-
+    Row is Solution[1,1..10],
+    (for(I,1,9),
+	param(Row)
+		do
+            get_element(Row,I,Elem),
+            Elem #\= 5
+    )
+    ,
+    Row2 is Solution[10,1..10],
+    (for(J,1,9),
+	param(Row2)
+		do
+            get_element(Row2,J,Elem),
+            Elem #\= 4
+    ).    
+    
 
 
 no_diagonalRightTouching(Solution):-
@@ -191,6 +237,40 @@ check_diagonal(L,R) :-
 	and(Lwater,RWater,B3),
 	sumOfList([B1,B2,B3],1).
 
+checkRight(Left,Right):-
+    #=(Right,0,B1),
+	#\=(Left,1,B2),
+	and(B1,B2,First),
+
+	#=(Right,3,B),
+	#=(Left,2,B21),
+	#=(Left,1,B22),
+	or(B21,B22,B23),
+	and(B,B23,Second),
+
+	#=(Right,2,B3),
+	#=(Left,2,B31),
+	#=(Left,1,B32),
+	#=(Left,0,B33),
+	or(B31,B32,B312),
+	or(B312,B33,B3T),
+	and(B3,B3T,Third),
+
+	#=(Right,1,B41),
+	#=(Right,5,B42),
+	#=(Right,4,B43),
+    #=(Right,6,B44),
+	#=(Left,0,B4W),
+	or(B41,B42,B412),
+	or(B43,B44,B434),
+    or(B412,B434,B4T),
+	and(B4W,B4T,Fourth),
+
+	sumOfList([First,Second,Third,Fourth],1).
+    
+%% Checks whether or not the elements are compatible. The given RightElement is located on
+%% the right of Element
+
 checkLeft(Left,Right):-
 	#=(Left,0,B1),
 	#\=(Right,3,B2),
@@ -210,51 +290,14 @@ checkLeft(Left,Right):-
 	or(B312,B33,B3T),
 	and(B3,B3T,Third),
 
-	#=(Left,3,B41),
-	#=(Left,4,B42),
-	#=(Left,5,B43),
+	#=(Left,4,B41),
+	#=(Left,5,B42),
+	#=(Left,3,B43),
     #=(Left,6,B44),
 	#=(Right,0,B4W),
 	or(B41,B42,B412),
-	or(B412,B43,B45),
-    or(B44,B45,B4T),
-	and(B4W,B4T,Fourth),
-
-	sumOfList([First,Second,Third,Fourth],1).
-    
-%% Checks whether or not the elements are compatible. The given RightElement is located on
-%% the right of Element
-checkRight(Left,Right):-
-    % l . kan niet
-	#=(Right,0,B1),
-	#\=(Left,1,B2),
-	and(B1,B2,First),
-
-    % als rechtse r is is links m of l
-	#=(Right,3,B),
-	#=(Left,2,B21),
-	#=(Left,1,B22),
-	or(B21,B22,B23),
-	and(B,B23,Second),
-
-    % Als rechtse m is is links m of l of .
-	#=(Right,2,B3),
-	#=(Left,2,B31),
-	#=(Left,1,B32),
-	#=(Left,0,B33),
-	or(B31,B32,B312),
-	or(B312,B33,B3T),
-	and(B3,B3T,Third),
-
-    % rechtse c,t,b,l -> links is .
-	#=(Right,1,B41),
-	#=(Right,4,B42),
-	#=(Right,5,B43),
-    #=(Right,6,B44),
-	#=(Left,0,B4W),
-	or(B41,B42,B412),
-	or(B412,B43,B45),
-    or(B44,B45,B4T),
+	or(B43,B44,B434),
+    or(B412,B434,B4T),
 	and(B4W,B4T,Fourth),
 
 	sumOfList([First,Second,Third,Fourth],1).
@@ -470,7 +513,7 @@ sumOfList(List,Sum):-
    do
    S1 = X + S2
    ),
-   Sum $= eval(Expr).
+   Sum #= eval(Expr).
 
 
 to_string(0,".").
@@ -509,3 +552,4 @@ search(moffmo,List,B) :-
     middle_out(List,MOList),
     search(MOList,0,first_fail,
     indomain_middle,complete, [backtrack(B)]).    
+
