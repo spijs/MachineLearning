@@ -52,7 +52,8 @@ check_boats(Solution):-
 	transpose(List,Trans),
 	createOneList(Trans,OneList2),
     set_sides(Solution),
-    set_corners(Solution),	
+    set_corners(Solution),
+    count_pieces(OneList),
     no_touching(Solution),
     no_verticalTouching(Solution),
     no_diagonalRightTouching(Solution),
@@ -61,6 +62,15 @@ check_boats(Solution):-
     check_submarines(OneList),
 	check_length2(List,Trans, 3),
 	check_length3(List,Trans,2).
+
+
+count_pieces(List):-
+	occurrences(2,List,4),
+	occurrences(1,List,H),
+	occurrences(3,List,H),
+	occurrences(4,List,V),
+	occurrences(5,List,V),
+	sumOfList([H,V],6).
 
 
 check_length4(List,Trans, N):- 
