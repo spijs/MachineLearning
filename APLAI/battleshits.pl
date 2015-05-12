@@ -50,14 +50,57 @@ check_boats(Solution):-
 	createOneList(List,OneList),
 	transpose(List,Trans),
 	createOneList(Trans,OneList2),
-	check_length4(OneList,OneList2,1),
+	check_length4(List,Trans,1),
     no_touching(Solution),
     no_verticalTouching(Solution),
     no_diagonalRightTouching(Solution),
     no_diagonalLeftTouching(Solution),
     check_submarines(OneList),
-	check_length2(OneList,OneList2, 3),
-	check_length3(OneList,OneList2,2).
+	check_length2(List,Trans, 3),
+	check_length3(List,Trans,2).
+
+
+check_length4(List,Trans, N):- 
+	(fromto([], Tail, [H|Tail], Rows),
+	foreach(Row,List) 
+	do
+		count4(1,2,2,3,Row,H)
+	),
+	(fromto([], Tail, [H|Tail], Columns),
+	foreach(Col,Trans) 
+	do
+		count4(4,2,2,5,Col,H)
+	),
+	append(Rows,Columns,Total),
+	sumOfList(Total,N).
+
+	check_length3(List,Trans, N):- 
+	(fromto([], Tail, [H|Tail], Rows),
+	foreach(Row,List) 
+	do
+		count3(1,2,3,Row,H)
+	),
+	(fromto([], Tail, [H|Tail], Columns),
+	foreach(Col,Trans) 
+	do
+		count3(4,2,5,Col,H)
+	),
+	append(Rows,Columns,Total),
+	sumOfList(Total,N).
+
+	check_length2(List,Trans, N):- 
+	(fromto([], Tail, [H|Tail], Rows),
+	foreach(Row,List) 
+	do
+		count2(1,3,Row,H)
+	),
+	(fromto([], Tail, [H|Tail], Columns),
+	foreach(Col,Trans) 
+	do
+		count2(4,5,Col,H)
+	),
+	append(Rows,Columns,Total),
+	sumOfList(Total,N).
 
 
 no_verticalTouching(Solution):-
@@ -281,23 +324,23 @@ check_aboveEl(Top,Bottom):- % Top element is water, bottom element is not a bott
 
 
 
-% Ensures that there are only N occurences of a boat of length 2
-check_length2(List,Trans, N):-
-	count2(1,3,List,H),
-	count2(4,5,Trans,V),
-	sumOfList([H,V],N).
+%% % Ensures that there are only N occurences of a boat of length 2
+%% check_length2(List,Trans, N):-
+%% 	count2(1,3,List,H),
+%% 	count2(4,5,Trans,V),
+%% 	sumOfList([H,V],N).
 
-% Ensures that there are only N occurences of a boat of length 3
-check_length3(List,Trans, N):- 
-	count3(1,2,3,List,H),
-	count3(4,2,5,Trans,V),
-	sumOfList([H,V],N).
+%% % Ensures that there are only N occurences of a boat of length 3
+%% check_length3(List,Trans, N):- 
+%% 	count3(1,2,3,List,H),
+%% 	count3(4,2,5,Trans,V),
+%% 	sumOfList([H,V],N).
 
-% Ensures that there are only N occurences of a boat of length 4
-check_length4(List,Trans, N):- 
-	count4(1,2,2,3,List,H),
-	count4(4,2,2,5,Trans,V),
-	sumOfList([H,V],N).
+%% % Ensures that there are only N occurences of a boat of length 4
+%% check_length4(List,Trans, N):- 
+%% 	count4(1,2,2,3,List,H),
+%% 	count4(4,2,2,5,Trans,V),
+%% 	sumOfList([H,V],N).
 
 
  check_submarines(Solution):-
