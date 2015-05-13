@@ -13,6 +13,17 @@ test(105).
 test(110).
 test(115).
 test(120).
+test(125).
+test(130).
+test(135).
+test(140).
+test(145).
+test(150).
+test(155).
+test(160).
+test(165).
+test(170).
+
 
 %findall(I,(test(I),solve(I,naive)),_).
 
