@@ -1,10 +1,19 @@
-
 :- lib(ic).
 :- lib(lists).
 :- lib(ic_global).
 
+
+all_solutions(Puzzle,Search):-
+
+write('Puzzle: '),write(Puzzle),nl,
+problem(Puzzle,_,Rows,Columns),
+findall(_,battleshits([],Rows,Columns,Search),L),length(L,LL),
+write('NbSolutions: '),write(LL),nl,
+write('############').
+
 solve(Puzzle,Search):-
     problem(Puzzle,Hints, Rows,Columns),
+    write('Puzzle'),write(Puzzle),nl,
     battleshits(Hints,Rows,Columns,Search).
     
 battleshits(Hints, Rows, Columns,Search):-
@@ -16,6 +25,7 @@ battleshits(Hints, Rows, Columns,Search):-
     createOneList(List,OneList),
     write('searching'),nl,
     search(Search,OneList,B),
+    write(Search),nl,
     pretty_print(Solution, Rows, Columns,B).
 	
 pretty_print(Solution, Rows, Columns,B):-
@@ -32,8 +42,9 @@ pretty_print(Solution, Rows, Columns,B):-
 		get_element(Columns,N,Tally),
         write(Tally)
     ),
-    nl,write(backtracks ),write(B).
-	
+    nl,write('backtracks:'),write(B),nl,
+    write('#############'),nl.
+
 writeRow(List):-
 (for(N,1,10),
 	param(List)
@@ -53,7 +64,7 @@ check_boats(Solution):-
 	createOneList(Trans,OneList2),
     set_sides(Solution),
     set_corners(Solution),
-    count_pieces(OneList),
+    count_pieces(OneList, OneList2),
     no_touching(Solution),
     no_verticalTouching(Solution),
     no_diagonalRightTouching(Solution),
@@ -64,13 +75,27 @@ check_boats(Solution):-
 	check_length3(List,Trans,2).
 
 
-count_pieces(List):-
+
+count_pieces(List,OtherList):-
 	occurrences(2,List,4),
 	occurrences(1,List,H),
 	occurrences(3,List,H),
 	occurrences(4,List,V),
 	occurrences(5,List,V),
-	sumOfList([H,V],6).
+	sumOfList([H,V],6),
+	count3(2,2,2,List,0), % mmm 
+	count3(1,2,0,List,0), % lm.
+	count4(1,2,2,0,List,0), % lmm.
+	count3(0,2,3,List,0), % .mr
+	count4(0,2,2,3,List,0), % .mmr
+	count4(0,2,2,0,List,0), % .mm.
+
+	count3(2,2,2,OtherList,0), % mmm
+	count3(4,2,0,OtherList,0), % tm.
+	count4(4,2,2,0,OtherList,0), % tmm.
+	count3(0,2,5,OtherList,0), % .mb
+	count4(0,2,2,0,OtherList,0), % .mm.
+	count4(0,2,2,5,OtherList,0). % .mmb
 
 
 check_length4(List,Trans, N):- 
@@ -120,9 +145,7 @@ no_verticalTouching(Solution):-
 	(for(N,1,10),
 	param(Solution)
     do
-    	write('column'),write(N),nl,
     	Col is Solution[1..10,N],
-    	%% write(Col),nl,
     	check_col_touching(Col)
     ).
 
@@ -130,7 +153,6 @@ no_touching(Solution):-
 	(for(N,1,10),
 	param(Solution)
     do
-    	write('row'),write(N),nl,
     	Row is Solution[N,1..10],
     	check_row_touching(Row)
     ).
@@ -162,7 +184,7 @@ set_corners(Solution):-
 
 set_horizontal_sides(Solution):-
     Row is Solution[1,1..10],
-    (for(I,1,9),
+    (for(I,1,10),
 	param(Row)
 		do
             get_element(Row,I,Elem),
@@ -170,7 +192,7 @@ set_horizontal_sides(Solution):-
     )
     ,
     Row2 is Solution[10,1..10],
-    (for(J,1,9),
+    (for(J,1,10),
 	param(Row2)
 		do
             get_element(Row2,J,Elem),
@@ -244,7 +266,7 @@ check_diagonal(L,R) :-
 	#\=(L,0,LnotWater),
 	and(LnotWater,RWater,B1),
 	and(RnotWater,LWater,B2),
-	and(Lwater,RWater,B3),
+	and(LWater,RWater,B3),
 	sumOfList([B1,B2,B3],1).
 
 checkRight(Left,Right):-
@@ -253,30 +275,38 @@ checkRight(Left,Right):-
 	and(B1,B2,First),
 
 	#=(Right,3,B),
-	#=(Left,2,B21),
-	#=(Left,1,B22),
-	or(B21,B22,B23),
-	and(B,B23,Second),
+	#\=(Left,0,LnotZero),
+	#\=(Left,3,LnotThree),
+	#\=(Left,4,LnotFour),
+	#\=(Left,5,LnotFive),
+	#\=(Left,6,LnotSix),
+	and(LnotZero,LnotThree,Ln03),
+	and(LnotFour,LnotFive,Ln45),
+	and(LnotSix,Ln03,Ln036),
+	and(Ln036,Ln45,LTotal),
+	and(B,LTotal,Second),
 
 	#=(Right,2,B3),
-	#=(Left,2,B31),
-	#=(Left,1,B32),
-	#=(Left,0,B33),
-	or(B31,B32,B312),
-	or(B312,B33,B3T),
-	and(B3,B3T,Third),
+	#<(Left,3,Ls3),
+	and(B3,Ls3,Third),
 
 	#=(Right,1,B41),
-	#=(Right,5,B42),
-	#=(Right,4,B43),
-    #=(Right,6,B44),
-	#=(Left,0,B4W),
-	or(B41,B42,B412),
-	or(B43,B44,B434),
-    or(B412,B434,B4T),
-	and(B4W,B4T,Fourth),
+	#=(Left,0,B42),
+	and(B41,B42,Fourth),
 
-	sumOfList([First,Second,Third,Fourth],1).
+	#=(Right,5,B51),
+	#=(Left,0,B52),
+	and(B51,B52,Fifth),
+
+	#=(Right,4,B61),
+	#=(Left,0,B62),
+	and(B61,B62,Sixth),
+
+	#=(Right,6,B71),
+	#=(Left,0,B72),
+	and(B71,B72,Seventh),
+
+	sumOfList([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1).
     
 %% Checks whether or not the elements are compatible. The given RightElement is located on
 %% the right of Element
@@ -287,30 +317,44 @@ checkLeft(Left,Right):-
 	and(B1,B2,First),
 
 	#=(Left,1,B),
-	#=(Right,2,B21),
-	#=(Right,3,B22),
-	or(B21,B22,B23),
-	and(B,B23,Second),
+	#\=(Right,0,RnotZero),
+	#\=(Right,1,RnotOne),
+	#\=(Right,4,RnotFour),
+	#\=(Right,5,RnotFive),
+	#\=(Right,6,RnotSix),
+	and(RnotZero,RnotOne,Rn01),
+	and(RnotFour,RnotFive,Rn45),
+	and(RnotSix,Rn01,Rn016),
+	and(Rn016,Rn45,RTotal),
+	and(B,RTotal,Second),
 
 	#=(Left,2,B3),
-	#=(Right,2,B31),
-	#=(Right,3,B32),
-	#=(Right,0,B33),
-	or(B31,B32,B312),
-	or(B312,B33,B3T),
-	and(B3,B3T,Third),
+	#\=(Right,1,Rn1),
+	#\=(Right,4,Rn4),
+	#\=(Right,5,Rn5),
+	#\=(Right,6,Rn6),
+	and(Rn1,Rn4,Rn14),
+	and(Rn5,Rn6,Rn56),
+	and(Rn14,Rn56,RnTotal),
+	and(B3,RnTotal,Third),
 
-	#=(Left,4,B41),
-	#=(Left,5,B42),
-	#=(Left,3,B43),
-    #=(Left,6,B44),
-	#=(Right,0,B4W),
-	or(B41,B42,B412),
-	or(B43,B44,B434),
-    or(B412,B434,B4T),
-	and(B4W,B4T,Fourth),
+	#=(Left,3,B41),
+	#=(Right,0,B42),
+	and(B41,B42,Fourth),
 
-	sumOfList([First,Second,Third,Fourth],1).
+	#=(Left,5,B51),
+	#=(Right,0,B52),
+	and(B51,B52,Fifth),
+
+	#=(Left,4,B61),
+	#=(Right,0,B62),
+	and(B61,B62,Sixth),
+
+	#=(Left,6,B71),
+	#=(Right,0,B72),
+	and(B71,B72,Seventh),
+
+	sumOfList([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1).
 
 
 check_aboveEl(Top,Bottom):- % Top element is water, bottom element is not a bottom piece
@@ -319,30 +363,44 @@ check_aboveEl(Top,Bottom):- % Top element is water, bottom element is not a bott
 	and(B1,B2,First),
 
 	#=(Top,4,B),
-	#=(Bottom,2,B21),
-	#=(Bottom,5,B22),
-	or(B21,B22,B23),
-	and(B,B23,Second),
+	#\=(Bottom,0,RnotZero),
+	#\=(Bottom,1,RnotOne),
+	#\=(Bottom,4,RnotFour),
+	#\=(Bottom,3,RnotFive),
+	#\=(Bottom,6,RnotSix),
+	and(RnotZero,RnotOne,Rn01),
+	and(RnotFour,RnotFive,Rn45),
+	and(RnotSix,Rn01,Rn016),
+	and(Rn016,Rn45,RTotal),
+	and(B,RTotal,Second),
 
 	#=(Top,2,B3),
-	#=(Bottom,2,B31),
-	#=(Bottom,5,B32),
-	#=(Bottom,0,B33),
-	or(B31,B32,B312),
-	or(B312,B33,B3T),
-	and(B3,B3T,Third),
+	#\=(Bottom,1,Rn1),
+	#\=(Bottom,4,Rn4),
+	#\=(Bottom,3,Rn5),
+	#\=(Bottom,6,Rn6),
+	and(Rn1,Rn4,Rn14),
+	and(Rn5,Rn6,Rn56),
+	and(Rn14,Rn56,RnTotal),
+	and(B3,RnTotal,Third),
 
-	#=(Top,1,B41),
-	#=(Top,3,B42),
-	#=(Top,5,B43),
-    #=(Top,6,B44),
-	#=(Bottom,0,B4W),
-	or(B41,B42,B412),
-	or(B43,B44,B434),
-    or(B412,B434,B4T),
-	and(B4W,B4T,Fourth),
+	#=(Top,3,B41),
+	#=(Bottom,0,B42),
+	and(B41,B42,Fourth),
 
-	sumOfList([First,Second,Third,Fourth],1).
+	#=(Top,5,B51),
+	#=(Bottom,0,B52),
+	and(B51,B52,Fifth),
+
+	#=(Top,1,B61),
+	#=(Bottom,0,B62),
+	and(B61,B62,Sixth),
+
+	#=(Top,6,B71),
+	#=(Bottom,0,B72),
+	and(B71,B72,Seventh),
+
+	sumOfList([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1).
     
  check_belowEl(Top,Bottom):- % Top element is water, bottom element is not a bottom piece
 	#=(Bottom,0,B1),
@@ -350,50 +408,44 @@ check_aboveEl(Top,Bottom):- % Top element is water, bottom element is not a bott
 	and(B1,B2,First),
 
 	#=(Bottom,5,B),
-	#=(Top,2,B21),
-	#=(Top,4,B22),
-	or(B21,B22,B23),
-	and(B,B23,Second),
+	#\=(Top,0,RnotZero),
+	#\=(Top,1,RnotOne),
+	#\=(Top,3,RnotFour),
+	#\=(Top,5,RnotFive),
+	#\=(Top,6,RnotSix),
+	and(RnotZero,RnotOne,Rn01),
+	and(RnotFour,RnotFive,Rn45),
+	and(RnotSix,Rn01,Rn016),
+	and(Rn016,Rn45,RTotal),
+	and(B,RTotal,Second),
 
 	#=(Bottom,2,B3),
-	#=(Top,4,B31),
-	#=(Top,2,B32),
-	#=(Top,0,B33),
-	or(B31,B32,B312),
-	or(B312,B33,B3T),
-	and(B3,B3T,Third),
+	#\=(Top,1,Rn1),
+	#\=(Top,3,Rn4),
+	#\=(Top,5,Rn5),
+	#\=(Top,6,Rn6),
+	and(Rn1,Rn4,Rn14),
+	and(Rn5,Rn6,Rn56),
+	and(Rn14,Rn56,RnTotal),
+	and(B3,RnTotal,Third),
 
-	#=(Bottom,1,B41),
-	#=(Bottom,3,B42),
-	#=(Bottom,4,B43),
-    #=(Bottom,6,B44),
-	#=(Top,0,B4W),
-	or(B41,B42,B412),
-	or(B43,B44,B434),
-    or(B412,B434,B4T),
-	and(B4W,B4T,Fourth),
+	#=(Bottom,3,B41),
+	#=(Top,0,B42),
+	and(B41,B42,Fourth),
 
-	sumOfList([First,Second,Third,Fourth],1).
+	#=(Bottom,1,B51),
+	#=(Top,0,B52),
+	and(B51,B52,Fifth),
 
+	#=(Bottom,4,B61),
+	#=(Top,0,B62),
+	and(B61,B62,Sixth),
 
+	#=(Bottom,6,B71),
+	#=(Top,0,B72),
+	and(B71,B72,Seventh),
 
-%% % Ensures that there are only N occurences of a boat of length 2
-%% check_length2(List,Trans, N):-
-%% 	count2(1,3,List,H),
-%% 	count2(4,5,Trans,V),
-%% 	sumOfList([H,V],N).
-
-%% % Ensures that there are only N occurences of a boat of length 3
-%% check_length3(List,Trans, N):- 
-%% 	count3(1,2,3,List,H),
-%% 	count3(4,2,5,Trans,V),
-%% 	sumOfList([H,V],N).
-
-%% % Ensures that there are only N occurences of a boat of length 4
-%% check_length4(List,Trans, N):- 
-%% 	count4(1,2,2,3,List,H),
-%% 	count4(4,2,2,5,Trans,V),
-%% 	sumOfList([H,V],N).
+	sumOfList([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1).
 
 
  check_submarines(Solution):-
@@ -442,7 +494,7 @@ check_row(Tally,SolutionRow):-
 initialize_boats(Hints, Solution):-
     dim(Solution,[10,10]),
     Solution::0..6,
-    
+  
     (foreach(Hint,Hints),
         param(Solution)
     do
@@ -450,7 +502,7 @@ initialize_boats(Hints, Solution):-
     ).
 
 set_hint((Row,Column,Boat),Solution):-
-    to_string(Int,Boat),
+    to_int(Int,Boat),
     subscript(Solution,[Row,Column],Int).
 
 %Takes a list of lists and returns the concatenation of the lists into one list.                
@@ -533,13 +585,13 @@ to_string(3,"r").
 to_string(4,"t").
 to_string(5,"b").
 to_string(6,"c").
-to_string(0,water).
-to_string(1,left).
-to_string(2,middle).
-to_string(3,right).
-to_string(4,top).
-to_string(5,bottom).
-to_string(6,circle).
+to_int(0,water).
+to_int(1,left).
+to_int(2,middle).
+to_int(3,right).
+to_int(4,top).
+to_int(5,bottom).
+to_int(6,circle).
 
  %   
 /* SEARCH */
