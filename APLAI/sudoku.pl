@@ -2,17 +2,8 @@
 :- lib(ic_global).
 :- lib(ic).
 
-/*
-solve(Puzzle):-
-    T = Puzzle,
-    solve(Puzzle,naive),
-    solve(T,first_fail),
-    solve(Puzzle,middle_out),
-    solve(Puzzle,moff),
-    solve(Puzzle,moffmo).
-*/
-
-solve(P,Search):- 
+solve(Name,Search):- 
+                puzzles(P,Name),
                 transpose(P,Puzzle),
                 rowConstraint(Puzzle),
                 columnConstraint(Puzzle),
@@ -104,7 +95,8 @@ blocks([A,B,C|Bs1], [D,E,F|Bs2], [G,H,I|Bs3]) :-
 %OTHER VIEWPOINT
 %
 
-solve_2(Puzzle,Search):-
+solve_2(Name,Search):-
+    puzzles(Puzzle,Name),
     create_numbers(Numbers),
     fill_in_numbers(Puzzle,Numbers),    
     collection_to_list(Numbers,LList),
@@ -113,6 +105,7 @@ solve_2(Puzzle,Search):-
     is_in_each_block(Numbers),
     check_doubles(Numbers), 
     search(Search,List,B),
+    write(search-Search),nl,
     write(backtracks-B),nl,
     write(Numbers),nl.        
         
@@ -237,18 +230,113 @@ get_element(N,[Elem|Others],Current,Result):-
  % Channeling
  %
  
- channeling(P, Search):-
+ channeling(Name, Search):-
+    puzzles(P,Name),
     transpose(P,Puzzle),
     rowConstraint(Puzzle),
     columnConstraint(Puzzle),
     blockConstraint(Puzzle),
     create_numbers(Numbers),
-    fill_in_numbers(P,Numbers),    
+    channel(P,Numbers),
     is_in_each_block(Numbers),
     check_doubles(Numbers),
     collection_to_list(Numbers,LList),
     createOneList2(LList,List),
     search(Search,List,B),
-    write(backtracks-B),nl,
-    write(Numbers),nl.  
+    pretty_print(P,B,Search).  
  
+    
+    
+    channel(P,Numbers):-
+        (for(R,1,9),
+        param(Numbers),
+        param(P)
+        do
+            (for(C,1,9),
+            param(Numbers),
+            param(P),
+            param(R)
+                do
+                get_sudoku_element(P,R,C,E),
+                channel_element(E,R,C,Numbers)
+               
+            )
+        ).
+    channel_element(E,R,C,Numbers):-
+        Positions1 is Numbers[1,2],  
+        subscript(Positions1,[R,1],Nb1),
+        #=(E,1,P11),
+        #=(C,Nb1,P12),
+        and(P11,P12,C1),
+        
+        Positions2 is Numbers[2,2], 
+        subscript(Positions2,[R,1],Nb2),
+        #=(E,2,P21),
+        #=(C,Nb2,P22),
+        and(P21,P22,C2),
+        
+        Positions3 is Numbers[3,2], 
+        subscript(Positions3,[R,1],Nb3),
+        #=(E,3,P31),
+        #=(C,Nb3,P32),
+        and(P31,P32,C3),
+        
+        Positions4 is Numbers[4,2], 
+        subscript(Positions4,[R,1],Nb4),
+        #=(E,4,P41),
+        #=(C,Nb4,P42),
+        and(P41,P42,C4),
+        
+        Positions5 is Numbers[5,2], 
+        subscript(Positions5,[R,1],Nb5),
+        #=(E,5,P51),
+        #=(C,Nb5,P52),
+        and(P51,P52,C5),
+        
+        Positions6 is Numbers[6,2], 
+        subscript(Positions6,[R,1],Nb6),
+        #=(E,6,P61),
+        #=(C,Nb6,P62),
+        and(P61,P62,C6),   
+        
+        Positions7 is Numbers[7,2], 
+        subscript(Positions7,[R,1],Nb7),
+        #=(E,7,P71),
+        #=(C,Nb7,P72),
+        and(P71,P72,C7),
+        
+        Positions8 is Numbers[8,2], 
+        subscript(Positions8,[R,1],Nb8),
+        #=(E,8,P81),
+        #=(C,Nb8,P82),
+        and(P81,P82,C8),
+        
+        Positions9 is Numbers[9,2], 
+        subscript(Positions9,[R,1],Nb9),
+        #=(E,9,P91),
+        #=(C,Nb9,P92),
+        and(P91,P92,C9),
+        
+        sumOfList([C1,C2,C3,C4,C5,C6,C7,C8,C9],1).
+        
+ 
+%% Calculates the sum of all variables in list
+sumOfList(List,Sum):-
+    (
+	foreach(X,List),
+   fromto(Expr,S1,S2,0)
+   do
+   S1 = X + S2
+   ),
+   Sum #= eval(Expr).       
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

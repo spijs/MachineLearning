@@ -1,3 +1,21 @@
+test(0).
+test(5).
+test(16).
+test(20).
+test(25).
+test(30).
+test(35).
+test(40).
+test(45).
+test(50).
+test(100).
+test(105).
+test(110).
+test(115).
+test(120).
+
+%findall(I,(test(I),solve(I,naive)),_).
+
 % 70 Solutions for this problem.
 problem( 0, [ (7,10,circle), (1,6,water) ], 
  			[2, 4, 3, 3, 2, 4, 1, 1, 0, 0] , 
