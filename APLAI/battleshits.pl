@@ -4,12 +4,14 @@
 
 
 all_solutions(Puzzle,Search):-
+	write('Puzzle: '),write(Puzzle),nl,
+	problem(Puzzle,_,Rows,Columns),
+	findall(_,battleshits([],Rows,Columns,Search),L),length(L,LL),
+	write('NbSolutions: '),write(LL),nl,
+	write('############').
 
-write('Puzzle: '),write(Puzzle),nl,
-problem(Puzzle,_,Rows,Columns),
-findall(_,battleshits([],Rows,Columns,Search),L),length(L,LL),
-write('NbSolutions: '),write(LL),nl,
-write('############').
+testAll(Search):-
+	findall(Nb,(test(Nb),solve(Nb,Search)),List).
 
 solve(Puzzle,Search):-
     problem(Puzzle,Hints, Rows,Columns),
