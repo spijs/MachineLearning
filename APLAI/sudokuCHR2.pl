@@ -1,10 +1,13 @@
 :- use_module(library(chr)).
 :- chr_constraint number_row/4,number_row/3, add/3, fillone/1,print/2.
 
+%------------------------------------------------------------
+% Rules
+
 % number in a row must have a column
 number_row(_,_,0,[]) <=> false.
 
-%add
+% add a field
 add(V,R,C), number_row(V,R,_,_)  <=> number_row(V,R,C).
 number_row(V,R,C) \ add(V,R,C) <=>true.
  
@@ -12,7 +15,7 @@ number_row(V,R,C) \ add(V,R,C) <=>true.
 same_column @ number_row(V,_,D) \ number_row(V,R,N,L) <=>  select(D,L,LL) | 
     N1 is N-1, N1>0, number_row(V,R,N1,LL).
     
-%same row and column
+% same row and column
 same_row @ number_row(_,R,D) \ number_row(V,R,N,L) <=> select(D,L,LL) | 
     N1 is N-1, N1>0, number_row(V,R,N1,LL).
     
@@ -20,6 +23,8 @@ same_row @ number_row(_,R,D) \ number_row(V,R,N,L) <=> select(D,L,LL) |
 same_block @ number_row(A,R,C) \ number_row(A,R2,N,L) <=> findall(El,(member(El,L), same_block(R,C,R2,El)),Els), subtract(L,Els,LL), length(Els,N2),
     N1 is N-N2, N2>0 | number_row(A,R2,N1,LL).
 
+%-------------------------------------------------------------------------------------
+% Fill the sudoku by guessing and backtracking.
 
 % Fill values by choosing - cfr. 
 fillone(N), number_row(A,B,N2,L) <=> N2=N | 
@@ -27,21 +32,35 @@ fillone(N), number_row(A,B,N2,L) <=> N2=N |
 fillone(N) <=> N < 9 | N1 is N+1, fillone(N1).
 fillone(_) <=> true.
 
+%------------------------------------------------------------------------------------
+
+% solve(Puzzle):-
+% Solves the given sudoku Puzzle.
 
 solve(Puzzle):-
     puzzles(P,Puzzle),
     write(setconstraints), time(set_constraints(P)),
-    write(fillingin), time(fillone(1)).
+    write(fillingin), time(fillone(1)),
     write(printing),nl, time(print_solutions).
  
-% Prepare 
-   
+ 
+% Add constraints to constraint store. 
+
+% set_totals(I):-
+% Recursively adds all the numbers to the constraint store.
+% I is an integer representing the current row.
+
 set_totals(N):-N>9.
 set_totals(I):-
     I =< 9,
     set_rows(I,1),
     I1 is I+1,
     set_totals(I1).
+
+% set_rows(I,R):-
+% Recursively adds each row and number pair to the constraint store.
+% I is an integer representing the number.
+% R is an integer representing the current row.
 
 set_rows(_,N):-N>9.
 set_rows(N,R):- 
@@ -50,6 +69,9 @@ set_rows(N,R):-
     NewR is R+1,
     set_rows(N,NewR).
 
+% set_constraints(P)
+% Adds all the known information of the puzzle to the constraint store.
+% P is the given puzzle.
 
 set_constraints(P):-set_totals(1),set_constraints(P,1).
 set_constraints([],_).
@@ -58,6 +80,12 @@ set_constraints([H|T],I):-
     J is I+1,
     set_constraints(T,J).
     
+    
+% set_list_constraints(L,I,J):-
+% Recursively adds each known element of the list L to the constraint store.
+% I is the row number.
+% J is the current column.
+
 set_list_constraints([],_,_).
 set_list_constraints([H|T],I,J):-
     (\+(var(H)) ->
@@ -72,6 +100,9 @@ set_list_constraints([H|T],I,J):-
   
 % Print
 
+% print_solutions
+% Prints each row of the solved sudoku puzzle.
+
 print_solutions:-
     print_row(1),
     print_row(2),
@@ -83,13 +114,24 @@ print_solutions:-
     print_row(8),
     print_row(9).    
     
+% print_row(X):-
+% Prints the solution for the Xth row.
+
 print_row(X):-print(X,1),print(X,2),print(X,3),print(X,4),print(X,5),print(X,6),print(X,7),print(X,8),print(X,9).
+
+%----------------------------------------------------
+% Print rules
 print(R,9),number_row(V,R,9) <=> M is R mod 3, M == 0 | write(V),nl,write(------------),nl.
 print(R,9),number_row(V,R,9) <=> write(V),nl.
 print(R,C),number_row(V,R,C) <=> M is C mod 3, M == 0 | write(V),write('|').
 print(R,C),number_row(V,R,C) <=> write(V).
     
-    
+%--------------------------------------  
+
+% same_block(X1,Y1,X2,Y2):-
+% evaluates to true if (X1,Y1) and (X2,Y2) are in the same sudoku block.
+% X1,Y1,X2,Y2 are all integers.
+
 same_block(X1,Y1,X2,Y2):- X1=<3,X2=<3,Y1=<3,Y2=<3. % LL
 same_block(X1,Y1,X2,Y2):- X1=<3,X2=<3,Y1>6,Y2>6. % LB
 same_block(X1,Y1,X2,Y2):- Y1>3,Y1=<6,Y2>3,Y2=<6,X1=<3,X2=<3. % LM
