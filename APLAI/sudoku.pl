@@ -5,7 +5,7 @@
 solve(Name,Search):- 
                 puzzles(P,Name),
                 transpose(P,Puzzle),
-                rowConstraint(Puzzle),
+                rowConstraint(P),
                 columnConstraint(Puzzle),
                 blockConstraint(Puzzle),
                 createOneList(Puzzle,R),
@@ -60,8 +60,7 @@ search(moffmo,List,B) :-
     
         
 % Each column contains all numbers between 1 and 9.    
-columnConstraint(Puzzle):-
-     transpose(Puzzle, Columns),
+columnConstraint(Columns):-
      rowConstraint(Columns).
 
 % Transpose matrix - http://stackoverflow.com/questions/4280986/how-to-transpose-a-matrix-in-prolog
@@ -328,15 +327,4 @@ sumOfList(List,Sum):-
    do
    S1 = X + S2
    ),
-   Sum #= eval(Expr).       
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+   Sum #= eval(Expr). 
