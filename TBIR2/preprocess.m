@@ -1,4 +1,4 @@
-function [projQ, projI] = preprocess(trainingCaption, trainingImages, testQueries, testImages)
+function [projQ, projI] = preprocess(trainingCaption, trainingImages, testQueries, testImages, k)
 
 trainqueries = dlmread(trainingCaption);
 trainimages = dlmread(trainingImages);
@@ -18,8 +18,22 @@ disp('Dimensie U');
 size(imageCorr)
 disp('Dimensie V');
 size(queryCorr)
-[projQ1, projI1] = proj(testI,testQ, imageCorr, queryCorr);
+[row, col] = size(imageCorr);
+[rowq,colq] = size(queryCorr);
+dimI = col * k
+resI = zeros(row,dim);
+resQ = zeros(rowq,dim);
+for l = 1:row
+	resI(l,:) = imageCorr(l,1:dim);
+end
+
+for l = 1:rowq
+	resQ(l,:) = queryCorr(l,1:dim);
+end	
+[projQ1, projI1] = proj(testI,testQ, reqI, resQ);
 size(projQ1)
 size(projI1)
 projQ = projQ1;
 projI = projI1;
+dlmwrite('projectedQ_'+k, projQ);
+dlmwrite('projectedI_'+k, projI);
