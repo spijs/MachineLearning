@@ -23,7 +23,7 @@ battleships(Hints, Rows, Columns,Search):-
     check_columns(Columns,Solution),
 	check_boats(Solution),
     List is Solution[1..10,1..10],
-    createOneList(List,OneList),
+    create_one_list(List,OneList),
     write('searching'),nl,
     search(Search,OneList,B),
     write(Search),nl,
@@ -38,7 +38,7 @@ pretty_print(Solution, Rows, Columns,B):-
     do
         Row is Solution[N,1..10],
 		get_element(Rows,N,Tally),
-        writeRow(Row),write(" "),write(Tally),nl
+        write_row(Row),write(" "),write(Tally),nl
     ),
 	(for(N,1,10),
     param(Columns)
@@ -49,7 +49,7 @@ pretty_print(Solution, Rows, Columns,B):-
     nl,write('backtracks:'),write(B),nl,
     write('#############'),nl.
 
-writeRow(List):-
+write_row(List):-
 (for(N,1,10),
 	param(List)
 	do
@@ -61,12 +61,12 @@ writeRow(List):-
 % The restrictions on the boats are added to the solution
 check_boats(Solution):-
 	List is Solution[1..10,1..10],
-	createOneList(List,OneList),
+	create_one_list(List,OneList),
 	transpose(List,Trans),
-	createOneList(Trans,OneList2),
+	create_one_list(Trans,OneList2),
     set_sides(Solution),
     set_corners(Solution),
-    count_pieces(OneList, OneList2),
+    count_pieces(OneList),
     no_invalid_combinations(OneList,OneList2),
     no_touching(Solution),
     no_vertical_touching(Solution),
@@ -79,17 +79,17 @@ check_boats(Solution):-
 
 
 % Ensure that the solution contains the right amount of pieces. 
-count_pieces(List,OtherList):-
+count_pieces(List):-
 	occurrences(2,List,4),
 	occurrences(1,List,H),
 	occurrences(3,List,H),
 	occurrences(4,List,V),
 	occurrences(5,List,V),
-	sumOfList([H,V],6).
+	sum_list([H,V],6).
 
 % This predicate also checks a set of combinations that are allowed by the other constraints, 
 % but cannot be present in a valid solution
-no_invalid_combinations(List,OhterList):-
+no_invalid_combinations(List,OtherList):-
 	count3(2,2,2,List,0), % mmm 
 	count3(1,2,0,List,0), % lm.
 	count4(1,2,2,0,List,0), % lmm.
@@ -117,7 +117,7 @@ check_length4(List,Trans, N):-
 		count4(4,2,2,5,Col,H)
 	),
 	append(Rows,Columns,Total),
-	sumOfList(Total,N).
+	sum_list(Total,N).
 
 % Ensure that the sum of the occurrences of lmr in the rows and tmb in the columns is equal to N.
 check_length3(List,Trans, N):- 
@@ -132,7 +132,7 @@ check_length3(List,Trans, N):-
 		count3(4,2,5,Col,H)
 	),
 	append(Rows,Columns,Total),
-	sumOfList(Total,N).
+	sum_list(Total,N).
 
 % Ensure that the sum of the occurrences of lr in the rows and tb in the columns is equal to N.
 check_length2(List,Trans, N):- 
@@ -147,7 +147,7 @@ check_length2(List,Trans, N):-
 		count2(4,5,Col,H)
 	),
 	append(Rows,Columns,Total),
-	sumOfList(Total,N).
+	sum_list(Total,N).
 
 % Ensure that two vertically adjacent squares contain compatible pieces.
 no_vertical_touching(Solution):-
@@ -283,7 +283,7 @@ check_diagonal(L,R) :-
 	and(LnotWater,RWater,B1),
 	and(RnotWater,LWater,B2),
 	and(LWater,RWater,B3),
-	sumOfList([B1,B2,B3],1).
+	sum_list([B1,B2,B3],1).
 
 %% Checks whether or not the elements are compatible.
 
@@ -324,7 +324,7 @@ checkRight(Left,Right):-
 	#=(Left,0,B72),
 	and(B71,B72,Seventh),
 
-	sumOfList([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1). % only one of seven cases described can be true
+	sum_list([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1). % only one of seven cases described can be true
     
 %% Checks whether or not the elements are compatible. 
 checkLeft(Left,Right):-
@@ -370,7 +370,7 @@ checkLeft(Left,Right):-
 	#=(Right,0,B72),
 	and(B71,B72,Seventh),
 
-	sumOfList([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1). % only one of seven described cases can be true
+	sum_list([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1). % only one of seven described cases can be true
 
 % Checks the compatibility of two given elements that are horizontally adjacent
 check_aboveEl(Top,Bottom):-
@@ -416,7 +416,7 @@ check_aboveEl(Top,Bottom):-
 	#=(Bottom,0,B72),
 	and(B71,B72,Seventh),
 
-	sumOfList([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1). % only one of 
+	sum_list([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1). % only one of 
     
  check_belowEl(Top,Bottom):- % Top element is water, bottom element is not a bottom piece
 	#=(Bottom,0,B1), % bottom element is . , top element cannot be t
@@ -461,7 +461,7 @@ check_aboveEl(Top,Bottom):-
 	#=(Top,0,B72),
 	and(B71,B72,Seventh),
 
-	sumOfList([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1). % one of seven described cases can be true
+	sum_list([First,Second,Third,Fourth, Fifth,Sixth, Seventh],1). % one of seven described cases can be true
 
 % There can only be 4 submarines in the solution
  check_submarines(Solution):-
@@ -527,11 +527,11 @@ set_hint((Row,Column,Boat),Solution):-
     subscript(Solution,[Row,Column],Int).
 
 % Takes a list of lists and returns the concatenation of the lists into one list.                
-createOneList(L,R):-createOneList(L,[],R).
-createOneList([],Acc,Acc).
-createOneList([H|T],Acc,List):-
+create_one_list(L,R):-create_one_list(L,[],R).
+create_one_list([],Acc,Acc).
+create_one_list([H|T],Acc,List):-
     append(Acc,H,R1),
-    createOneList(T,R1,List).
+    create_one_list(T,R1,List).
 	
 % counts the amount of times a given pair occurs in the given list, in the same order
 count2(_,_,[_],0).
@@ -582,7 +582,7 @@ lists_firsts_rests([[F|Os]|Rest], [F|Fs], [Os|Oss]) :-
 
 
 %% Calculates the sum of all variables in list
-sumOfList(List,Sum):-
+sum_list(List,Sum):-
     (
 	foreach(X,List),
    fromto(Expr,S1,S2,0)
