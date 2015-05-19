@@ -3,6 +3,7 @@ package flickr.model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import embeddings.Vector;
 import embeddings.Worker;
@@ -10,11 +11,11 @@ import flickr.Query;
 
 public class TotalEmbedModel extends Model {
 
-	private String file;
+	private Map<String, Vector> vectors;
 
-	public TotalEmbedModel(String image,String file) {
+	public TotalEmbedModel(String image,Map<String, Vector> wordVectors) {
 		super(image);
-		this.file=file;
+		this.vectors=wordVectors;
 	}
 
 	private Vector vector;
@@ -26,14 +27,14 @@ public class TotalEmbedModel extends Model {
 		for(String element: words){
 			if(qVector!=null){
 				try {
-					qVector = qVector.add(Worker.getVector(element,file));
+					qVector = qVector.add(vectors.get(element));
 				} catch (Exception e) {
 					// Do nothing
 				}
 			}
 			else{
 				try {
-					qVector = Worker.getVector(element,file);
+					qVector = vectors.get(element);
 				} catch (Exception e) {
 					//Do Nothing
 				}
@@ -51,9 +52,9 @@ public class TotalEmbedModel extends Model {
 			for(String element: words){
 				try {
 					if(vector!=null){
-						vector = vector.add(Worker.getVector(element, file));}
+						vector = vector.add(vectors.get(element)); }
 					else{
-						vector = Worker.getVector(element, file);
+						vector = vectors.get(element);
 					}
 				} catch (Exception e) {
 					// Do nothing

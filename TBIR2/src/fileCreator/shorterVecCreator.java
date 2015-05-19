@@ -39,7 +39,7 @@ public class shorterVecCreator {
 	private static void writeVectors(Map<String,String> vectors) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(OUTPUT, true));
 		for(String word: vectors.keySet()){
-			writer.write(vectors.get(word)+"\n");
+			System.out.println(vectors.get(word));
 		}
 		writer.close();
 	}
@@ -60,6 +60,7 @@ public class shorterVecCreator {
 					try{
 					String v = getVector(word, fileName);
 					vectors.put(word, v);
+					System.out.println(v);
 					}
 					catch(Exception e){
 						// Do nothing, word not available

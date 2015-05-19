@@ -30,12 +30,12 @@ import flickr.model.TotalProbModel;
  */
 public class Solver {
 	
-	private String train;
+	private final static String train = "files/trainToken.txt";
 	private ModelType modelType;
 	private String vectorsFile;
 	private int nbOfThreads=1;
 	private int nbOfQueries=0;
-	private String test;
+	private final static String test = "files/testToken.txt";
 
 	/**
 	 * Creates a solver based on a map containing options.
@@ -48,14 +48,13 @@ public class Solver {
 	
 	public void solve() throws IOException{
 		Logger.getInstance(vectorsFile,modelType.toString(),nbOfQueries,nbOfThreads);
-		List<Model>models = createModels();
+		Map<String,Vector> wordVectors = createWordVectors();
+		List<Model>models = createModels(wordVectors);
 		List<Query>queries = createQueries();
 		Map<String,Vector>testImages = createTestImages();
 		Map<String,Vector>trainImages = createTrainImages();
-		Map<String, Vector> trImages = getUsedImages(trainImages, train);
-		Map<String, Vector> tImages = getUsedImages(testImages, test);
 		prepareModels(models);
-		solve(queries,models,trImages, tImages);		
+		solve(queries,models,trainImages, testImages);		
 	}
 
 
@@ -67,21 +66,6 @@ public class Solver {
 		return createImages("files/Flickr_8k.testImages.txt","files/testImageVectors.txt");
 	}
 
-	private Map<String, Vector> getUsedImages(Map<String, Vector> images, String fileName) throws IOException, FileNotFoundException {
-		Map<String, Vector> result = new HashMap<String, Vector>();
-		File training = new File(fileName);
-		FileReader fr = new FileReader(training);
-		BufferedReader br = new BufferedReader(fr);
-		while(true)	{
-			String line = br.readLine();
-			if(line == null) {break;}
-			String filename = line.split("#")[0];
-			result.put(filename, images.get(filename));
-		//	System.out.println(images.get(filename));
-		}
-		br.close();
-		return result;
-	}
 
 	private Map<String,Vector> createImages(String names, String vectors) throws IOException, FileNotFoundException{
 		Map<String, Vector> images = new HashMap<String, Vector>();
@@ -109,8 +93,6 @@ public class Solver {
 	 * @param options
 	 */
 	private void setOptions(Map<String, String> options) {
-		train=options.get("train");
-		test=options.get("test");
 		modelType = ModelType.fromString(options.get("model"));
 
 		if(options.containsKey("vectors")){
@@ -193,9 +175,10 @@ public class Solver {
 	
 	/**
 	 *  Creates a model for each image in the dataset.
+	 * @param wordVectors 
 	 * @return 
 	 */
-	private List<Model> createModels() {
+	private List<Model> createModels(Map<String, Vector> wordVectors) {
 		System.out.println("Creating models...");
 		List<Model> models = new ArrayList<Model>();
 		FileInputStream fs;
@@ -210,7 +193,7 @@ public class Solver {
 				String[] elements = line.split("	");
 				String sentence = elements[1];
 				if(i%5==0){
-					currentModel = createModel(image,vectorsFile);
+					currentModel = createModel(image,wordVectors);
 					models.add(currentModel);
 				}
 				currentModel.addSentence(sentence);
@@ -227,10 +210,10 @@ public class Solver {
 	/**
 	 * Returns the right model based on the model type of this solver.
 	 * @param image Title of the image
-	 * @param vectorsFile File containing vectors (this is optional but required for the embeddings model)
+	 * @param wordVectors File containing vectors (this is optional but required for the embeddings model)
 	 * @return a new Model based on the modeltype
 	 */
-	private Model createModel(String image,String vectorsFile){
+	private Model createModel(String image,Map<String, Vector> wordVectors){
 		if(modelType==ModelType.P_TOTAL){
 			return new TotalProbModel(image);
 		}
@@ -238,10 +221,10 @@ public class Solver {
 			return new SentenceProbModel(image,modelType);
 		}
 		else if (modelType==ModelType.E_TOTAL){
-			return new TotalEmbedModel(image, vectorsFile);
+			return new TotalEmbedModel(image, wordVectors);
 		}
 		else if(modelType==ModelType.E_AGG||modelType==ModelType.E_MAX){
-			return new SentenceEmbedModel(image, vectorsFile,modelType);
+			return new SentenceEmbedModel(image, wordVectors,modelType);
 		}
 		else{
 			return new TotalProbModel(image);
@@ -263,5 +246,19 @@ public class Solver {
 		}
 	}
 
+	public Map<String,Vector> createWordVectors() throws IOException{
+		Map<String,Vector> wordVectors = new HashMap<String,Vector>();
+		FileInputStream fs;
+		fs = new FileInputStream(vectorsFile);
+		BufferedReader br = new BufferedReader(new InputStreamReader(fs));
+		String line;
+		while((line=br.readLine())!=null){
+			String[] elements = line.split(" ");
+			String word = elements[0];
+			wordVectors.put(word,new Vector(line, 1));
+		}
+		br.close();
+		return wordVectors;
+	}
 	
 }

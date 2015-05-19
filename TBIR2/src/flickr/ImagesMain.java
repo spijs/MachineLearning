@@ -43,22 +43,7 @@ public class ImagesMain {
 					|| "--help".equals(args[i].toLowerCase())) {
 				printHelp();			
 			}
-			else if ("-test".equals(args[i].toLowerCase())) {
-				i++;
-				result.put("test", args[i]);			
-			}
-			else if ("-train".equals(args[i].toLowerCase())) {
-				i++;
-				result.put("train", args[i]);			
-			}
-			else if ("-images".equals(args[i].toLowerCase())) {
-				i++;
-				result.put("images", args[i]);			
-			}
-			else if ("-names".equals(args[i].toLowerCase())) {
-				i++;
-				result.put("names", args[i]);			
-			}
+			
 			else if ("-v".equals(args[i].toLowerCase())) {
 				i++;
 				result.put("vectors", args[i]);			
@@ -71,11 +56,6 @@ public class ImagesMain {
 				i++;
 				result.put("nbOfQueries", args[i]);			
 			}
-			
-			else if("shorter".equalsIgnoreCase(args[i])){
-				result.put("shorter","");
-			}
-			
 			
 			
 		}

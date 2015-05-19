@@ -24,7 +24,7 @@ import flickr.model.TotalEmbedModel;
 public class ImageVectorsCreator {
 
 	public final static String TRAIN = "files//testToken.txt";
-	private static String fileName = "files//testVectors100.txt";
+	private static String fileName = "files//testVectors50.txt";
 	private static File images = new File(fileName);
 	private static BufferedWriter writer;
 	private static String file;
@@ -50,12 +50,8 @@ public class ImageVectorsCreator {
 							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
 							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
 							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
-							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
-							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
-							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
-							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
-							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
-							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0");
+							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"
+							);
 				}
 				writer.write("\n");
 				System.out.println("Progress: "+100*i/30000);

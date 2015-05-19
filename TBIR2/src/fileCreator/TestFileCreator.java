@@ -19,36 +19,57 @@ import java.io.InputStreamReader;
  */
 public class TestFileCreator {
 
-	public final static String TEST = "Flickr8k_text//Flickr_8k.trainImages.txt";
-	public final static String TOKENS = "Flickr8k_text//Flickr8k.token.txt";
-	private static String fileName = "Flickr8k_text//trainToken.txt";
+	public final static String TEST = "files//Flickr_8k.testImages.txt";
+	public final static String TOKENS = "files//Flickr8k.token.txt";
+	private static String fileName = "files//testToken.txt";
 	private static File testfile = new File(fileName);
 	private static BufferedWriter writer;
-	
+
 	public static void main(String[] args) {
 		try {
-		testfile.delete();
-		writer = new BufferedWriter(new FileWriter(fileName, true));
-		FileInputStream fs = new FileInputStream(TOKENS);
-		BufferedReader br = new BufferedReader(new InputStreamReader(fs));
-		String line;
-			while((line=br.readLine())!=null){
-				String[] elements = line.split("#");
-				String file = elements[0];
-				FileInputStream testStream = new FileInputStream(TEST);
-				BufferedReader testReader = new BufferedReader(new InputStreamReader(testStream));
+			testfile.delete();
+			writer = new BufferedWriter(new FileWriter(fileName, true));
+			FileInputStream testStream = new FileInputStream(TEST);
+			BufferedReader testReader = new BufferedReader(new InputStreamReader(testStream));
+			String line;
+			int i=1;
+			while((line=testReader.readLine())!=null){
+				FileInputStream fs = new FileInputStream(TOKENS);
+				BufferedReader br = new BufferedReader(new InputStreamReader(fs));
 				String nextLine;
-				while((nextLine = testReader.readLine())!=null){
-					if(nextLine.equalsIgnoreCase(file)){
-						writer.write(line);
+				while((nextLine = br.readLine())!=null){
+					String[] elements = nextLine.split("#");
+					String file = elements[0];
+					if(line.equalsIgnoreCase(file)){
+						System.out.println("Progress: "+ 100.0*(i*1.0/1000));
+						writer.write(nextLine);
 						writer.write("\n");
+						
+						String l2 = br.readLine();
+						String l3 = br.readLine();
+						String l4 = br.readLine();
+						String l5 = br.readLine();
+						
+						writer.write(l2);
+						writer.write("\n");
+						
+						writer.write(l3);
+						writer.write("\n");
+						
+						writer.write(l4);
+						writer.write("\n");
+						
+						writer.write(l5);
+						writer.write("\n");
+						
 						break;
 					}
 				}
-				testReader.close();
+				br.close();
+				i++;
 
 			}
-			br.close();
+			testReader.close();
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Error occured");
