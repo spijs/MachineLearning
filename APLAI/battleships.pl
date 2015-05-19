@@ -67,10 +67,11 @@ check_boats(Solution):-
     set_sides(Solution),
     set_corners(Solution),
     count_pieces(OneList, OneList2),
+    no_invalid_combinations(OneList,OneList2),
     no_touching(Solution),
-    no_verticalTouching(Solution),
-    no_diagonalRightTouching(Solution),
-    no_diagonalLeftTouching(Solution),
+    no_vertical_touching(Solution),
+    no_diagonal_right_touching(Solution),
+    no_diagonal_left_touching(Solution),
     check_length4(List,Trans,1),
 	check_length3(List,Trans,2),
 	check_length2(List,Trans, 3),
@@ -78,14 +79,17 @@ check_boats(Solution):-
 
 
 % Ensure that the solution contains the right amount of pieces. 
-% This predicate also checks a set of combinations that are allowed by the other constraints, but cannot happen
 count_pieces(List,OtherList):-
 	occurrences(2,List,4),
 	occurrences(1,List,H),
 	occurrences(3,List,H),
 	occurrences(4,List,V),
 	occurrences(5,List,V),
-	sumOfList([H,V],6),
+	sumOfList([H,V],6).
+
+% This predicate also checks a set of combinations that are allowed by the other constraints, 
+% but cannot be present in a valid solution
+no_invalid_combinations(List,OhterList):-
 	count3(2,2,2,List,0), % mmm 
 	count3(1,2,0,List,0), % lm.
 	count4(1,2,2,0,List,0), % lmm.
@@ -146,7 +150,7 @@ check_length2(List,Trans, N):-
 	sumOfList(Total,N).
 
 % Ensure that two vertically adjacent squares contain compatible pieces.
-no_verticalTouching(Solution):-
+no_vertical_touching(Solution):-
 	(for(N,1,10),
 	param(Solution)
     do
@@ -210,7 +214,7 @@ set_horizontal_sides(Solution):-
     
 
 % When two squares touch diagonally, at most one of them can be no 'w' piece.
-no_diagonalRightTouching(Solution):-
+no_diagonal_right_touching(Solution):-
 	(for(N,2,10),
 	param(Solution)
 	do 
@@ -228,7 +232,7 @@ no_diagonalRightTouching(Solution):-
 	).
 
 % When two squares touch diagonally, at most one of them can be no 'w' piece.
-no_diagonalLeftTouching(Solution):-
+no_diagonal_left_touching(Solution):-
 	(for(N,2,10),
 	param(Solution)
 	do 
