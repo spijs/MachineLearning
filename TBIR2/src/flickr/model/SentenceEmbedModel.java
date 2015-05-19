@@ -4,25 +4,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import embeddings.Vector;
-import embeddings.Worker;
 import flickr.Query;
 
 public class SentenceEmbedModel extends Model {
 
 	private HashMap<String, Vector> vectors;
-	private String file;
+	private Map<String, Vector> wordVectors;
 	private ModelType aggType;
 
 	/**
 	 * @param image
-	 * @param file The file containing the word vectors.
+	 * @param wordVectors The file containing the word vectors.
 	 * @param modelType The aggregation method to be used.
 	 */
-	public SentenceEmbedModel(String image,String file,ModelType modelType) {
+	public SentenceEmbedModel(String image,Map<String, Vector> wordVectors,ModelType modelType) {
 		super(image);
-		this.file = file;
+		this.wordVectors = wordVectors;
 		this.aggType=modelType;
 		this.vectors = new HashMap<String,Vector>();
 	}
@@ -38,14 +38,14 @@ public class SentenceEmbedModel extends Model {
 		for(String element: words){
 			if(qVector!=null){
 				try {
-					qVector = qVector.add(Worker.getVector(element,file));
+					qVector = qVector.add(wordVectors.get(element));
 				} catch (Exception e) {
 					// Do nothing
 				}
 			}
 			else{
 				try {
-					qVector = Worker.getVector(element,file);
+					qVector = wordVectors.get(element);
 				} catch (Exception e) {
 					//Do Nothing
 				}
@@ -72,24 +72,27 @@ public class SentenceEmbedModel extends Model {
 		}
 		return ranking;
 	}
-	
+
 	@Override
 	public void generateValues() {
 		for(String sentence:sentences){
 			List<String> words = getWords(sentence);
 			Vector vector = null;
-			for(String element: words){
-				try {
+			try {
+				for(String element: words){
 					if(vector!=null){
-					vector = vector.add(Worker.getVector(element, file));}
+						vector = vector.add(wordVectors.get(element));}
 					else{
-						vector = Worker.getVector(element, file);
+						vector = wordVectors.get(element);
 					}
-				} catch (Exception e) {
-					// Do nothing
+
 				}
+				if(vector!=null){
+					vectors.put(sentence, vector);
+				}
+			} catch (Exception e) {
+				// Do nothing
 			}
-			vectors.put(sentence, vector);
 		}
 	}
 
