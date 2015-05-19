@@ -21,6 +21,7 @@ field(A,B,1,[V]) <=> field(A,B,V).
 % Filling
 
 % Fill values by choosing - cfr. https://dtai.cs.kuleuven.be/CHR/old/examples/sudoku_thom.pl
+
 fillone(N), field(A,B,N2,L) <=> N2=:=N | 
     member(V,L), field(A,B,V), fillone(1).
 fillone(N) <=> N < 9 | N1 is N+1, fillone(N1).
