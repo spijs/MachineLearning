@@ -9,30 +9,19 @@ import java.util.List;
 import java.util.Map;
 
 import logger.Logger;
-import matlabcontrol.MatlabInvocationException;
-import matlabcontrol.MatlabProxy;
-import matlabcontrol.extensions.MatlabTypeConverter;
 import embeddings.Vector;
 import flickr.RankElement;
 import flickr.Ranking;
 
 public class Solver {
-	private MatlabProxy mlp;
-	private String trainV;
-	private String testV;
-	private String trainImages;
-	private String testImages;
 	private List<String> testNames;
 	private Logger logger;
+	private int k=1;
 
-	public Solver(MatlabProxy mlp, Map<String,String> options) throws IOException{
-		this.mlp=mlp;
-		this.trainV= options.get("train");
-		this.testV= options.get("test");
-		this.trainImages = options.get("trainImages");
-		this.testImages = options.get("testImages");
+	public Solver(Map<String,String> options) throws IOException{
+		this.k = Integer.parseInt(options.get("k"));
 		this.testNames = parseFile(options.get("testNames"));
-		this.logger = new Logger(trainV,testV);
+		this.logger = new Logger("results_cca_k_"+k);
 	}
 
 	private List<String> parseFile(String fileName) throws IOException {
@@ -49,35 +38,60 @@ public class Solver {
 		return result;
 	}
 
-	public void solve() throws MatlabInvocationException {
-		System.out.println("Starting Matlab computations..");
-		mlp.eval("[projectedQ, projectedI] = preprocess('"+trainV+"', '"+trainImages+"', '"+testV+"', '"+testImages+"');");
-
-		MatlabTypeConverter processor = new MatlabTypeConverter(mlp);
-		double[][] projQs = processor.getNumericArray("projectedQ").getRealArray2D();
-		double[][] projIs = processor.getNumericArray("projectedI").getRealArray2D();
-		
-		System.out.println("Matlab computations finished..");
-		System.out.println("Started Ranking");
-		List<Ranking> rankings = new ArrayList<Ranking>();
-		for(int i=0;i<projQs.length;i++){
-			double[] query = projQs[i];
-			Vector qVector = new Vector(query);
-			Ranking ranking = new Ranking();
-			for(int j=0;j<projIs.length;j++){
-				double[] image = projIs[j];
-				Vector iVector = new Vector(image);
-				double similarity = qVector.cosineDist(iVector);
-				String imageTrainName = testNames.get(j);
-				ranking.addElement(new RankElement(imageTrainName, similarity));
+	public void solve(){
+		try {
+		List<Vector> projQs;
+			projQs = getProjectedQs(k);
+			List<Vector> projIs = getProjectedIs(k);
+			System.out.println("Started Ranking");
+			List<Ranking> rankings = new ArrayList<Ranking>();
+			for(int i=0;i<projQs.size();i++){
+				Vector qVector = projQs.get(i);
+				Ranking ranking = new Ranking();
+				for(int j=0; j<projIs.size();j++){
+					Vector iVector = projIs.get(j);
+					double similarity = qVector.cosineDist(iVector);
+					String imageTrainName = testNames.get(j);
+					ranking.addElement(new RankElement(imageTrainName, similarity));
+				}
+				rankings.add(ranking);
+				System.out.println("Ranked query "+i);
+				ranking.printHighest(5);
+				System.out.println("Ranking progress: "+100.0*i/(projQs.size()));
 			}
-			rankings.add(ranking);
-			System.out.println("Ranking progress: "+100.0*i/(projQs.length));
+			logResults(rankings);
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		logResults(rankings);
 	}
-	
-	
+
+
+	private List<Vector> getProjectedIs(int k) throws IOException {
+		File projFile = new File("files/projectedI_"+k+".txt");
+		return processFile(projFile);
+	}
+
+	private List<Vector> getProjectedQs(int k) throws IOException {
+		File projFile = new File("files/projectedQ_"+k+".txt");
+		return processFile(projFile);
+	}
+
+	private List<Vector> processFile(File projFile) throws IOException {
+		List<Vector> result = new ArrayList<Vector>();
+		FileReader fr = new FileReader(projFile);
+		BufferedReader br = new BufferedReader(fr);
+		while(true)	{
+			String line = br.readLine();
+			if(line == null) {break;}
+			Vector v = new Vector(line);
+			result.add(v);
+		}
+		br.close();
+		return result;
+
+	}
+
 	private void logResults(List<Ranking> rankings) {
 		double mmr=0;
 		double recall1=0;
@@ -93,19 +107,19 @@ public class Solver {
 			mmr+=r.reciprocal(q);
 			if(r.recall(q,1)){
 				recall1++;
-				}
+			}
 			if(r.recall(q,5)){
 				recall5++;
-				}
+			}
 			if(r.recall(q,10)){
 				recall10++;
-				}
+			}
 		}
 		String results = "###################################################\n"+
-						 "MMR: "+mmr/rankings.size()+"\n"+
-						 "Recall@1:" +1.0*recall1/rankings.size()+"\n"+
-						 "Recall@5:" +1.0*recall5/rankings.size()+"\n"+
-						 "Recall@10:" +1.0*recall10/rankings.size();
+				"MMR: "+mmr/rankings.size()+"\n"+
+				"Recall@1:" +1.0*recall1/rankings.size()+"\n"+
+				"Recall@5:" +1.0*recall5/rankings.size()+"\n"+
+				"Recall@10:" +1.0*recall10/rankings.size();
 		logger.log(results);
 		System.out.println(results);
 		logger.close();

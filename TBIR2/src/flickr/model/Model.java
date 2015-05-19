@@ -61,7 +61,7 @@ public abstract class Model {
 	 * Removes the common words out of a list of words.
 	 * @param occurences
 	 */
-	protected static List<String> removeCommonWords(List<String> occurences){
+	public static List<String> removeCommonWords(List<String> occurences){
 		List<String> result = new ArrayList<String>();
 		for(String occurence:occurences)
 			if(!commonWords.contains(occurence)){

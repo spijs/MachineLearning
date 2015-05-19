@@ -23,8 +23,8 @@ import flickr.model.TotalEmbedModel;
  */
 public class ImageVectorsCreator {
 
-	public final static String TRAIN = "files//trainToken.txt";
-	private static String fileName = "files//trainVectors.txt";
+	public final static String TRAIN = "files//testToken.txt";
+	private static String fileName = "files//testVectors100.txt";
 	private static File images = new File(fileName);
 	private static BufferedWriter writer;
 	private static String file;
@@ -47,6 +47,11 @@ public class ImageVectorsCreator {
 				}
 				else{
 					writer.write("0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
+							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
+							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
+							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
+							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
+							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
 							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
 							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+
 							"0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0"+

@@ -6,26 +6,20 @@ import java.util.Map;
 
 import matlabcontrol.MatlabConnectionException;
 import matlabcontrol.MatlabInvocationException;
-import matlabcontrol.MatlabProxy;
-import matlabcontrol.MatlabProxyFactory;
 
 
 public class CCAMain {
 	public static void main(String[] args) throws MatlabConnectionException, MatlabInvocationException {
-		System.out.println("Starting matlab");
-		MatlabProxyFactory factory = new MatlabProxyFactory();
-		MatlabProxy proxy = factory.getProxy();
+		System.out.println("Running :)...");
 		Map<String,String> options = getOptions(args);
 		Solver solver;
 		try {
-			solver = new Solver(proxy,options);
+			solver = new Solver(options);
 			solver.solve();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		 finally{
-			 proxy.disconnect();			 
-		 }
+
 	}
 	
 	private static Map<String,String> getOptions(String[] args){
@@ -33,31 +27,15 @@ public class CCAMain {
 		int size = args.length;
 		int i;
 		for(i=0;i<size;i++){
-			if ("-vtest".equals(args[i].toLowerCase())) {
-				i++;
-				result.put("test", args[i]);			
-			}
-			else if ("-vtrain".equals(args[i].toLowerCase())) {
-				i++;
-				result.put("train", args[i]);			
-			}
-			else if ("-itest".equals(args[i].toLowerCase())) {
-				i++;
-				result.put("testImages", args[i]);			
-			}
-			else if ("-itrain".equals(args[i].toLowerCase())) {
-				i++;
-				result.put("trainImages", args[i]);			
-			}
-			else if ("-ntrain".equals(args[i].toLowerCase())) {
-				i++;
-				result.put("trainNames", args[i]);			
-			}
-			else if ("-ntest".equals(args[i].toLowerCase())) {
+			
+			if ("-ntest".equals(args[i].toLowerCase())) {
 				i++;
 				result.put("testNames", args[i]);			
 			}
-			
+			else if ("-k".equals(args[i].toLowerCase())){
+				i++;
+				result.put("k",args[i]);
+			}
 				
 		}
 		return result;

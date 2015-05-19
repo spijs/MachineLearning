@@ -72,7 +72,9 @@ public class ImagesMain {
 				result.put("nbOfQueries", args[i]);			
 			}
 			
-			
+			else if("shorter".equalsIgnoreCase(args[i])){
+				result.put("shorter","");
+			}
 			
 			
 			

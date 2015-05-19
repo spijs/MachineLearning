@@ -36,8 +36,6 @@ public class Solver {
 	private int nbOfThreads=1;
 	private int nbOfQueries=0;
 	private String test;
-	private String imageNamesFile;
-	private String imagesVectorFile;
 
 	/**
 	 * Creates a solver based on a map containing options.
@@ -52,13 +50,22 @@ public class Solver {
 		Logger.getInstance(vectorsFile,modelType.toString(),nbOfQueries,nbOfThreads);
 		List<Model>models = createModels();
 		List<Query>queries = createQueries();
-		Map<String,Vector>images = createImages();
-		Map<String, Vector> trainImages = getUsedImages(images, train);
-		Map<String, Vector> testImages = getUsedImages(images, test);
+		Map<String,Vector>testImages = createTestImages();
+		Map<String,Vector>trainImages = createTrainImages();
+		Map<String, Vector> trImages = getUsedImages(trainImages, train);
+		Map<String, Vector> tImages = getUsedImages(testImages, test);
 		prepareModels(models);
-		solve(queries,models,trainImages, testImages);		
+		solve(queries,models,trImages, tImages);		
 	}
 
+
+	private Map<String, Vector> createTrainImages() throws FileNotFoundException, IOException {
+		return createImages("files/Flickr_8k.trainImages.txt","files/trainImageVectors.txt");
+	}
+
+	private Map<String, Vector> createTestImages() throws FileNotFoundException, IOException {
+		return createImages("files/Flickr_8k.testImages.txt","files/testImageVectors.txt");
+	}
 
 	private Map<String, Vector> getUsedImages(Map<String, Vector> images, String fileName) throws IOException, FileNotFoundException {
 		Map<String, Vector> result = new HashMap<String, Vector>();
@@ -70,23 +77,24 @@ public class Solver {
 			if(line == null) {break;}
 			String filename = line.split("#")[0];
 			result.put(filename, images.get(filename));
+		//	System.out.println(images.get(filename));
 		}
 		br.close();
 		return result;
 	}
 
-	private Map<String,Vector> createImages() throws IOException, FileNotFoundException{
+	private Map<String,Vector> createImages(String names, String vectors) throws IOException, FileNotFoundException{
 		Map<String, Vector> images = new HashMap<String, Vector>();
-		File names = new File(imageNamesFile);
-		FileReader namesFReader = new FileReader(names);
+		File namesF = new File(names);
+		FileReader namesFReader = new FileReader(namesF);
 		BufferedReader namesReader = new BufferedReader(namesFReader);
-		File vectors = new File(imagesVectorFile);
-		FileReader vectorFReader = new FileReader(vectors);
+		File vectorsF = new File(vectors);
+		FileReader vectorFReader = new FileReader(vectorsF);
 		BufferedReader vectorReader = new BufferedReader(vectorFReader);
 		while(true) {
 			String name = namesReader.readLine();
-			if(name == null) {break;}
 			String vectorString = vectorReader.readLine();
+			if(name == null || vectorString == null) {break;}
 			Vector vector = new Vector(vectorString);
 			images.put(name, vector);
 		}
@@ -103,8 +111,6 @@ public class Solver {
 	private void setOptions(Map<String, String> options) {
 		train=options.get("train");
 		test=options.get("test");
-		imagesVectorFile=options.get("images");
-		imageNamesFile=options.get("names");
 		modelType = ModelType.fromString(options.get("model"));
 
 		if(options.containsKey("vectors")){

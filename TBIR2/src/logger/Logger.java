@@ -28,7 +28,7 @@ public class Logger {
 	public Logger(String vectors, String method, int nbOfQueries, int nbOfThreads) throws IOException{
 		String[] fileParts = vectors.split("/");
 		String fileN = fileParts[fileParts.length-1];
-		String fileName = ("results/results_images_"+method+"_"+fileN.substring(0, fileN.lastIndexOf('.'))+"_queries"+nbOfQueries+".txt");
+		String fileName = ("files/results/results_images_"+method+"_"+fileN.substring(0, fileN.lastIndexOf('.'))+"_queries"+nbOfQueries+".txt");
 		File file = new File(fileName);
 		file.delete();
 		this.writer = new BufferedWriter(new FileWriter(fileName, true));
@@ -37,12 +37,9 @@ public class Logger {
 		+fileN.substring(0, fileN.lastIndexOf('.'))+"\n##################################\n");
 	}
 	
-	public Logger(String trainV, String testV) throws IOException {
-		String[] trainVParts = trainV.split("/");
-		String trainVN = trainVParts[trainVParts.length-1];
-		String[] testVParts = testV.split("/");
-		String testVN = testVParts[testVParts.length-1];
-		String fileName = ("files/results/results_cca_tr"+trainVN.substring(0, trainVN.lastIndexOf('.'))+"te"+testVN.substring(0, testVN.lastIndexOf('.'))+".txt");
+
+	public Logger(String name) throws IOException {
+		String fileName = ("files/results/"+name+".txt");
 		File file = new File(fileName);
 		file.delete();
 		this.writer = new BufferedWriter(new FileWriter(fileName, true));
