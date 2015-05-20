@@ -13,6 +13,11 @@ import embeddings.Vector;
 import flickr.RankElement;
 import flickr.Ranking;
 
+/**
+ * @author Thijs D & Wout V
+ * 
+ * This class is reponsible for the image retrieval task based on CCA. *
+ */
 public class Solver {
 	private List<String> testNames;
 	private Logger logger;
@@ -24,6 +29,13 @@ public class Solver {
 		this.logger = new Logger("results_cca_k_"+k);
 	}
 
+	/**
+	 * Returns a list containing each line of the given file.
+	 * 
+	 * @param fileName
+	 * @return list containing each line of the given file.
+	 * @throws IOException
+	 */
 	private List<String> parseFile(String fileName) throws IOException {
 		List<String> result = new ArrayList<String>();
 		File training = new File(fileName);
@@ -38,6 +50,11 @@ public class Solver {
 		return result;
 	}
 
+	
+	/**
+	 * Solves the image retrieval task and logs the results.
+	 * 
+	 */
 	public void solve(){
 		try {
 		List<Vector> projQs;
@@ -51,11 +68,11 @@ public class Solver {
 				for(int j=0; j<projIs.size();j++){
 					Vector iVector = projIs.get(j);
 					double similarity = qVector.cosineDist(iVector);
-					String imageTrainName = testNames.get(j);
-					ranking.addElement(new RankElement(imageTrainName, similarity));
+					String imageTestName = testNames.get(j);
+					ranking.addElement(new RankElement(imageTestName, similarity));
 				}
 				rankings.add(ranking);
-				System.out.println("Ranked query "+i);
+				System.out.println("Ranked query "+(i+1));
 				ranking.printHighest(5);
 				System.out.println("Ranking progress: "+100.0*i/(projQs.size()));
 			}
@@ -67,16 +84,31 @@ public class Solver {
 	}
 
 
+	/**
+	 * @param k
+	 * @return The List of k-rank approximated projected image vectors 
+	 * @throws IOException
+	 */
 	private List<Vector> getProjectedIs(int k) throws IOException {
 		File projFile = new File("files/projectedI_"+k+".txt");
 		return processFile(projFile);
 	}
 
+	/**
+	 * @param k
+	 * @return The List of k-rank approximated projected query vectors 
+	 * @throws IOException
+	 */
 	private List<Vector> getProjectedQs(int k) throws IOException {
 		File projFile = new File("files/projectedQ_"+k+".txt");
 		return processFile(projFile);
 	}
 
+	/**
+	 * @param projFile
+	 * @return A list containing each vector in the given projFile.
+	 * @throws IOException
+	 */
 	private List<Vector> processFile(File projFile) throws IOException {
 		List<Vector> result = new ArrayList<Vector>();
 		FileReader fr = new FileReader(projFile);
@@ -92,6 +124,11 @@ public class Solver {
 
 	}
 
+	/**
+	 * @param rankings
+	 * 
+	 * Logs and prints the mmr and recall results of the given rankings.
+	 */
 	private void logResults(List<Ranking> rankings) {
 		double mmr=0;
 		double recall1=0;

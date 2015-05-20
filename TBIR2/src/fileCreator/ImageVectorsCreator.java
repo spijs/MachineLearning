@@ -17,14 +17,13 @@ import flickr.model.TotalEmbedModel;
 /**
  * @author Thijs
  * 
- * This class turns a large file of tokens (token.txt)into a smaller subset based 
- * on another file (testImages.txt) that contains the names of the necessary images.
+ * This class turns a token file into a file that contains the additive wordvectors corresponding to the sentences.
  *
  */
 public class ImageVectorsCreator {
 
 	public final static String TRAIN = "files//testToken.txt";
-	private static String fileName = "files//testVectors50.txt";
+	private static String fileName = "files//testVectors50test.txt";
 	private static File images = new File(fileName);
 	private static BufferedWriter writer;
 	private static String file;
@@ -41,6 +40,7 @@ public class ImageVectorsCreator {
 			while((line=br.readLine())!=null){
 				String[] words = line.split("	");
 				String sentence = words[1];
+				System.out.println(sentence);
 				String nextLine=processString(sentence);
 				if(nextLine!=null){
 					writer.write(nextLine);
@@ -65,6 +65,12 @@ public class ImageVectorsCreator {
 		}
 	}
 
+	/**
+	 * Returns a wordvector by adding the wordvector of each word in it.
+	 * 
+	 * @param sentence
+	 * @return the word vector corresponding to the given sentence.
+	 */
 	private static String processString(String sentence){
 
 		List<String> words = TotalEmbedModel.getWords(sentence);

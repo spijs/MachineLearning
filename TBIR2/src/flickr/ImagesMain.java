@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Thijs D.
+ * @author Thijs D. & Wout V.
  * This class should be called when the textual image retrieval task needs to be run.
  */
 public class ImagesMain {
@@ -55,6 +55,16 @@ public class ImagesMain {
 			else if ("-nq".equals(args[i].toLowerCase())) {
 				i++;
 				result.put("nbOfQueries", args[i]);			
+			}
+			
+			else if ("-itrain".equals(args[i].toLowerCase())) {
+				i++;
+				result.put("trainImageVectors", args[i]);			
+			}
+			
+			else if ("-itest".equals(args[i].toLowerCase())) {
+				i++;
+				result.put("testImageVectors", args[i]);			
 			}
 			
 			

@@ -131,4 +131,8 @@ public class Vector {
 		}
 		return result;
 	}
+	
+	public int size(){
+		return values.length;
+	}
 }

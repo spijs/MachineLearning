@@ -38,6 +38,11 @@ public class Logger {
 	}
 	
 
+	/**
+	 *  Creates a logger that writes to the name.txt
+	 * @param name
+	 * @throws IOException
+	 */
 	public Logger(String name) throws IOException {
 		String fileName = ("files/results/"+name+".txt");
 		File file = new File(fileName);

@@ -16,6 +16,12 @@ import java.util.Map;
 import flickr.model.Model;
 
 
+/**
+ * @author Thijs D & Wout V
+ *
+ * This class is responsible for reducing a big vectors file into a smaller one, by only selecting the word
+ *  vectors corresponding to words that are in the train and/or test tokens.
+ */
 public class shorterVecCreator {
 
 	public final static File TEST = new File("files//testToken.txt");
@@ -36,6 +42,12 @@ public class shorterVecCreator {
 		
 	}
 
+	/**
+	 * Writes each vector to the output file.
+	 * 
+	 * @param vectors
+	 * @throws IOException
+	 */
 	private static void writeVectors(Map<String,String> vectors) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(OUTPUT, true));
 		for(String word: vectors.keySet()){
@@ -44,6 +56,15 @@ public class shorterVecCreator {
 		writer.close();
 	}
 
+	/**
+	 * This method adds words from the file and their corresponding word vector 
+	 * to the given vectors maps if they are not already present.
+	 * 
+	 * @param file - file containing image captions.
+	 * @param vectors - Initial Mapping from word to vector.
+	 * @return The final mapping from word to vector after each word in the file has been checked.
+	 * @throws Exception
+	 */
 	private static HashMap<String, String> fillMap(File file, HashMap<String, String> vectors) throws Exception {
 		FileInputStream fs = new FileInputStream(file);
 		BufferedReader br = new BufferedReader(new InputStreamReader(fs));

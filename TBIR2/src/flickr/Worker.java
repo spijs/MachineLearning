@@ -12,7 +12,7 @@ import flickr.model.Model;
 
 
 /**
- * @author Thijs D
+ * @author Thijs D & Wout V
  * 
  * A thread which ranks the models for each query.
  */
@@ -25,6 +25,12 @@ public class Worker implements Runnable{
 	private Map<String, Vector> trainImages;
 
 
+	/**
+	 * @param queries - the list of queries that need to be solved.
+	 * @param models - the list containing a model for each image in the training set.
+	 * @param testImages - the mapping between each test image and its image vector.
+	 * @param trainImages - the mapping between each train image and its image vector.
+	 */
 	public Worker(List<Query> queries, List<Model> models,Map<String,Vector> testImages,Map<String,Vector> trainImages) {
 		this.queries=queries;
 		this.models=models;
@@ -34,6 +40,13 @@ public class Worker implements Runnable{
 	}
 
 
+	/**
+	 * Searches for the image in the training set that is the closest to the given textual query.
+	 * 
+	 * @param q - Query for which we search the best match.
+	 * @return The imagename in the training set that corresponds the best to the given query
+	 * @throws IOException
+	 */
 	private String getBestTraining(Query q) throws IOException{
 		System.out.println("Started Ranking...");
 		String bestImage="";
@@ -54,6 +67,11 @@ public class Worker implements Runnable{
 	}
 
 
+	/**
+	 * Logs and prints the mmr and recall results for the given rankings.
+	 * @param rankings - a list of rankings 
+	 * 
+	 */
 	private void logResults(List<Ranking> rankings) {
 		double mmr=0;
 		double recall1=0;
@@ -83,6 +101,12 @@ public class Worker implements Runnable{
 	}
 
 
+	/* 
+	 * For each query: 
+	 * 	 get the best corresponding training image based on the query.
+	 *   get the image in the test set that corresponds the best to the found image.
+	 * Log the results for all the queries.
+	 */
 	@Override
 	public void run() {
 		try {
@@ -104,6 +128,12 @@ public class Worker implements Runnable{
 		}		
 	}
 
+	/**
+	 * Creates a ranking for the images in the test set based on the similarity of their image vector to the given vector.
+	 * 
+	 * @param best - the image vector for which we seek the best corresponding image.
+	 * @return A ranking of images in the test set based on the similarity with the given vector.
+	 */
 	private Ranking getClosestImages(Vector best) {
 		System.out.println("Started Ranking the images...");
 		Ranking ranking = new Ranking();

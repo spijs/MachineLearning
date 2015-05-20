@@ -23,6 +23,11 @@ public class TestAndTrainCreator {
 	private static File imageFile = new File(images);
 	private static BufferedWriter writer;
 
+	/**
+	 * Running this code turns the big image vector file 'feats.txt' into two separate files for
+	 * train and test.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		try {
 			generateFile(TRAIN, TRAINVECTORS);
@@ -33,6 +38,13 @@ public class TestAndTrainCreator {
 		}
 	}
 
+	/**
+	 * Takes the feats.txt and selects the vectors that correspond to images in the given file. 
+	 * 
+	 * @param file - The file containing all the image names that need to be selected
+	 * @param output - The file to which the results need to be written
+	 * @throws IOException
+	 */
 	private static void generateFile(File file, File output) throws IOException {
 		int i = 0;
 		BufferedReader br = new BufferedReader(new InputStreamReader(

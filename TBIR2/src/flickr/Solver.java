@@ -23,7 +23,7 @@ import flickr.model.TotalEmbedModel;
 import flickr.model.TotalProbModel;
 
 /**
- * @author Thijs D
+ * @author Thijs D & Wout V
  * 
  * This class is responsible for creating models and queries out of the given file and starting workers that will
  * check how the chosen models perform.
@@ -35,6 +35,8 @@ public class Solver {
 	private String vectorsFile;
 	private int nbOfThreads=1;
 	private int nbOfQueries=0;
+	private String trainImageVectors;
+	private String testImageVectors;
 	private final static String test = "files/testToken.txt";
 
 	/**
@@ -46,6 +48,12 @@ public class Solver {
 		setOptions(options);
 	}
 	
+	/**
+	 * Creates models for each trainimage, creates queries for the test, prepares the models
+	 * and finally solves the image retrieval task.
+	 * 
+	 * @throws IOException
+	 */
 	public void solve() throws IOException{
 		Logger.getInstance(vectorsFile,modelType.toString(),nbOfQueries,nbOfThreads);
 		Map<String,Vector> wordVectors = createWordVectors();
@@ -58,16 +66,36 @@ public class Solver {
 	}
 
 
+	/**
+	 * creates the image vectors based on the right file.
+	 * @return a mapping between each image name and their vector.
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	private Map<String, Vector> createTrainImages() throws FileNotFoundException, IOException {
-		return createImages("files/Flickr_8k.trainImages.txt","files/trainImageVectors.txt");
+		return createImages("files/Flickr_8k.trainImages.txt",trainImageVectors);
 	}
 
+	/**
+	 * creates the image vectors based on the right file.
+	 * @return a mapping between each image name and their vector.
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	private Map<String, Vector> createTestImages() throws FileNotFoundException, IOException {
-		return createImages("files/Flickr_8k.testImages.txt","files/testImageVectors.txt");
+		return createImages("files/Flickr_8k.testImages.txt",testImageVectors);
 	}
 
-
-	private Map<String,Vector> createImages(String names, String vectors) throws IOException, FileNotFoundException{
+	/**
+	 * Creates a mapping between the image names and its vector.
+	 * @param names - file containing the image names.
+	 * @param vectors - file containing the corresponding image vectors.
+	 * @return - the mapping between the names and the vectors
+	 * @throws IOException
+	 */
+	private Map<String,Vector> createImages(String names, String vectors) throws IOException{
 		Map<String, Vector> images = new HashMap<String, Vector>();
 		File namesF = new File(names);
 		FileReader namesFReader = new FileReader(namesF);
@@ -105,15 +133,24 @@ public class Solver {
 			this.nbOfQueries=Integer.parseInt(options.get("nbOfQueries"));
 		}
 		
+		if(options.containsKey("trainImageVectors")){
+			this.trainImageVectors=options.get("trainImageVectors");
+		}
+		
+		if(options.containsKey("testImageVectors")){
+			this.testImageVectors=options.get("testImageVectors");
+		}
+		
 		
 	}
 	
+
 	/**
 	 * Creates different threads that will each take on a subset of the queries.
-	 * @param images 
-	 * @param models 
-	 * @param queries 
-	 * @param testImages 
+	 * @param queries The list of queries that need to be solved.
+	 * @param models The list of models for the training images.
+	 * @param trainImages The mapping between name and image vector for the training images.
+	 * @param testImages The mapping between name and image vector for the test images.
 	 * @throws IOException
 	 */
 	public void solve(List<Query> queries, List<Model> models, Map<String,Vector> trainImages, Map<String, Vector> testImages) throws IOException {
@@ -141,16 +178,16 @@ public class Solver {
 	}
 	
 	/**
-	 * Selects queries out of each model.
-	 * @return 
-	 * @throws IOException, FileNotFoundException 
+	 * Creates a query for each image in the test set.
+	 * @return the list of queries that need to be solved from the test set.
+	 * @throws IOException 
 	 */
-	private List<Query> createQueries() throws IOException, FileNotFoundException {
+	private List<Query> createQueries() throws IOException {
 		List<Query> queries = new ArrayList<Query>();
 		File testFile = new File(test);
 		FileReader fr = new FileReader(testFile);
 		BufferedReader br = new BufferedReader(fr);
-		Random r = new Random(System.currentTimeMillis());
+		Random r = new Random(300);
 		boolean end = false;
 		while (!end) {
 			String filename = "";
@@ -174,9 +211,9 @@ public class Solver {
 	}
 	
 	/**
-	 *  Creates a model for each image in the dataset.
-	 * @param wordVectors 
-	 * @return 
+	 *  Creates a model for each image in the training set.
+	 * @param wordVectors The mapping between a word and its word vector.
+	 * @return a list containing a model for each image in the training set.
 	 */
 	private List<Model> createModels(Map<String, Vector> wordVectors) {
 		System.out.println("Creating models...");
@@ -246,6 +283,11 @@ public class Solver {
 		}
 	}
 
+	/**
+	 * Reads the file containing the word vectors and creates a mapping that can be stored in main memory.
+	 * @return The mapping between each word and its word vector.
+	 * @throws IOException
+	 */
 	public Map<String,Vector> createWordVectors() throws IOException{
 		Map<String,Vector> wordVectors = new HashMap<String,Vector>();
 		FileInputStream fs;
