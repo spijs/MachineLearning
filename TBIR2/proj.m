@@ -1,15 +1,10 @@
-function [q_proj,i_proj] = project(images,queries, U, V)
+function [q_proj,i_proj] = project(images,queries, V, U)
 
 disp('Size queries');
 [rq,cq] = size(queries)
 disp('Size images');
 [rs,cs] = size(images)
 
-for i = 1:rq
-  q_proj(i,:) = queries(i,:)*V;
-end
-
-for j = 1:rs
-  i_proj(j,:) = images(j,:)*U;
-end
+ q_proj = queries*U;
+ i_proj = images*V;
 

@@ -13,27 +13,27 @@ for i = 1:x
     end
 end
 
-[imageCorr,queryCorr] = canoncorr(bigTrain,trainqueries);
-disp('Dimensie U');
-size(imageCorr)
+[U,V] = canoncorr(trainqueries,bigTrain);
 disp('Dimensie V');
-size(queryCorr)
-[row, col] = size(imageCorr);
-[rowq,colq] = size(queryCorr);
-dimI = col * k
-resI = zeros(row,dim);
-resQ = zeros(rowq,dim);
+size(V)
+disp('Dimensie U');
+size(U)
+[row, col] = size(V);
+[rowq,colq] = size(U);
+dim = col * (k/100);
+resV = zeros(row,dim);
+resU = zeros(rowq,dim);
 for l = 1:row
-	resI(l,:) = imageCorr(l,1:dim);
+	resV(l,:) = V(l,1:dim);
 end
 
 for l = 1:rowq
-	resQ(l,:) = queryCorr(l,1:dim);
+	resU(l,:) = U(l,1:dim);
 end	
-[projQ1, projI1] = proj(testI,testQ, reqI, resQ);
+[projQ1, projI1] = proj(testI,testQ, resV, resU);
 size(projQ1)
 size(projI1)
 projQ = projQ1;
 projI = projI1;
-dlmwrite('projectedQ_'+k, projQ);
-dlmwrite('projectedI_'+k, projI);
+dlmwrite(strcat('projectedQ_',num2str(k),'.txt'), projQ);
+dlmwrite(strcat('projectedI_',num2str(k),'.txt'), projI);
